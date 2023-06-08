@@ -1,4 +1,4 @@
-package com.example.AppWinterhold.config;
+package com.example.AppWinterhold;
 
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;

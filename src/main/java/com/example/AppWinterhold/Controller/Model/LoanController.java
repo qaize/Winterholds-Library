@@ -1,6 +1,9 @@
 package com.example.AppWinterhold.Controller.Model;
 
 import com.example.AppWinterhold.Dao.LoanRepository;
+import com.example.AppWinterhold.Dto.Author.AuthorIndexDto;
+import com.example.AppWinterhold.Dto.Author.AuthorInsertDto;
+import com.example.AppWinterhold.Dto.Customer.CustomerIndexDto;
 import com.example.AppWinterhold.Dto.Loan.LoanIndexDto;
 import com.example.AppWinterhold.Dto.Loan.LoanInsertDto;
 import com.example.AppWinterhold.Dto.Loan.LoanUpdateDto;
@@ -15,6 +18,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.List;
 
 @Controller
 @RequestMapping("/loan")
@@ -48,23 +53,32 @@ public class LoanController {
              ) {
             if(val.getReturnDate() == null && LocalDate.now().isBefore(val.getDueDate())){
                 Long between = ChronoUnit.DAYS.between(LocalDate.now(),val.getDueDate());
-                if(between==0){
-                val.setDayLeft(between.toString());
-                val.setStatus("Last Day" );
-                }else{
-                val.setDayLeft(between.toString());
-                val.setStatus("On Loan" );
+                if(between<0){
+                    between = between * (-1);
                 }
+                val.setDayLeft(between.toString());
+                val.setLateLoan("On Loan" );
+            }
+            else if(val.getReturnDate() == null && LocalDate.now().isAfter(val.getDueDate())){
+                Long between = ChronoUnit.DAYS.between(val.getDueDate(),LocalDate.now());
+                val.setDayLeft("WARNING!");
+                val.setLateLoan("Late : -"+between.toString()+" Days" );
             }
             else if(val.getReturnDate() != null && LocalDate.now().isAfter(val.getDueDate())){
                 Long between = ChronoUnit.DAYS.between(val.getDueDate(),val.getReturnDate());
                 val.setDayLeft("END");
-                val.setStatus("Late : -"+between.toString()+" Days" );
+                val.setLateLoan("Late : -"+between.toString()+" Days" );
+
+            }
+            else if(val.getReturnDate() == null && LocalDate.now().isEqual(val.getDueDate())){
+//                Long between = ChronoUnit.DAYS.between(val.getDueDate(),val.getReturnDate());
+                val.setDayLeft("On Loan");
+                val.setLateLoan("Last day loan" );
 
             }
             else{
                 val.setDayLeft("END");
-                val.setStatus("On Time" );
+                val.setLateLoan("On Time" );
             }
 
         }
@@ -75,6 +89,7 @@ public class LoanController {
         }
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPage", totalPage);
+
         return "Loan/index";
     }
 
