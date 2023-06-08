@@ -1,4 +1,4 @@
-package com.example.AppWinterhold;
+package com.example.AppWinterhold.config;
 
 import com.example.AppWinterhold.Security.CustomAuthencticationSuccessHandler;
 import com.example.AppWinterhold.Security.CustomAuthenticationFailureHandler;

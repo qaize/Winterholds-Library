@@ -1,4 +1,4 @@
-package com.example.AppWinterhold;
+package com.example.AppWinterhold.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
