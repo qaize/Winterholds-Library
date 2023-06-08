@@ -1,4 +1,4 @@
-package com.example.AppWinterhold.config;
+package com.example.AppWinterhold;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;

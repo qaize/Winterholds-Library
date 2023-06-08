@@ -1,5 +1,6 @@
 package com.example.AppWinterhold.Controller.Model;
 
+import com.example.AppWinterhold.SecurityConfiguration;
 import com.example.AppWinterhold.Utility.JwtToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;

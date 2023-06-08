@@ -16,16 +16,17 @@
 
 	<changeSet id="DDL01-222-20230608-0001"
 		author="iwan">
-		<sqlFile dbms="mssql" relativeToChangelogFile="false"
+		<sqlFile dbms="postgresql" relativeToChangelogFile="false"
 			splitStatements="true" stripComments="true"
 			path="liquibase/V1/sql/alter_table_loan_20230608.sql" />
 		<comment>ALTER TABLE LOAN ADD DENDA</comment>
 	</changeSet>
 
-<!--	<changeSet author="you" id="add_column_example">-->
-<!--		<addColumn tableName="loan">-->
-<!--			<column name="denda" type="numeric" defaultValue="NULL" />-->
-<!--		</addColumn>-->
-<!--	</changeSet>-->
+	<changeSet author="you" id="add_column_example">
+		<addColumn tableName="loan">
+			<column name="denda" type="numeric" defaultValue="NULL" />
+		</addColumn>
+	</changeSet>
+
 
 </databaseChangeLog>

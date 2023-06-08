@@ -1,4 +1,4 @@
-package com.example.AppWinterhold.config;
+package com.example.AppWinterhold;
 
 
 import com.example.AppWinterhold.Entity.Account;
