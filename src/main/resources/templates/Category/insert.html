@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head th:replace="~{layout::head}" >
+</head>
+<body>
+<nav th:replace="~{layout::navigation}"></nav>
+<main>
+  <form method="post" th:attr="action=@{/category/insert}" enctype="multipart/form-data" th:object="${dto}">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+    <!--        <div th:if="${param.error != null}" th:text="${param.error}"></div>-->
+    <table class="spacerTable">
+      <tbody>
+      <tr>
+        <td><label>Category Name  </label></td>
+        <td><input type="text" th:field="*{name}">
+          <div class="field-validation-error" th:errors="*{name}"> </div>
+        </td>
+      </tr>
+      <tr>
+        <td><label>floor </label></td>
+        <td><input type="text" th:field="*{floor}">
+          <div class="field-validation-error" th:errors="*{floor}"> </div>
+          <div class="field-validation-error" th:errors="${dto}"> </div>
+        </td>
+      </tr>
+      <tr>
+        <td><label>isle </label></td>
+        <td><input type="text" th:field="*{isle}">
+          <div class="field-validation-error" th:errors="*{isle}"> </div>
+        </td>
+      </tr>
+      <tr>
+        <td><label>bay </label></td>
+        <td><input type="text" th:field="*{bay}">
+          <div class="field-validation-error" th:errors="*{bay}"> </div>
+        </td>
+      </tr>
+
+      </tbody>
+    </table>
+    <button class="btn detail-btn" type="submit"> submit</button>
+    <a class="btn back-warning" th:href="@{/category/index}">Close</a>
+  </form>
+
+</main>
+
+</body>
+</html>

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head th:replace="~{layout::head}" >
+</head>
+<body>
+<nav th:replace="~{layout::navigation}"></nav>
+<main>
+    <form method="get"  th:attr="action=@{/category/index}">
+      <fieldset>
+        <legend>Search by:</legend>
+        <div>
+          <span>Category Name :</span>
+        <input type="text" name="name" placeholder="name" th:attr="value=${name}">
+        </div>
+        <div class="divSearch">
+        <button class="btn search-button" type="submit">Search</button>
+        </div>
+      </fieldset>
+    </form>
+
+  <div class="filter">
+    <a  class="btn add-button" th:href="@{/category/insert}"> Add category </a>
+  </div>
+  <div class="divTable">
+    <table>
+      <thead>
+      <tr>
+        <th></th>
+        <th>Category Name</th>
+        <th>Floor</th>
+        <th>Isle</th>
+        <th>Bay</th>
+        <th>Total Books</th>
+
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="data : ${listCategory}" th:object="${data}">
+        <td class="action">
+          <div class="button-wrapper">
+            <a class="btn detail-btn" th:href="@{/category/detail(categoryName=*{name})}">Books</a>
+            <a class="btn back-warning" th:href="@{/category/update(categoryName=*{name})}">Edit</a>
+            <a class="btn delete-btn" th:href="@{/category/delete(categoryName=*{name})}">Delete</a>
+          </div>
+        </td>
+        <td th:text="*{name}"></td>
+        <td th:text="*{floor}"></td>
+        <td th:text="*{isle}"></td>
+        <td th:text="*{bay}"></td>
+        <td th:text="*{totalBooks}"></td>
+      </tr>
+      </tbody>
+      <tfoot>
+      <tr>
+        <td colspan="8">
+          <div class="pagination">
+            <div>
+              <a th:if="${totalPage !=0}"
+                 th:each="loop:${#numbers.sequence(1, totalPage)}"
+                 th:href="@{/category/index(page=${loop},name=${name})}"
+                 th:text="${loop}"></a>
+            </div>
+          </div>
+        </td>
+      </tr>
+      </tfoot>
+    </table>
+
+  </div>
+
+
+</main>
+
+</body>
+</html>

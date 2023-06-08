@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head th:replace="~{layout::head}" >
+</head>
+<body>
+<nav th:replace="~{layout::navigation}"></nav>
+<main>
+  <form method="post" th:attr="action=@{/book/insert}" enctype="multipart/form-data" th:object="${dto}">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+    <!--        <div th:if="${param.error != null}" th:text="${param.error}"></div>-->
+    <table class="spacerTable">
+      <tbody>
+      <tr>
+        <td><label>Code  :</label></td>
+        <td><input type="text" th:field="*{code}">
+          <div class="field-validation-error" th:errors="*{code}"> </div>
+        </td>
+      </tr>
+      <tr>
+        <td><label>Title :</label></td>
+        <td><input type="text" th:field="*{title}">
+          <div class="field-validation-error" th:errors="*{title}"> </div>
+        </td>
+      </tr>
+      <tr>
+        <td><label>Category :</label></td>
+        <td>
+          <input readonly type="text" th:field="*{categoryName}">
+          <div class="field-validation-error" th:errors="*{categoryName}"> </div>
+        </td>
+      </tr>
+      <tr>
+        <td><label>Author :</label></td>
+        <td><select th:field="*{authorId}">
+          <option th:each="data : ${dropdownAuthor}" th:value="${data.val}" th:text="${data.text}"/>
+        </select>
+          <div class="field-validation-error" th:errors="*{authorId}"> </div>
+        </td>
+      </tr>
+      <tr>
+        <td><label>Release Date :</label></td>
+        <td><input type="date" th:field="*{releaseDate}">
+          <div class="field-validation-error" th:errors="*{releaseDate}"> </div>
+        </td>
+      </tr>
+      <tr>
+        <td><label>Total Page :</label></td>
+        <td><input type="number" th:field="*{totalPage}">
+          <div class="field-validation-error" th:errors="*{totalPage}"> </div>
+        </td>
+      </tr>
+      <tr>
+        <td><input type="hidden" th:field="*{isBorrowed}">
+          <div class="field-validation-error" th:errors="*{isBorrowed}"> </div>
+        </td>
+      </tr>
+
+      <tr>
+        <td><label>Summary :</label></td>
+        <td><textarea th:field="*{summary}"></textarea>
+          <div class="field-validation-error" th:errors="*{summary}"> </div>
+        </td>
+      </tr>
+
+      </tbody>
+    </table>
+    <button class="btn" type="submit"> submit</button>
+    <a class="btn" th:href="@{/category/index}">Close</a>
+  </form>
+
+</main>
+
+</body>
+</html>

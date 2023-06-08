@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml" lang="en">
+<head th:fragment="head">
+    <meta charset="UTF-8">
+    <title>Winterhold</title>
+<!--    <link rel="stylesheet" th:href="@{/css/normalize.css}" />-->
+    <link rel="stylesheet" th:href="@{/resources/css/font-awesome.css}" />
+    <link rel="stylesheet" th:href="@{/resources/css/site.css}" />
+    <script th:src="@{/resources/js/jquery-3.6.0.js}"></script>
+    <script th:src="@{/resources/js/modal-popup.js}" defer></script>
+</head>
+<body>
+<nav class="navbar" th:fragment="navigation">
+
+    <a href="menu home" th:href="@{/home/index}">
+        <span>Home</span>
+    </a>
+
+    <a href="menu home" th:href="@{/author/index}">
+        <span>Author</span>
+    </a>
+
+    <a href="menu home" th:href="@{/books/}">
+        <span>Books</span>
+    </a>
+
+    <a href="menu home" th:href="@{/customer/index}">
+        <span>Customer</span>
+    </a>
+
+    <a href="menu home" th:href="@{/loan/index}">
+        <span>Loan</span>
+    </a>
+
+        <a class="floatLogout" th:href="@{/login/loginForm?logout}">
+            <i class="fas fa-sign-out-alt"></i>
+<!--            <span>logout</span>-->
+        </a>
+        <a class="floatLogout" th:href="@{/register/popup}">
+            <i class="fas fa-key"></i>
+        </a>
+    <div class="user">
+        <span>Hallo, </span>
+        <span class="full-name" th:text="${#authentication.name}">anonymous</span>
+<!--        <span class="role" th:text="${#authentication.principal.role}">guest</span>-->
+    </div>
+
+
+
+</nav>
+</body>
+</html>

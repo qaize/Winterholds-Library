@@ -1,0 +1,367 @@
+* {
+  font-family: sans-serif;
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  font-size: 14;
+}
+
+
+main{
+padding :50px;
+}
+
+.navbar {
+  overflow: hidden;
+  background-color: #fbffff;
+  position: fixed; /* Set the navbar to fixed position */
+  top: 0; /* Position the navbar at the top of the page */
+  width: 100%; /* Full width */
+}
+
+/* Links inside the navbar */
+.navbar a {
+  float: left;
+  display: block;
+  color: #440202;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+}
+
+/* Change background on mouse-over */
+.navbar a:hover {
+  background: #ddd;
+  color: black;
+}
+
+/* Main content */
+.main {
+  margin-top: 30px; /* Add a top margin to avoid content overlay */
+}
+
+.navbar .floatLogout{
+float : right;
+}
+
+.insertTable{
+  width :35%;
+
+}
+
+.banner{
+position : fixed;
+top : 25%;
+left : 25%;
+width : 50%;
+border : 2px solid black;
+}
+
+.home{
+text-align : center;
+padding : 15px;
+}
+.home h1 {
+    margin-bottom : 20px;
+}
+
+.divLogout{
+display : inline-block;
+position-bottom : 1;
+position-right : 1;
+color : black;
+}
+
+table {
+  width :100%;
+  border : 1px solid #aaa;
+  border-collapse : collapse;
+}
+
+form table {
+  width :40%;
+  border : 1px solid #aaa;
+  border-collapse : collapse;
+  align-text : left;
+  padding : 10px;
+}
+
+textarea {
+width : 250px;
+height : 150px;
+}
+
+tr:nth-child(even) {background: #CCC}
+tr:nth-child(odd) {background: #FFF}
+
+.popupTable{
+width : 100%;
+}
+
+.popupTable td {
+           padding : 10px;
+           }
+
+.popupTable tr {
+            background :white;
+            }
+
+.spacerTable td {
+padding : 10px;
+}
+
+.spacerTable tr {
+background :white;
+}
+
+main > fieldset{
+width : 50%;
+border-radius : 20 px;
+}
+fieldset .divSearch{
+text-align : right;
+padding : 10px;
+padding-right : 15%;
+
+}
+
+th{
+background: #57ec7f;
+text-align: left;
+padding : 10px;
+}
+
+.action{
+    text-align : center;
+}
+
+
+
+
+.btn {
+    cursor: pointer;
+    border: 1px solid;
+    outline: none;
+    display: inline-block;
+    height: 30px;
+    line-height: 20px;
+    padding: 0 10px;
+    color: black;
+    border-radius: 4px;
+    text-align: center;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    text-decoration: none;
+
+
+}
+
+.back-warning{
+    background: linear-gradient(to right, #ffa, #ffa);
+
+}
+
+.detail-btn{
+    background: linear-gradient(to right, #aaf, #aaf);
+
+}
+.delete-btn{
+    background: linear-gradient(to right, #faa, #faa);
+
+}
+
+.add-button{
+    background: linear-gradient(to right, #15ea7f, #15ea7f);
+    font-weight : bold;
+    color : black
+}
+
+.search-button{
+background: linear-gradient(to right, #57ec7f, #57ec7f);
+}
+
+.divContainer{
+padding-top : 10px;
+}
+
+.divTable{
+
+padding-top : 20px;
+}
+
+
+.filter{
+padding-top : 10px;
+padding-bottom : 10px;
+}
+
+form > fieldset > div {
+padding : 5px;
+}
+
+form > fieldset {
+width : 50%;
+border : 2px solid #55b384;
+border-radius : 15px;
+}
+
+.formSpacer div{
+padding : 15px;
+}
+
+.formSpacer div > div{
+padding : 15px;
+}
+
+
+form> fieldset > div > input[type=text] {
+             width: 75%;
+             padding: 12px 20px;
+             margin: 8px 0;
+             box-sizing: border-box;
+           }
+
+form> fieldset > div > input[type=password] {
+             width: 75%;
+             padding: 12px 20px;
+             margin: 8px 0;
+             box-sizing: border-box;
+           }
+
+tfoot td {
+text-align: right;
+background: #AAA;
+padding : 5px;
+}
+
+tfoot td a{
+text-decoration : none;
+color : black;
+font-weight : bold;
+padding-left : 5px;
+}
+
+.customerLink{
+color : black;
+text-decoration : none;
+}
+
+.field-validation-error {
+    display: inline-block;
+    box-sizing: border-box;
+    color: white;
+    background: linear-gradient(to right, #f84646, #d52c2f);
+    vertical-align: middle;
+    line-height: 30px;
+    padding: 0 12px;
+    border-radius: 4px;
+    margin-left:5px;
+}
+
+
+.modal-layer {
+    display: none; /*nanti setelah di-click akan jadi flex*/
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0.5);
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+}
+
+.popup-dialog {
+    display: none; /*nanti setelah di-click akan jadi block*/
+    /*background-color: #202a45;*/
+    background-color: #fbffff;
+    /*background: linear-gradient(to bottom, #005681, var(--main-body-nav-color) 15%, #005681);*/
+    padding: 20px;
+    border-radius: 6px;
+    min-width: 300px;
+}
+
+    .popup-dialog header {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 20px;
+    }
+
+        .popup-dialog header > h1 {
+            margin: 0;
+            font-size: 20px;
+        }
+
+        .popup-dialog header > .close-button {
+            font-size: 20px;
+            color: #e74c3c;
+        }
+
+    .popup-dialog td {
+        padding: 3px 20px 3px 0;
+        /*border: 1px solid white;*/
+    }
+
+        .popup-dialog td:first-child {
+            /*color: #14acf8;*/
+            color: var(--html-text-color font-weight: bold);
+            padding-top: 10px;
+            vertical-align: top;
+        }
+
+    /*.popup-dialog tbody tr:last-child > td {
+        color: #14acf8;
+    }*/
+
+    .popup-dialog form [type=submit] {
+        margin-top: 20px;
+    }
+
+
+    .formLogin{
+    position : fixed;
+    top : 25%;
+    left : 35%;
+    width : 25%;
+    border : 2px solid black;
+    }
+
+    .formReg{
+    position : fixed;
+    top : 15%;
+    left : 35%;
+    width : 25%;
+    border : 2px solid black;
+    }
+
+    .divLogin{
+    text-align : center;
+    padding : 20px;
+    }
+
+    .divLogin div{
+    margin-bottom : 10px;
+    }
+
+    .divLogin input[type=password] {
+                 width: 100%;
+                 padding: 12px 20px;
+                 margin: 8px 0;
+                 box-sizing: border-box;
+               }
+    .divLogin input[type=text] {
+                 width: 100%;
+                 padding: 12px 20px;
+                 margin: 8px 0;
+                 box-sizing: border-box;
+               }
+    .user{
+    text-align : right;
+    padding : 15px;
+    }
+
+    .full-name{
+    font-weight : bold;
+    font-size : 16;
+    }
+

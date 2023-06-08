@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head th:replace="~{layout::head}"> </head>><!-- layout itu dari layout.html,
+       <>                  headLayout dari nama fragment yang ada di layout.html  -->
+<body class="main-body">
+<nav th:replace="~{layout::navigation}"></nav>
+<!--<header th:replace="~{layout::head}"></header>-->
+<main>
+    <!--    <h1>PROFILE</h1>-->
+    <a href="#" id="btnChangePassword" class="btn  create-modal-dialog"
+       onclick="openLink(${link.id},'${link.address}');">Register Now</a>
+    <!-- The Modal ChangePassword -->
+    <div class="modal-layer changePassword">
+        <!-- Modal content -->
+        <div class="popup-dialog upsert-dialog">
+            <header>
+                <h1><span class="actionType"></span>Register Form</h1>
+                <a href="javascript:;" class="close-button">
+                    <i class="fas fa-window-close"></i>c
+                </a>
+            </header>
+            <hr class="rounded">
+            <form method="post" action=""  class="upsert-form">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                <table class="popupTable">
+                    <tbody>
+                    <tr>
+                        <td>
+                            <input name="username" type="email" placeholder="email" class="username">
+                        </td>
+                    </tr>
+
+                    </tbody>
+                </table>
+                <button class="btn blue-button" type="submit" >Submit</button>
+            </form>
+        </div>
+    </div>
+</main>
+<footer ></footer>
+<!--<th:block th:replace="~{layout::javascript}">-->
+
+
+<!--</th:block>-->
+<script>
+
+    var btnChangePassword = document.getElementById("btnChangePassword");
+    btnChangePassword.onclick = function() {
+        event.preventDefault();
+        showModal("changePassword");
+    }
+
+    var btnCloseModal = document.querySelector(".close-button");
+    btnCloseModal.onclick = function() {
+        event.preventDefault();
+        hideModal("changePassword");
+    }
+
+    $(function() {
+        $(".upsert-dialog form").submit(saveForm);
+    });
+
+    function saveForm(){
+        event.preventDefault();
+
+        let viewModel = {
+            "username": $(".upsert-dialog .username").val(),
+            "password": "default",
+            "conpassword": "default"
+        };
+            let urlAction = "http://localhost:7081/winterhold/api/account/createAccount/";
+            var token = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJpd2FuIiwidXNlcm5hbWUiOiJxYWl6ZTExMiIsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6NzA4MSIsImF1ZCI6IkFwcFFhaXplIn0.AxS-5KgLyAcU7l_y3REE6D01wGfRGfJfjjTWXaqvJxE";
+            var header = "Authorization";
+<!--        var token = $('#_csrf').attr('content');-->
+<!--        var header = $('#_csrf_header').attr('content');-->
+
+        $.ajax({
+            type: "POST",
+            contentType: "application/json",
+            url: "http://localhost:7081/winterhold/api/account/createAccount/",
+            data: JSON.stringify(viewModel),
+            dataType: 'json',
+            cache: false,
+            timeout: 600000,
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader(header, token);
+            },
+            success: function (response) {
+
+                if (response.success) {
+                        hideModal('changePassword');
+                        console.log("lolos");
+                        location.reload();
+                }
+                else{
+                    let listValidation = response.listError;
+                    showValidationMessageKedua(response.listError)
+                }
+            },
+            error: function (e) {
+                var json = "<h4>Ajax Response Error</h4><pre>"
+                    + e.responseText + "</pre>";
+                $('#feedback').html(json);
+
+                console.log("ERROR : ", e);
+                $("#btn-login").prop("disabled", false);
+            }
+        });
+
+
+
+<!--        $.ajax({-->
+<!--            method: "POST",-->
+<!--            url: urlAction,-->
+<!--            data: JSON.stringify(viewModel),-->
+<!--            dataType: "json", //Http Header-->
+<!--            contentType: "application/json; charset=utf-8", //Http Header,-->
+<!--            beforeSend: function (xhr) {-->
+<!--                xhr.setRequestHeader(header, token);-->
+<!--            },-->
+<!--            success: function (response) {-->
+<!--                    if (response.success) {-->
+<!--                        hideModal('changePassword');-->
+<!--                        location.reload();-->
+<!--                    } else {-->
+<!--                        showValidationMessage(response.validations);-->
+<!--                    }-->
+<!--                },-->
+<!--                fail: function () { console.log("Fail to retrieve data, check json result."); },-->
+<!--                error: function () { console.log("Internal Server Error, check server-side."); }-->
+<!--        });-->
+    }
+
+
+
+
+
+</script>
+</body>
+</html>
