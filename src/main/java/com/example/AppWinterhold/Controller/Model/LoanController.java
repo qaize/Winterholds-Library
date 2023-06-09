@@ -49,36 +49,35 @@ public class LoanController {
         var listLoan = loanService.getListLoanBySearch(page, title, name);
         Long totalPage = loanService.getCountPage(title, name);
 
-        for (LoanIndexDto val:listLoan
-             ) {
-            if(val.getReturnDate() == null && LocalDate.now().isBefore(val.getDueDate())){
-                Long between = ChronoUnit.DAYS.between(LocalDate.now(),val.getDueDate());
-                if(between<0){
-                    between = between * (-1);
-                }
-                val.setDayLeft(between.toString());
-                val.setLateLoan("On Loan" );
-            }
-            else if(val.getReturnDate() == null && LocalDate.now().isAfter(val.getDueDate())){
-                Long between = ChronoUnit.DAYS.between(val.getDueDate(),LocalDate.now());
-                val.setDayLeft("WARNING!");
-                val.setLateLoan("Late : -"+between.toString()+" Days" );
-            }
-            else if(val.getReturnDate() != null && LocalDate.now().isAfter(val.getDueDate())){
-                Long between = ChronoUnit.DAYS.between(val.getDueDate(),val.getReturnDate());
-                val.setDayLeft("END");
-                val.setLateLoan("Late : -"+between.toString()+" Days" );
+        for (LoanIndexDto val : listLoan
+        ) {
+            if (val.getReturnDate() == null && LocalDate.now().isBefore(val.getDueDate())) {
+                Long between = ChronoUnit.DAYS.between(LocalDate.now(), val.getDueDate());
+                if (between == 0) {
+                    val.setDayLeft(between.toString());
+                    val.setLateLoan("Last Day");
 
-            }
-            else if(val.getReturnDate() == null && LocalDate.now().isEqual(val.getDueDate())){
+                } else {
+                    val.setDayLeft(between.toString());
+                    val.setLateLoan("On Loan");
+                }
+            } else if (val.getReturnDate() == null && LocalDate.now().isAfter(val.getDueDate())) {
+                Long between = ChronoUnit.DAYS.between(val.getDueDate(), LocalDate.now());
+                val.setDayLeft("WARNING!");
+                val.setLateLoan("Late : -" + between.toString() + " Days");
+            } else if (val.getReturnDate() != null && LocalDate.now().isAfter(val.getDueDate())) {
+                Long between = ChronoUnit.DAYS.between(val.getDueDate(), val.getReturnDate());
+                val.setDayLeft("END");
+                val.setLateLoan("Late : -" + between.toString() + " Days");
+
+            } else if (val.getReturnDate() == null && LocalDate.now().isEqual(val.getDueDate())) {
 //                Long between = ChronoUnit.DAYS.between(val.getDueDate(),val.getReturnDate());
                 val.setDayLeft("On Loan");
-                val.setLateLoan("Last day loan" );
+                val.setLateLoan("Last day loan");
 
-            }
-            else{
+            } else {
                 val.setDayLeft("END");
-                val.setLateLoan("On Time" );
+                val.setLateLoan("On Time");
             }
 
         }
@@ -148,9 +147,8 @@ public class LoanController {
             bookService.insert(book);
             data.setReturnDate(LocalDate.now());
             loanService.insert(data);
-        return "redirect:/loan/index";
-        }
-        else{
+            return "redirect:/loan/index";
+        } else {
             return "Loan/valid";
         }
     }
@@ -214,7 +212,7 @@ public class LoanController {
             books.setIsBorrowed(!books.getIsBorrowed());
             bookService.insert(books);
             var extend = loanRepository.getExtendById(dto.getId());
-            loanService.update(dto,extend);
+            loanService.update(dto, extend);
             return "redirect:/loan/index";
         }
 
