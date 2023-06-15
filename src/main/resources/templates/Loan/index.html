@@ -37,6 +37,7 @@
         <th>Day Left</th>
         <th>Status</th>
         <th>Return Date</th>
+        <th>Denda</th>
       </tr>
       </thead>
       <tbody>
@@ -55,11 +56,12 @@
         <td th:text="*{dayLeft}"></td>
         <td th:text="*{lateLoan}"></td>
         <td th:text="*{returnDate}"></td>
+        <td th:text="*{denda}"></td>
       </tr>
       </tbody>
       <tfoot>
       <tr>
-        <td colspan="8">
+        <td colspan="9">
           <div class="pagination">
             <div>
               <a th:if="${totalPage !=0}"

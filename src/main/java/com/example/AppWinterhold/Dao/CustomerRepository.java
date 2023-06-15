@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import java.util.Date;
 import java.util.List;
 
 public interface CustomerRepository extends JpaRepository<Customer,String> {
@@ -53,7 +54,7 @@ public interface CustomerRepository extends JpaRepository<Customer,String> {
                 WHERE c.membershipExpireDate >  GETDATE() AND c.membershipNumber  NOT IN ( select c.membershipNumber
                                                                           from Customer AS c
                                                                           JOIN c.loan AS l
-                                                                          WHERE  l.returnDate IS NULL AND l.loanDate != FORMAT(GETDATE(),'yyyy-MM-dd')) 
+                                                                          WHERE  l.returnDate IS NULL AND l.denda != 0 AND l.loanDate != FORMAT(GETDATE(),'yyyy-MM-dd')) 
             """)
     List<CustomerIndexDto> getAvaliableCustomer();
     @Query("""
@@ -98,4 +99,11 @@ public interface CustomerRepository extends JpaRepository<Customer,String> {
               WHERE l.customerNumber = :number
             """)
     Long getCountCustomer(String number);
+
+    @Query(nativeQuery = true,value = """
+            update Customer\s
+            set MembershipExpireDate = DATEADD(year,2,MembershipExpireDate)
+            where MembershipNumber = :member
+            """)
+    void extend(String member);
 }

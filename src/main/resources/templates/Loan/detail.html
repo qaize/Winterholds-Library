@@ -79,6 +79,18 @@
       </div>
       </fieldset>
 
+    <fieldset class="formSpacer">
+        <legend> Denda </legend>
+        <div th:object="${loanDto}">
+            <div>
+                <p>
+                    Denda : <span th:text="*{denda}"></span>
+                </p>
+            </div>
+
+        </div>
+    </fieldset>
+
 
 </main>
 

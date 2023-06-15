@@ -146,6 +146,9 @@ public class LoanController {
             book.setIsBorrowed(false);
             bookService.insert(book);
             data.setReturnDate(LocalDate.now());
+
+            Long denda = loanService.getCountDenda(data.getLoanDate(),data.getReturnDate());
+            data.setDenda(denda);
             loanService.insert(data);
             return "redirect:/loan/index";
         } else {
@@ -163,6 +166,7 @@ public class LoanController {
         model.addAttribute("books", books);
         model.addAttribute("category", category);
         model.addAttribute("customer", customer);
+        model.addAttribute("loanDto",loanDto);
         return "loan/detail";
     }
 
@@ -211,8 +215,8 @@ public class LoanController {
             var books = bookService.getBooksById(dto.getBookCode());
             books.setIsBorrowed(!books.getIsBorrowed());
             bookService.insert(books);
-            var extend = loanRepository.getExtendById(dto.getId());
-            loanService.update(dto, extend);
+//            var extend = loanRepository.getExtendById(dto.getId());
+            loanService.update(dto);
             return "redirect:/loan/index";
         }
 

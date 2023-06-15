@@ -16,7 +16,7 @@ public interface LoanRepository extends JpaRepository<Loan,Long> {
             SELECT new com.example.AppWinterhold.Dto.Loan.LoanIndexDto
             (
             l.id, CONCAT(c.firstName,' ',c.lastName),b.title,
-            l.loanDate,l.dueDate,l.returnDate,l.note
+            l.loanDate,l.dueDate,l.returnDate,l.note,l.denda
             )
             FROM Loan AS l
                 LEFT JOIN l.book AS b
@@ -41,7 +41,7 @@ public interface LoanRepository extends JpaRepository<Loan,Long> {
             SELECT new com.example.AppWinterhold.Dto.Loan.LoanInsertDto
             (
             l.id, l.customerNumber,l.bookCode,
-            l.loanDate,l.dueDate,l.returnDate,l.note
+            l.loanDate,l.dueDate,l.returnDate,l.note,l.denda
             )
             FROM Loan AS l
                
@@ -53,7 +53,7 @@ public interface LoanRepository extends JpaRepository<Loan,Long> {
             SELECT new com.example.AppWinterhold.Dto.Loan.LoanIndexDto
             (
             l.id, CONCAT(c.firstName,' ',c.lastName),b.title,
-            l.loanDate,l.dueDate,l.returnDate,l.note
+            l.loanDate,l.dueDate,l.returnDate,l.note,l.denda
             )
             FROM Loan AS l
                 LEFT JOIN l.book AS b
@@ -66,7 +66,7 @@ public interface LoanRepository extends JpaRepository<Loan,Long> {
             SELECT new com.example.AppWinterhold.Dto.Loan.LoanInsertDto
             (
             l.id, CONCAT(c.firstName,' ',c.lastName),b.title,
-            l.loanDate,l.dueDate,l.returnDate,l.note
+            l.loanDate,l.dueDate,l.returnDate,l.note,l.denda
             )
             FROM Loan AS l
                 LEFT JOIN l.book AS b

@@ -12,6 +12,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 @Service
@@ -36,11 +38,28 @@ public class LoanServiceImp implements LoanService {
     }
 
     @Override
+    public Long getCountDenda(LocalDate loanDate, LocalDate dueLoan) {
+
+        Long between = ChronoUnit.DAYS.between(loanDate,dueLoan) * 2000;
+
+        return between;
+    }
+
+    @Override
     public void insert(LoanInsertDto dto) {
-        Loan en = new Loan(dto.getId(),dto.getCustomerNumber(),dto.getBookCode(),dto.getLoanDate(),dto.getDueDate(),dto.getReturnDate(),dto.getNote(),0);
+
+        Loan en ;
+        if(dto.getDenda() == null) {
+         en = new Loan(dto.getId(),dto.getCustomerNumber(),dto.getBookCode(),dto.getLoanDate(),dto.getDueDate(),dto.getReturnDate(),dto.getNote(),0,null);
+        }
+        else {
+            en = new Loan(dto.getId(),dto.getCustomerNumber(),dto.getBookCode(),dto.getLoanDate(),dto.getDueDate(),dto.getReturnDate(),dto.getNote(),0,dto.getDenda());
+        }
 
         loanRepository.save(en);
     }
+
+
 
     @Override
     public LoanInsertDto getLoanById(Long id) {
@@ -58,9 +77,9 @@ public class LoanServiceImp implements LoanService {
     }
 
     @Override
-    public void update(LoanUpdateDto dto,Integer set) {
+    public void update(LoanUpdateDto dto) {
         Loan en = new Loan(dto.getId(),dto.getCustomerNumber(),dto.getBookCode(),
-                dto.getLoanDate(),dto.getDueDate(),dto.getReturnDate(),dto.getNote(),set);
+                dto.getLoanDate(),dto.getDueDate(),dto.getReturnDate(),dto.getNote(),0,dto.getDenda());
         loanRepository.save(en);
     }
 

@@ -28,8 +28,9 @@ public class LoanIndexDto {
 
     private String dayLeft;
     private String lateLoan;
+    private Long denda;
 
-    public LoanIndexDto(Long id, String customerName, String bookTitle, LocalDate loanDate, LocalDate dueDate, LocalDate returnDate, String note) {
+    public LoanIndexDto(Long id, String customerName, String bookTitle, LocalDate loanDate, LocalDate dueDate, LocalDate returnDate, String note, Long denda) {
         this.id = id;
         this.customerName = customerName;
         this.bookTitle = bookTitle;
@@ -37,6 +38,7 @@ public class LoanIndexDto {
         this.dueDate = dueDate;
         this.returnDate = returnDate;
         this.note = note;
+        this.denda = denda;
 
     }
 }

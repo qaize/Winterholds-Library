@@ -47,5 +47,13 @@ public class Dropdown {
         return data;
     }
 
+    public static List<DropdownDto> dropdownTitle (){
+        List<DropdownDto> data = new ArrayList<>();
+        data.add(new DropdownDto("Mrs","Mrs"));
+        data.add(new DropdownDto("Mr","Mr"));
+        data.add(new DropdownDto("Ms","Ms"));
+        return data;
+    }
+
 
 }

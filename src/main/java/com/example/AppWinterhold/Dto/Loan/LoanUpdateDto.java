@@ -39,4 +39,6 @@ public class LoanUpdateDto {
 
     @Size(max = 500, message = "Maximum 500 char")
     private String note;/*500 n*/
+
+    private Long denda;/*500 n*/
 }

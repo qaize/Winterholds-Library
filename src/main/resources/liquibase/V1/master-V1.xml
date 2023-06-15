@@ -62,12 +62,12 @@
 		<comment>ALTER TABLE BOOK ADD CREATED</comment>
 	</changeSet>
 
-	<changeSet id="DDL01-222-20230615-0006"
+	<changeSet id="DDL01-111-20230615-0007"
 		author="iwan">
 		<sqlFile dbms="mssql" relativeToChangelogFile="false"
 			splitStatements="true" stripComments="true"
-			path="liquibase/V1/sql/alter_table_Customer_20230615.sql" />
-		<comment>ALTER TABLE CUSTOMER ADD CREATED</comment>
+			path="liquibase/V1/sql/create_table_logs_20230615.sql" />
+		<comment>CREATE TABLE LOGS</comment>
 	</changeSet>
 
 </databaseChangeLog>

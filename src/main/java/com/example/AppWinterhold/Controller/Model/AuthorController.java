@@ -5,6 +5,7 @@ import com.example.AppWinterhold.Dto.Author.AuthorInsertDto;
 import com.example.AppWinterhold.Dto.Author.AuthorUpdateDto;
 import com.example.AppWinterhold.Service.abs.AuthorService;
 import com.example.AppWinterhold.Service.abs.BookService;
+import com.example.AppWinterhold.Utility.Dropdown;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -44,6 +45,7 @@ public class AuthorController {
     public String insert(Model model) {
         AuthorInsertDto dto = new AuthorInsertDto();
         model.addAttribute("dto", dto);
+        model.addAttribute("dropdownTitle", Dropdown.dropdownTitle());
         return "Author/insert";
     }
 
