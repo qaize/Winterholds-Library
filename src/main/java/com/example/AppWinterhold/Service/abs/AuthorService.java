@@ -10,7 +10,9 @@ import java.util.List;
 
 public interface AuthorService {
     public List<AuthorIndexDto> getListAuthorBySearch(Integer page, String name);
+
     public List<AuthorIndexDto> getListAuthorBySearchV2(AuthorIndexDtoV2 authorIndexDtoV2) throws JsonProcessingException;
+
     public List<AuthorIndexDto> getAll();
 
     Long getCountPage(String name);

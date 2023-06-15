@@ -21,17 +21,21 @@ import org.springframework.web.client.RestTemplate;
 import java.util.Arrays;
 import java.util.List;
 
+import static com.example.AppWinterhold.Const.ProcessEnum.AUTHOR;
+import static com.example.AppWinterhold.Const.ProcessEnum.SUCCESS;
+
 @Service
 public class AuthorServiceImp implements AuthorService {
 
-
+    final private LogServiceImpl logService;
     private AuthorRepository authorRepository;
     private BaseController baseController;
 
     @Autowired
-    public AuthorServiceImp(AuthorRepository authorRepository,BaseController baseController) {
+    public AuthorServiceImp(AuthorRepository authorRepository,BaseController baseController, LogServiceImpl logService) {
         this.authorRepository = authorRepository;
         this.baseController = baseController;
+        this.logService = logService;
     }
 
     @Override
@@ -61,10 +65,6 @@ public class AuthorServiceImp implements AuthorService {
         HttpEntity<String> http = new HttpEntity<String>(data,httpHeaders);
         Pageable paging = PageRequest.of(authorIndexDtoV2.getPage()-1,authorIndexDtoV2.getDataCount(), Sort.by("id").descending());
 
-        ResponseEntity< String > result = restTemplate.exchange("http://localhost:7081/winterhold/api/author/getDataPaging", HttpMethod.GET, http,
-                String.class);
-
-        System.out.println(result);
         return authorRepository.getListAuthorBySearch(authorIndexDtoV2.getFullname(),paging);
     }
 
@@ -88,6 +88,7 @@ public class AuthorServiceImp implements AuthorService {
         try{
             InsertAccountMapper(en,dto);
             authorRepository.save(en);
+            logService.saveLogs(AUTHOR.getMessage(), SUCCESS.getMessage());
         }
         catch(Exception ex){
             System.out.println("Unable To Insert!");
@@ -107,6 +108,9 @@ public class AuthorServiceImp implements AuthorService {
         author.setCreatedBy(createdBy == null || createdBy.equalsIgnoreCase("")
                 ? "Unknown":createdBy);
         author.setModifiedBy("");
+
+
+
     }
 
     public void UpdateAccountMapper(Author author, AuthorUpdateDto authorInsertDto){

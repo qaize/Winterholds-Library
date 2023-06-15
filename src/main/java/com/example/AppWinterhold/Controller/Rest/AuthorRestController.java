@@ -69,7 +69,6 @@ public class AuthorRestController {
                 return ResponseEntity.status(HttpStatus.OK).body(new ResponseCrudRestDto(HttpStatus.OK,"Berhasil Insert",dto));
             }
 
-
             else{
                 List<ValidatorRestDto> list = new ArrayList<>();
                 List<FieldError> errorList = bindingResult.getFieldErrors();
