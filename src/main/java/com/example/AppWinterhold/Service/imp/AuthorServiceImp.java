@@ -6,10 +6,12 @@ import com.example.AppWinterhold.Dto.Author.AuthorIndexDto;
 import com.example.AppWinterhold.Dto.Author.AuthorIndexDtoV2;
 import com.example.AppWinterhold.Dto.Author.AuthorInsertDto;
 import com.example.AppWinterhold.Dto.Author.AuthorUpdateDto;
+import com.example.AppWinterhold.Dto.BaseResponseDTO;
 import com.example.AppWinterhold.Entity.Author;
 import com.example.AppWinterhold.Service.abs.AuthorService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import liquibase.pro.packaged.B;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -31,6 +33,8 @@ public class AuthorServiceImp implements AuthorService {
     private AuthorRepository authorRepository;
     private BaseController baseController;
 
+    ObjectMapper objectMapper = new ObjectMapper();
+
     @Autowired
     public AuthorServiceImp(AuthorRepository authorRepository,BaseController baseController, LogServiceImpl logService) {
         this.authorRepository = authorRepository;
@@ -39,18 +43,27 @@ public class AuthorServiceImp implements AuthorService {
     }
 
     @Override
-    public List<AuthorIndexDto> getListAuthorBySearch(Integer page, String name) {
+    public List<AuthorIndexDto> getListAuthorBySearch(Integer page, String name) throws JsonProcessingException {
+        BaseResponseDTO responseDTO = new BaseResponseDTO();
+
         Integer row = 10;
-        RestTemplate restTemplate = new RestTemplate();
+//        RestTemplate restTemplate = new RestTemplate();
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
         HttpEntity<String> http = new HttpEntity<String>("Params",httpHeaders);
         Pageable paging = PageRequest.of(page-1,row, Sort.by("id").descending());
 
-        ResponseEntity< String > result = restTemplate.exchange("http://localhost:7081/winterhold/api/author/getAuthor", HttpMethod.GET, http,
-                String.class);
+//        ResponseEntity< String > result = restTemplate.exchange("http://localhost:7081/winterhold/api/author/getAuthor", HttpMethod.GET, http,
+//                String.class);
+//
+//        BaseResponseDTO res = objectMapper.readValue(result.getBody(),BaseResponseDTO.class);
+//
+//        for (AuthorIndexDto a:res.getData()
+//             ) {
+//        System.out.println(a.getFullname());
+//
+//        }
 
-        System.out.println(result);
 
         return authorRepository.getListAuthorBySearch(name,paging);
     }
@@ -92,6 +105,7 @@ public class AuthorServiceImp implements AuthorService {
         }
         catch(Exception ex){
             System.out.println("Unable To Insert!");
+            logService.saveLogs(AUTHOR.getMessage(), FAILED.getMessage(), INSERT);
         }
     }
 
@@ -108,8 +122,6 @@ public class AuthorServiceImp implements AuthorService {
         author.setCreatedBy(createdBy == null || createdBy.equalsIgnoreCase("")
                 ? "Unknown":createdBy);
         author.setModifiedBy("");
-
-
 
     }
 

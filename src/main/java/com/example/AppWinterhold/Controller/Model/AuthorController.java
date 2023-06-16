@@ -6,6 +6,7 @@ import com.example.AppWinterhold.Dto.Author.AuthorUpdateDto;
 import com.example.AppWinterhold.Service.abs.AuthorService;
 import com.example.AppWinterhold.Service.abs.BookService;
 import com.example.AppWinterhold.Utility.Dropdown;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -28,7 +29,7 @@ public class AuthorController {
     @GetMapping("/index")
     public String index(Model model,
                         @RequestParam(defaultValue = "") String name,
-                        @RequestParam(defaultValue = "1") Integer page){
+                        @RequestParam(defaultValue = "1") Integer page) throws JsonProcessingException {
 
         model.addAttribute("name",name);
         var listAuthor = authorService.getListAuthorBySearch(page,name);
