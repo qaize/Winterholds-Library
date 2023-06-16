@@ -21,10 +21,10 @@ public class LogServiceImpl implements LogService {
     BaseController baseController;
 
     @Override
-    public void saveLogs(String process, String status) {
+    public void saveLogs(String process, String status, String action) {
         String createdBy = baseController.getCurrentLogin();
         LocalDate date = LocalDate.now();
-        Logs logs = new Logs(UUID.randomUUID().toString(),process,status,createdBy,date);
+        Logs logs = new Logs(UUID.randomUUID().toString(),process,status,createdBy,date,action);
         logsRepo.save(logs);
     }
 }

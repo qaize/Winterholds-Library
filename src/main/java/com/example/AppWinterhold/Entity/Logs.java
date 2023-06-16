@@ -1,8 +1,14 @@
 package com.example.AppWinterhold.Entity;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.time.LocalDate;
 
 @AllArgsConstructor
@@ -25,5 +31,7 @@ public class Logs {
     private String createdBy;
     @Column(name = "process_date")
     private LocalDate date;
+    @Column(name = "action_name")
+    private String action;
 
 }

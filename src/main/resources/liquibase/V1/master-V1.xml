@@ -70,4 +70,12 @@
 		<comment>CREATE TABLE LOGS</comment>
 	</changeSet>
 
+	<changeSet id="DDL01-222-20230616-0001"
+			   author="iwan">
+		<sqlFile dbms="mssql" relativeToChangelogFile="false"
+				 splitStatements="true" stripComments="true"
+				 path="liquibase/V1/sql/alter_table_logs_20230616.sql" />
+		<comment>ALTER TABLE LOGS ADD ACTION</comment>
+	</changeSet>
+
 </databaseChangeLog>

@@ -21,8 +21,8 @@ import org.springframework.web.client.RestTemplate;
 import java.util.Arrays;
 import java.util.List;
 
-import static com.example.AppWinterhold.Const.ProcessEnum.AUTHOR;
-import static com.example.AppWinterhold.Const.ProcessEnum.SUCCESS;
+import static com.example.AppWinterhold.Const.actionConst.*;
+import static com.example.AppWinterhold.Const.ProcessEnum.*;
 
 @Service
 public class AuthorServiceImp implements AuthorService {
@@ -88,7 +88,7 @@ public class AuthorServiceImp implements AuthorService {
         try{
             InsertAccountMapper(en,dto);
             authorRepository.save(en);
-            logService.saveLogs(AUTHOR.getMessage(), SUCCESS.getMessage());
+            logService.saveLogs(AUTHOR.getMessage(), SUCCESS.getMessage(), INSERT);
         }
         catch(Exception ex){
             System.out.println("Unable To Insert!");
