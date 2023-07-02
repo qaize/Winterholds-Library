@@ -17,8 +17,10 @@
       </tr>
       <tr>
         <td><label>Title  </label></td>
-        <td><input type="text" th:field="*{title}">
-          <div class="field-validation-error" th:errors="*{title}"> </div>
+        <td><select th:field="*{title}">
+          <option th:value="null" th:hidden="hidden">- select title -</option>
+          <option th:each="data : ${dropdownTitle}" th:value="${data.val}" th:text="${data.text}"/>
+        </select>
         </td>
       </tr>
       <tr>

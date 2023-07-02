@@ -24,7 +24,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import static com.example.AppWinterhold.Const.actionConst.*;
-import static com.example.AppWinterhold.Const.ProcessEnum.*;
 
 @Service
 public class AuthorServiceImp implements AuthorService {
@@ -101,11 +100,10 @@ public class AuthorServiceImp implements AuthorService {
         try{
             InsertAccountMapper(en,dto);
             authorRepository.save(en);
-            logService.saveLogs(AUTHOR.getMessage(), SUCCESS.getMessage(), INSERT);
+            logService.saveLogs(AUTHOR,SUCCESS, INSERT);
         }
         catch(Exception ex){
-            System.out.println("Unable To Insert!");
-            logService.saveLogs(AUTHOR.getMessage(), FAILED.getMessage(), INSERT);
+            logService.saveLogs(AUTHOR,FAILED, INSERT);
         }
     }
 
@@ -149,9 +147,11 @@ public class AuthorServiceImp implements AuthorService {
     public Boolean delete(Long id) {
         var data = authorRepository.getCountBooks(id);
         if(data>0){
+            logService.saveLogs(AUTHOR,FAILED, DELETE);
             return false;
         }
         authorRepository.deleteById(id);
+        logService.saveLogs(AUTHOR,SUCCESS, DELETE);
         return true;
     }
 
@@ -166,9 +166,11 @@ public class AuthorServiceImp implements AuthorService {
         try{
             UpdateAccountMapper(en,dto);
             authorRepository.save(en);
+            logService.saveLogs(AUTHOR,SUCCESS, UPDATE);
         }
         catch(Exception ex){
             System.out.println("Unable To Update!");
+            logService.saveLogs(AUTHOR,FAILED, UPDATE);
         }
     }
 }

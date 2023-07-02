@@ -54,6 +54,7 @@ public class AuthorController {
     public String insert(@Valid @ModelAttribute("dto") AuthorInsertDto dto, BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("dto", dto);
+            model.addAttribute("dropdownTitle", Dropdown.dropdownTitle());
             return "Author/insert";
         } else {
             authorService.insert(dto);
@@ -74,6 +75,7 @@ public class AuthorController {
     @GetMapping("/update")
     public String update(Model model,@RequestParam(required = false) Long id) {
         AuthorInsertDto dto = authorService.getAuthorByIdinsert(id);
+        model.addAttribute("dropdownTitle", Dropdown.dropdownTitle());
         model.addAttribute("dto", dto);
         return "Author/update";
     }
@@ -82,6 +84,7 @@ public class AuthorController {
     public String update(@Valid @ModelAttribute("dto") AuthorUpdateDto dto, BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("dto", dto);
+            model.addAttribute("dropdownTitle", Dropdown.dropdownTitle());
             return "Author/update";
         } else {
             authorService.update(dto);
