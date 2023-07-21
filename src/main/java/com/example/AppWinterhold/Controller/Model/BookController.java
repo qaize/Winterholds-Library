@@ -31,11 +31,11 @@ public class BookController {
     @GetMapping("/insert")
     public String insert(Model model, @RequestParam(required = true) String categoryName) {
         BookInsertDto dto = new BookInsertDto();
-        Boolean borrowed = false;
+//        Boolean borrowed = false;
         model.addAttribute("categoryName",categoryName);
         var dropdownauthor = Dropdown.dropdownAuthor(authorService.getAll());
         model.addAttribute("dropdownAuthor", dropdownauthor);
-        dto.setIsBorrowed(borrowed);
+        dto.setIsBorrowed(false);
         dto.setCategoryName(categoryName);
         model.addAttribute("dto", dto);
         return "Book/insert";
@@ -54,7 +54,6 @@ public class BookController {
             bookService.insert(dto);
             return "redirect:/category/detail?categoryName="+dto.getCategoryName();
         }
-
     }
 
     @GetMapping("/update")
@@ -63,7 +62,10 @@ public class BookController {
         var dropdownauthor = Dropdown.dropdownAuthor(authorService.getAll());
         model.addAttribute("dropdownAuthor", dropdownauthor);
         model.addAttribute("dto", dto);
+
         return "Book/update";
+
+
     }
 
     @PostMapping("/update")

@@ -37,6 +37,8 @@ public class RESTSecurityConfiguration {
 
         return http.build();
     }
+
+//    Akses secuity HTTP
     @Bean
     CorsConfigurationSource corsConfigurationSource(){
         var configuration = new CorsConfiguration();

@@ -94,11 +94,22 @@ public class AuthorRestController {
         }
 
     }
+//    @GetMapping("/getDataPaging")
+//    public ResponseEntity<Object> getDataPaging(@RequestBody AuthorIndexDtoV2 dto) throws JsonProcessingException {
+//                var list = authorService.getListAuthorBySearchV2(dto);
+//                return ResponseEntity.status(HttpStatus.OK).body(list);
+//
+//    }
+
+
     @GetMapping("/getDataPaging")
-    public ResponseEntity<Object> getDataPaging(@RequestBody AuthorIndexDtoV2 dto) throws JsonProcessingException {
+    public ResponseEntity<Object> getDataPaging(@RequestParam(defaultValue = "")  String title,
+                                                String firstName, String lastName,String fullname,
+                                                Integer page, Integer dataCount ) throws JsonProcessingException {
+
+        AuthorIndexDtoV2 dto = new AuthorIndexDtoV2(title,firstName,lastName,fullname,page,dataCount);
                 var list = authorService.getListAuthorBySearchV2(dto);
                 return ResponseEntity.status(HttpStatus.OK).body(list);
-
     }
 
     @PutMapping

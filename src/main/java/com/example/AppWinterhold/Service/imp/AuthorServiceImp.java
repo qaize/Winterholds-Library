@@ -68,13 +68,13 @@ public class AuthorServiceImp implements AuthorService {
     }
     @Override
     public List<AuthorIndexDto> getListAuthorBySearchV2(AuthorIndexDtoV2 authorIndexDtoV2) throws JsonProcessingException {
-        Integer row = 10;
-        RestTemplate restTemplate = new RestTemplate();
-        HttpHeaders httpHeaders = new HttpHeaders();
-        ObjectMapper objectMapper = new ObjectMapper();
-        String data = objectMapper.writeValueAsString(authorIndexDtoV2);
-        httpHeaders.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
-        HttpEntity<String> http = new HttpEntity<String>(data,httpHeaders);
+//        Integer row = 10;
+//        RestTemplate restTemplate = new RestTemplate();
+//        HttpHeaders httpHeaders = new HttpHeaders();
+//        ObjectMapper objectMapper = new ObjectMapper();
+//        String data = objectMapper.writeValueAsString(authorIndexDtoV2);
+//        httpHeaders.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+//        HttpEntity<String> http = new HttpEntity<String>(data,httpHeaders);
         Pageable paging = PageRequest.of(authorIndexDtoV2.getPage()-1,authorIndexDtoV2.getDataCount(), Sort.by("id").descending());
 
         return authorRepository.getListAuthorBySearch(authorIndexDtoV2.getFullname(),paging);
@@ -82,6 +82,8 @@ public class AuthorServiceImp implements AuthorService {
 
     @Override
     public List<AuthorIndexDto> getAll() {
+        List<Author> a = authorRepository.findAll();
+        Integer length = a.size();
         return authorRepository.getAll();
     }
 

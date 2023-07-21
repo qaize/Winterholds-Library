@@ -24,7 +24,7 @@ public interface CategoryRepository extends JpaRepository<Category,String> {
                     
                     GROUP BY c.name, c.floor, c.isle, c.bay
             """)
-    List<CategoryIndexDto> getListCategoryBySearch(String name, Pageable paging);
+    List<CategoryIndexDto>  getListCategoryBySearch(String name, Pageable paging);
 
     @Query("""
             SELECT COUNT(c.name)

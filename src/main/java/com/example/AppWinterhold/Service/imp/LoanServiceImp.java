@@ -63,6 +63,8 @@ public class LoanServiceImp implements LoanService {
 
     @Override
     public LoanInsertDto getLoanById(Long id) {
+//        List<Loan> findByCustomer = loanRepository.findBy()
+
         return loanRepository.getLoanById(id);
     }
 

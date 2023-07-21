@@ -13,46 +13,47 @@
         <tr>
         <input type="hidden" th:field="*{id}">
             <td><label>Title :</label></td>
-            <td><select th:field="*{title}">
+            <td><select class="form-control form-control-lg" th:field="*{title}">
                 <option th:value="null" th:hidden="hidden">- select title -</option>
                 <option th:each="data : ${dropdownTitle}" th:value="${data.val}" th:text="${data.text}"/>
             </select>
-                <div class="field-validation-error" th:errors="*{title}"> </div>
+                <div class="field-validation-error " th:errors="*{title}"> </div>
             </td>
         </tr>
+
         <tr>
             <td><label>First Name :</label></td>
-            <td><input type="text" th:field="*{firstName}">
-                <div class="field-validation-error" th:errors="*{firstName}"> </div>
+            <td><input class="form-control form-control-lg" type="text" th:field="*{firstName}">
+                <div class="field-validation-error " th:errors="*{firstName}"> </div>
             </td>
         </tr>
             <tr>
                 <td><label>LastName :</label></td>
-                <td><input type="text" th:field="*{lastName}">
+                <td><input class="form-control form-control-lg" type="text" th:field="*{lastName}">
                     <div class="field-validation-error" th:errors="*{lastName}"> </div>
                 </td>
             </tr>
             <tr>
                 <td><label>Birth Date :</label></td>
-                <td><input type="date" th:field="*{birthDate}">
+                <td><input class="form-control form-control-lg" type="date" th:field="*{birthDate}">
                     <div class="field-validation-error" th:errors="*{birthDate}"> </div>
                 </td>
             </tr>
             <tr>
                 <td><label>Deceased Date :</label></td>
-                <td><input type="date" th:field="*{deceasedDate}">
+                <td><input class="form-control form-control-lg" type="date" th:field="*{deceasedDate}">
                     <div class="field-validation-error" th:errors="*{deceasedDate}"> </div>
                 </td>
             </tr>
             <tr>
                 <td><label>Education :</label></td>
-                <td><input type="text" th:field="*{education}">
+                <td><input class="form-control form-control-lg" type="text" th:field="*{education}">
                     <div class="field-validation-error" th:errors="*{education}"> </div>
                 </td>
             </tr>
             <tr>
                 <td><label>Summary :</label></td>
-                <td><textarea th:field="*{summary}"></textarea>
+                <td><textarea class="form-control form-control-lg" th:field="*{summary}"></textarea>
                     <div class="field-validation-error" th:errors="*{summary}"> </div>
                 </td>
             </tr>

@@ -12,6 +12,7 @@ import java.util.List;
 
 public interface LoanRepository extends JpaRepository<Loan,Long> {
 
+
     @Query("""
             SELECT new com.example.AppWinterhold.Dto.Loan.LoanIndexDto
             (
@@ -20,8 +21,7 @@ public interface LoanRepository extends JpaRepository<Loan,Long> {
             )
             FROM Loan AS l
                 LEFT JOIN l.book AS b
-                LEFT JOIN l.customer AS c
-                
+                LEFT JOIN l.customer AS c            
                 WHERE b.title LIKE %:title% AND CONCAT(c.firstName,' ',c.lastName) LIKE %:name%
                 
             """)
