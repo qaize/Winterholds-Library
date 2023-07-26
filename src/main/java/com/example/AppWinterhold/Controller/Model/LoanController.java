@@ -7,7 +7,9 @@ import com.example.AppWinterhold.Dto.Customer.CustomerIndexDto;
 import com.example.AppWinterhold.Dto.Loan.LoanIndexDto;
 import com.example.AppWinterhold.Dto.Loan.LoanInsertDto;
 import com.example.AppWinterhold.Dto.Loan.LoanUpdateDto;
+import com.example.AppWinterhold.Entity.Loan;
 import com.example.AppWinterhold.Service.abs.*;
+import com.example.AppWinterhold.Service.imp.AccountServiceImp;
 import com.example.AppWinterhold.Utility.Dropdown;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,12 +39,16 @@ public class LoanController {
 
     @Autowired
     private LoanRepository loanRepository;
+    @Autowired
+    private AccountServiceImp account;
 
     @GetMapping("/index")
     public String index(Model model,
                         @RequestParam(defaultValue = "") String title,
                         @RequestParam(defaultValue = "") String name,
                         @RequestParam(defaultValue = "1") Integer page) {
+
+        model.addAttribute("userLogin",account.getCurrentUserLogin());
 
         model.addAttribute("name", name);
         model.addAttribute("title", title);
@@ -168,6 +174,15 @@ public class LoanController {
         model.addAttribute("customer", customer);
         model.addAttribute("loanDto",loanDto);
         return "loan/detail";
+    }
+
+    @GetMapping("/denda")
+    public String denda (Model model){
+
+        List<Loan> loanDto = loanService.getOnDenda();
+        model.addAttribute("dataDenda",loanDto);
+
+        return "loan/denda";
     }
 
     @GetMapping("/update")

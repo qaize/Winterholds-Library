@@ -24,5 +24,7 @@ public interface AccountService {
 
     void update(AccountUpdateDto dto);
 
-//    void changePassword( dto);
+    String getCurrentUserLogin();
+
+
 }

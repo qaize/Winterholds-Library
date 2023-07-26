@@ -30,6 +30,7 @@ public class BookController {
 
     @GetMapping("/insert")
     public String insert(Model model, @RequestParam(required = true) String categoryName) {
+
         BookInsertDto dto = new BookInsertDto();
 //        Boolean borrowed = false;
         model.addAttribute("categoryName",categoryName);

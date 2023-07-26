@@ -78,4 +78,12 @@
 		<comment>ALTER TABLE LOGS ADD ACTION</comment>
 	</changeSet>
 
+	<changeSet id="DDL01-222-20230724-0001"
+			   author="iwan">
+		<sqlFile dbms="mssql" relativeToChangelogFile="false"
+				 splitStatements="true" stripComments="true"
+				 path="liquibase/V1/sql/alter_account_20230724.sql" />
+		<comment>ALTER TABLE ACCOUNT NAME</comment>
+	</changeSet>
+
 </databaseChangeLog>

@@ -3,6 +3,7 @@ package com.example.AppWinterhold.Service.abs;
 import com.example.AppWinterhold.Dto.Loan.LoanIndexDto;
 import com.example.AppWinterhold.Dto.Loan.LoanInsertDto;
 import com.example.AppWinterhold.Dto.Loan.LoanUpdateDto;
+import com.example.AppWinterhold.Entity.Loan;
 
 import java.time.LocalDate;
 import java.util.Date;
@@ -28,4 +29,7 @@ public interface LoanService {
     List<LoanInsertDto> getAllByInsert();
 
     Long checkLoanBooks(String code);
+
+    List<Loan> getOnDenda();
+
 }

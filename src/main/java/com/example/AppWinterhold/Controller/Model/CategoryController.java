@@ -4,6 +4,7 @@ import com.example.AppWinterhold.Dto.Category.CategoryInsertDto;
 import com.example.AppWinterhold.Dto.Category.CategoryUpdateDto;
 import com.example.AppWinterhold.Service.abs.BookService;
 import com.example.AppWinterhold.Service.abs.CategoryService;
+import com.example.AppWinterhold.Service.imp.AccountServiceImp;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -20,10 +21,15 @@ public class CategoryController {
     @Autowired
     private BookService bookService;
 
+    @Autowired
+    private AccountServiceImp account;
+
     @GetMapping("/index")
     public String index(Model model,
                         @RequestParam(defaultValue = "") String name,
                         @RequestParam(defaultValue = "1") Integer page){
+
+        model.addAttribute("userLogin",account.getCurrentUserLogin());
 
         model.addAttribute("name",name);
         var listCategory = categoryService.getListCategoryBySearch(page,name);

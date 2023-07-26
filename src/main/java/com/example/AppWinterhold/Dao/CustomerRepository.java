@@ -54,7 +54,7 @@ public interface CustomerRepository extends JpaRepository<Customer,String> {
                 WHERE c.membershipExpireDate >  GETDATE() AND c.membershipNumber  NOT IN ( select c.membershipNumber
                                                                           from Customer AS c
                                                                           JOIN c.loan AS l
-                                                                          WHERE  l.returnDate IS NULL AND l.denda != 0 AND l.loanDate != FORMAT(GETDATE(),'yyyy-MM-dd')) 
+                                                                          WHERE l.returnDate IS NULL AND l.denda != 0 AND l.loanDate != FORMAT(GETDATE(),'yyyy-MM-dd')) 
             """)
     List<CustomerIndexDto> getAvaliableCustomer();
     @Query("""

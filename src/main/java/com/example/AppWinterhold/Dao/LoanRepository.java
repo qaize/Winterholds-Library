@@ -7,6 +7,7 @@ import com.example.AppWinterhold.Entity.Loan;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
@@ -89,4 +90,19 @@ public interface LoanRepository extends JpaRepository<Loan,Long> {
              WHERE b.code = :code AND b.isBorrowed = 1 AND l.returnDate IS NULL
             """)
     Long CheckBook(String code);
+
+    @Query("""
+            SELECT l
+            FROM Loan as l
+                where l.denda IS NOT NULL AND l.denda != 0
+            """)
+    List<Loan> getOnDenda();
+
+
+    @Query("""
+            SELECT COUNT(l.id)
+            FROM Loan AS l
+             WHERE l.customerNumber = :CustomerNumber AND l.denda != 0 AND l.denda IS NOT NULL
+            """)
+    Long findCostumerOnLoan(@Param("CustomerNumber")String s);
 }

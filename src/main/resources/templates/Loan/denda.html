@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head th:replace="~{layout::head}" >
+</head>
+<body>
+<nav th:replace="~{layout::navigation}"></nav>
+<main>
+
+    <div class="filter">
+        <a  class="btn add-button" th:href="@{/loan/index}"> Back To Loan</a>
+    </div>
+    <div class="divTable">
+        <table>
+            <thead>
+            <tr>
+                <th>Customer Number</th>
+                <th>Book Code</th>
+                <th>Loan Date</th>
+                <th>Return Date</th>
+                <th>Denda</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="data : ${dataDenda}" th:object="${data}">
+                <td th:text="*{customerNumber}"></td>
+                <td th:text="*{bookCode}"></td>
+                <td th:text="*{loanDate}"></td>
+                <td th:text="*{returnDate}"></td>
+                <td th:text="*{denda}"></td>
+            </tr>
+            </tbody>
+            <tfoot>
+
+            </tfoot>
+        </table>
+
+    </div>
+
+
+</main>
+
+</body>
+</html>

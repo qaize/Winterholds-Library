@@ -6,6 +6,7 @@ import com.example.AppWinterhold.Dto.Customer.CustomerInsertDto;
 import com.example.AppWinterhold.Dto.Customer.CustomerUpdateDto;
 import com.example.AppWinterhold.Service.abs.AuthorService;
 import com.example.AppWinterhold.Service.abs.CustomerService;
+import com.example.AppWinterhold.Service.imp.AccountServiceImp;
 import com.example.AppWinterhold.Utility.Dropdown;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,11 +25,16 @@ public class CustomerController {
     @Autowired
     private CustomerService customerService;
 
+    @Autowired
+    private AccountServiceImp account;
+
     @GetMapping("/index")
     public String index(Model model,
                         @RequestParam(defaultValue = "") String number,
                         @RequestParam(defaultValue = "") String name,
                         @RequestParam(defaultValue = "1") Integer page){
+
+        model.addAttribute("userLogin",account.getCurrentUserLogin());
 
         model.addAttribute("name",name);
         var listCustomer = customerService.getListCustomerBySearch(page,number,name);

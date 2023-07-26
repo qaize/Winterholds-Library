@@ -2,6 +2,7 @@ package com.example.AppWinterhold.Dto.Loan;
 
 import java.time.LocalDate;
 
+import com.example.AppWinterhold.Validation.DendaChecker;
 import com.example.AppWinterhold.Validation.TodayTime;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -19,6 +20,7 @@ public class LoanInsertDto {
 
     @NotNull(message = "Please Select the customers")
     @NotBlank(message = "Please Select the customers")
+    @DendaChecker(message = "Customer ini belum membayar denda")
     private String customerNumber;/*20 nn*/
 
     @NotBlank(message = "Please Select the Books")

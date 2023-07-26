@@ -94,4 +94,12 @@ public class LoanServiceImp implements LoanService {
     public Long checkLoanBooks(String code){
         return loanRepository.CheckBook(code);
     }
+
+    @Override
+    public List<Loan> getOnDenda() {
+
+
+        return loanRepository.getOnDenda();
+    }
+
 }

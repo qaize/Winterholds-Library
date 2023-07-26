@@ -19,7 +19,6 @@ public interface AuthorService {
 
     void insert(AuthorInsertDto dto);
 
-
     AuthorIndexDto getAuthorById(Long id);
 
     Boolean delete(Long id);

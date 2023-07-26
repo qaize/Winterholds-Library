@@ -45,7 +45,8 @@
         </a>
     <div class="user">
         <span>Hallo, </span>
-        <span class="full-name" th:text="${#authentication.name}">anonymous</span>
+        <span class="full-name"  th:text="${userLogin}">anonymous</span>
+<!--        <span class="full-name"  sec:authentication="name">anonymous</span>-->
 <!--        <span class="role" th:text="${#authentication.principal.role}">guest</span>-->
     </div>
 

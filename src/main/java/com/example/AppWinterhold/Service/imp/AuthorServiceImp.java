@@ -12,6 +12,8 @@ import com.example.AppWinterhold.Service.abs.AuthorService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import liquibase.pro.packaged.B;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -22,11 +24,14 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static com.example.AppWinterhold.Const.actionConst.*;
 
 @Service
 public class AuthorServiceImp implements AuthorService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(AuthorServiceImp.class);
 
     final private LogServiceImpl logService;
     private AuthorRepository authorRepository;
@@ -142,13 +147,27 @@ public class AuthorServiceImp implements AuthorService {
 
     @Override
     public AuthorIndexDto getAuthorById(Long id) {
-        return authorRepository.getAuthorById(id);
+        Optional<Author> author = authorRepository.findById(id);
+        AuthorIndexDto ath = new AuthorIndexDto(
+                author.get().getId(),
+                author.get().getTitle(),
+                author.get().getFirstName(),
+                author.get().getLastName(),
+                author.get().getBirthDate(),
+                author.get().getDeceasedDate(),
+                author.get().getEducation(),
+                author.get().getSummary(),
+                author.get().getCreatedBy(),
+                author.get().getModifiedBy()
+        );
+
+        return ath;
     }
 
     @Override
     public Boolean delete(Long id) {
-        var data = authorRepository.getCountBooks(id);
-        if(data>0){
+        var data = authorRepository.findById(id);
+        if(data==null){
             logService.saveLogs(AUTHOR,FAILED, DELETE);
             return false;
         }
@@ -171,7 +190,7 @@ public class AuthorServiceImp implements AuthorService {
             logService.saveLogs(AUTHOR,SUCCESS, UPDATE);
         }
         catch(Exception ex){
-            System.out.println("Unable To Update!");
+            LOGGER.info(FAILED +" "+ UPDATE);
             logService.saveLogs(AUTHOR,FAILED, UPDATE);
         }
     }
