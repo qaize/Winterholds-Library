@@ -1,14 +1,14 @@
 package com.example.AppWinterhold.Controller.Model;
 
 import com.example.AppWinterhold.Dao.LoanRepository;
-import com.example.AppWinterhold.Dto.Author.AuthorIndexDto;
-import com.example.AppWinterhold.Dto.Author.AuthorInsertDto;
-import com.example.AppWinterhold.Dto.Customer.CustomerIndexDto;
 import com.example.AppWinterhold.Dto.Loan.LoanIndexDto;
 import com.example.AppWinterhold.Dto.Loan.LoanInsertDto;
 import com.example.AppWinterhold.Dto.Loan.LoanUpdateDto;
 import com.example.AppWinterhold.Entity.Loan;
-import com.example.AppWinterhold.Service.abs.*;
+import com.example.AppWinterhold.Service.abs.BookService;
+import com.example.AppWinterhold.Service.abs.CategoryService;
+import com.example.AppWinterhold.Service.abs.CustomerService;
+import com.example.AppWinterhold.Service.abs.LoanService;
 import com.example.AppWinterhold.Service.imp.AccountServiceImp;
 import com.example.AppWinterhold.Utility.Dropdown;
 import jakarta.validation.Valid;
@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -48,7 +47,7 @@ public class LoanController {
                         @RequestParam(defaultValue = "") String name,
                         @RequestParam(defaultValue = "1") Integer page) {
 
-        model.addAttribute("userLogin",account.getCurrentUserLogin());
+        model.addAttribute("userLogin", account.getCurrentUserLogin());
 
         model.addAttribute("name", name);
         model.addAttribute("title", title);
@@ -153,7 +152,7 @@ public class LoanController {
             bookService.insert(book);
             data.setReturnDate(LocalDate.now());
 
-            Long denda = loanService.getCountDenda(data.getLoanDate(),data.getReturnDate());
+            Long denda = loanService.getCountDenda(data.getLoanDate(), data.getReturnDate());
             data.setDenda(denda);
             loanService.insert(data);
             return "redirect:/loan/index";
@@ -161,6 +160,7 @@ public class LoanController {
             return "Loan/valid";
         }
     }
+
 
     @GetMapping("/detail")
     public String detail(Model model, @RequestParam(required = true) Long id) {
@@ -172,16 +172,20 @@ public class LoanController {
         model.addAttribute("books", books);
         model.addAttribute("category", category);
         model.addAttribute("customer", customer);
-        model.addAttribute("loanDto",loanDto);
+        model.addAttribute("loanDto", loanDto);
         return "loan/detail";
     }
 
     @GetMapping("/denda")
-    public String denda (Model model){
-
+    public String denda(Model model) {
         List<Loan> loanDto = loanService.getOnDenda();
-        model.addAttribute("dataDenda",loanDto);
+        model.addAttribute("dataDenda", loanDto);
+        return "loan/denda";
+    }
 
+    @GetMapping("/payment")
+    public String payment(Model model, @RequestParam(required = true) Long id) {
+        loanService.goPayOff(id);
         return "loan/denda";
     }
 

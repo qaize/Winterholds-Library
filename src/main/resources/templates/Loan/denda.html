@@ -17,7 +17,8 @@
                 <th>Book Code</th>
                 <th>Loan Date</th>
                 <th>Return Date</th>
-                <th>Denda</th>
+                <th>Nominal Denda</th>
+                <th>ACTION</th>
             </tr>
             </thead>
             <tbody>
@@ -27,6 +28,9 @@
                 <td th:text="*{loanDate}"></td>
                 <td th:text="*{returnDate}"></td>
                 <td th:text="*{denda}"></td>
+                <td>
+                <a class="btn delete-btn" th:href="@{/loan/payment(id=*{id})}">pay</a>
+                </td>
             </tr>
             </tbody>
             <tfoot>

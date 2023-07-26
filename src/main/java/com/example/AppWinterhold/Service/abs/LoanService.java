@@ -6,7 +6,6 @@ import com.example.AppWinterhold.Dto.Loan.LoanUpdateDto;
 import com.example.AppWinterhold.Entity.Loan;
 
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 
 public interface LoanService {
@@ -32,4 +31,5 @@ public interface LoanService {
 
     List<Loan> getOnDenda();
 
+    void goPayOff(Long id);
 }

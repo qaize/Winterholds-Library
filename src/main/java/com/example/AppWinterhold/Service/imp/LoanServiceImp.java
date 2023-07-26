@@ -1,11 +1,15 @@
 package com.example.AppWinterhold.Service.imp;
 
 import com.example.AppWinterhold.Dao.LoanRepository;
+import com.example.AppWinterhold.Dao.LogsIncomeRepository;
 import com.example.AppWinterhold.Dto.Loan.LoanIndexDto;
 import com.example.AppWinterhold.Dto.Loan.LoanInsertDto;
 import com.example.AppWinterhold.Dto.Loan.LoanUpdateDto;
 import com.example.AppWinterhold.Entity.Loan;
+import com.example.AppWinterhold.Entity.LogsIncome;
 import com.example.AppWinterhold.Service.abs.LoanService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -15,12 +19,17 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class LoanServiceImp implements LoanService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(LoanServiceImp.class);
 
     @Autowired
     private LoanRepository loanRepository;
+
+    @Autowired
+    private LogsIncomeRepository logsIncomeRepository;
     @Override
     public List<LoanIndexDto> getListLoanBySearch(Integer page, String title, String name) {
         Integer row = 10;
@@ -100,6 +109,33 @@ public class LoanServiceImp implements LoanService {
 
 
         return loanRepository.getOnDenda();
+    }
+
+    @Override
+    public void goPayOff(Long id) {
+        Loan data = loanRepository.findById(id).get();
+
+        List<LogsIncome> logList = logsIncomeRepository.findAll();
+
+
+        if(logList.size()==0){
+            LOGGER.info("MASUK");
+            LogsIncome log = new LogsIncome(UUID.randomUUID().toString(),"PELUNASAN","asem",data.getDenda().doubleValue(),0.0,LocalDate.now());
+            data.setDenda(0L);
+            loanRepository.save(data);
+            logsIncomeRepository.save(log);
+        }
+
+
+//        else{
+//            LogsIncome income = logsIncomeRepository.findLatestData();
+//            LogsIncome log = new LogsIncome(UUID.randomUUID().toString(),"PELUNASAN","asem",data.getDenda().doubleValue(),0.0,LocalDate.now());
+//            data.setDenda(0L);
+//            loanRepository.save(data);
+//            logsIncomeRepository.save(log);
+//
+//        }
+
     }
 
 }
