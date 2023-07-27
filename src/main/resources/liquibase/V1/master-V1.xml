@@ -110,4 +110,13 @@
 		<comment>ALTER TABLE INCOME LOGS 2</comment>
 	</changeSet>
 
+	<changeSet id="DDL01-222-20230727-0001"
+			   author="iwan">
+		<sqlFile dbms="mssql" relativeToChangelogFile="false"
+				 splitStatements="true" stripComments="true"
+				 path="liquibase/V1/sql/alter_table_logsIncome_20230727.sql"/>
+		<comment>ALTER TABLE INCOME LOGS</comment>
+	</changeSet>
+
+
 </databaseChangeLog>

@@ -4,6 +4,7 @@ import com.example.AppWinterhold.Dto.Loan.LoanIndexDto;
 import com.example.AppWinterhold.Dto.Loan.LoanInsertDto;
 import com.example.AppWinterhold.Dto.Loan.LoanUpdateDto;
 import com.example.AppWinterhold.Entity.Loan;
+import com.example.AppWinterhold.Entity.LogsIncome;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -36,4 +37,8 @@ public interface LoanService {
     void insertByEntity(Loan data);
 
     Long getCountPageDenda();
+
+    List<LogsIncome> getLoanPaymentHistory(Integer page);
+
+    Long getCountPaymentHistory();
 }

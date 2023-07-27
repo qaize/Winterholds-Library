@@ -9,7 +9,9 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 
 @AllArgsConstructor
@@ -32,6 +34,6 @@ public class LogsIncome {
     private Double total;
 
     @Column(name = "transactionDate")
-    private LocalDate transactionDate;
+    private Timestamp transactionDate;
 
 }

@@ -18,7 +18,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.UUID;
@@ -109,24 +112,35 @@ public class LoanServiceImp implements LoanService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String authName = authentication.getName();
 
-        Loan data = loanRepository.findById(id).get();
-        List<LogsIncome> logList = logsIncomeRepository.findAll();
+        Timestamp date = Timestamp.from(Instant.now());
 
+        Loan data = loanRepository.findById(id).get();
+
+        Sort sort = Sort.by("transactionDate").descending();
+        List<LogsIncome> logList = logsIncomeRepository.findAll(sort);
         if (logList.size() == 0) {
-            LOGGER.info("MASUK");
-            LogsIncome log = new LogsIncome(UUID.randomUUID().toString(), "PELUNASAN DENDA ID :" + data.getId() + "/" + data.getCustomerNumber(), authName, data.getDenda().doubleValue(), 0.0, LocalDate.now());
+            LogsIncome log = new LogsIncome(UUID.randomUUID().toString(), "PELUNASAN DENDA ID :" + data.getId() + "/" + data.getCustomerNumber(), authName, data.getDenda().doubleValue(), 0.0,date);
+            logsIncomeRepository.save(log);
+        } else {
+            LogsIncome income = logList.get(0);
+            Double total = income.getTotal();
+            if (income.getSource().equals("PENGELUARAN")) {
+                total = total - data.getDenda();
+                LogsIncome log = new LogsIncome(UUID.randomUUID().toString(), "PENGELUARAN ID :" + data.getId() + "/" + data.getCustomerNumber(), authName, data.getDenda().doubleValue(), total, date);
+                logsIncomeRepository.save(log);
+
+            } else {
+                total = total + data.getDenda();
+                LogsIncome log = new LogsIncome(UUID.randomUUID().toString(), "PELUNASAN DENDA ID :" + data.getId() + "/" + data.getCustomerNumber(), authName, data.getDenda().doubleValue(), total, date);
+                logsIncomeRepository.save(log);
+            }
             data.setDenda(0L);
             loanRepository.save(data);
-            logsIncomeRepository.save(log);
         }
 
 
 //        else{
-//            LogsIncome income = logsIncomeRepository.findLatestData();
-//            LogsIncome log = new LogsIncome(UUID.randomUUID().toString(),"PELUNASAN","asem",data.getDenda().doubleValue(),0.0,LocalDate.now());
-//            data.setDenda(0L);
-//            loanRepository.save(data);
-//            logsIncomeRepository.save(log);
+
 //
 //        }
 
@@ -148,6 +162,22 @@ public class LoanServiceImp implements LoanService {
     public Long getCountPageDenda() {
         Integer row = 5;
         Double totalData = (double) loanRepository.getCountPageDenda();
+        Long totaPage = (long) Math.ceil(totalData / row);
+        return totaPage;
+    }
+
+    @Override
+    public List<LogsIncome> getLoanPaymentHistory(Integer page) {
+
+        Integer row = 5;
+        Pageable paging = PageRequest.of(page - 1, row, Sort.by("transactionDate").descending());
+        return logsIncomeRepository.getPageOnPaymentHistory(paging);
+    }
+
+    @Override
+    public Long getCountPaymentHistory() {
+        Integer row = 5;
+        Double totalData = (double) logsIncomeRepository.getCountTotalPaymentHistory();
         Long totaPage = (long) Math.ceil(totalData / row);
         return totaPage;
     }

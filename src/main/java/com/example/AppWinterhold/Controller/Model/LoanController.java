@@ -5,6 +5,7 @@ import com.example.AppWinterhold.Dto.Loan.LoanIndexDto;
 import com.example.AppWinterhold.Dto.Loan.LoanInsertDto;
 import com.example.AppWinterhold.Dto.Loan.LoanUpdateDto;
 import com.example.AppWinterhold.Entity.Loan;
+import com.example.AppWinterhold.Entity.LogsIncome;
 import com.example.AppWinterhold.Service.abs.BookService;
 import com.example.AppWinterhold.Service.abs.CategoryService;
 import com.example.AppWinterhold.Service.abs.CustomerService;
@@ -26,20 +27,22 @@ import java.util.List;
 @RequestMapping("/loan")
 public class LoanController {
 
-    @Autowired
     private LoanService loanService;
-    @Autowired
     private CustomerService customerService;
-    @Autowired
     private BookService bookService;
-
-    @Autowired
     private CategoryService categoryService;
+    private LoanRepository loanRepository;
+    private AccountServiceImp account;
 
     @Autowired
-    private LoanRepository loanRepository;
-    @Autowired
-    private AccountServiceImp account;
+    public LoanController(LoanService loanService, CustomerService customerService, BookService bookService, CategoryService categoryService, LoanRepository loanRepository, AccountServiceImp account) {
+        this.loanService = loanService;
+        this.customerService = customerService;
+        this.bookService = bookService;
+        this.categoryService = categoryService;
+        this.loanRepository = loanRepository;
+        this.account = account;
+    }
 
     @GetMapping("/index")
     public String index(Model model,
@@ -221,7 +224,7 @@ public class LoanController {
     @GetMapping("/payment")
     public String payment(Model model, @RequestParam(required = true) Long id) {
         loanService.goPayOff(id);
-        return "loan/denda";
+        return "redirect:/loan/denda";
     }
 
     @GetMapping("/extend")
@@ -234,11 +237,26 @@ public class LoanController {
             loanService.insertByEntity(data);
             return "redirect:/loan/index";
         } else {
+
             model.addAttribute("extendValidationHeader", "Unable to Extend");
             model.addAttribute("extendValidationReason", "User was reached maximum extendable");
             return "loan/valid";
         }
 
+    }
+
+    @GetMapping("/paymentHistory")
+    public String paymentHistory(Model model,@RequestParam(defaultValue = "1") Integer page){
+        List<LogsIncome> logs = loanService.getLoanPaymentHistory(page);
+
+        Long totalPage = loanService.getCountPaymentHistory();
+        if (totalPage == 0) {
+            page = 0;
+        }
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPage", totalPage);
+        model.addAttribute("logs",logs);
+        return "loan/paymentHistory";
     }
 
 }
