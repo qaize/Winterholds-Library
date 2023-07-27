@@ -1,20 +1,23 @@
 package com.example.AppWinterhold.Dto.Loan;
 
-import java.time.LocalDate;
-
 import com.example.AppWinterhold.Validation.DendaChecker;
 import com.example.AppWinterhold.Validation.TodayTime;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.time.LocalDate;
 
 
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter @Setter
+@Getter
+@Setter
 public class LoanInsertDto {
     private Long id; /*nn*/
 
@@ -31,13 +34,6 @@ public class LoanInsertDto {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     @NotNull(message = "Loan Date cannot null")
     private LocalDate loanDate;/*nn*/
-
-    @NotNull(message = "due date cannot null")
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDate dueDate;/*nn*/
-
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDate returnDate;/*n*/
 
     @Size(max = 500, message = "Maximum 500 char")
     private String note;/*500 n*/

@@ -17,7 +17,7 @@ public interface LoanService {
 
     void insert(LoanInsertDto dto);
 
-    LoanInsertDto getLoanById(Long id);
+    Loan getLoanById(Long id);
 
     List<LoanIndexDto> getAll();
 
@@ -25,11 +25,15 @@ public interface LoanService {
 
     void update(LoanUpdateDto dto);
 
-    List<LoanInsertDto> getAllByInsert();
+//    List<LoanInsertDto> getAllByInsert();
 
     Long checkLoanBooks(String code);
 
-    List<Loan> getOnDenda();
+    List<LoanIndexDto> getOnDenda(Integer page);
 
     void goPayOff(Long id);
+
+    void insertByEntity(Loan data);
+
+    Long getCountPageDenda();
 }

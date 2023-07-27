@@ -6,8 +6,8 @@
 <nav th:replace="~{layout::navigation}"></nav>
 <main>
   <div>
-    <h1>Unable To Return</h1>
-    <h3>Data Already Returned!</h3>
+    <h1 th:text="${extendValidationHeader}">Unable To Return</h1>
+    <h3 th:text="${extendValidationReason}">Data Already Returned!</h3>
   </div>
   <div>
     <a class="btn back-warning" th:href="@{/loan/index}">Back to Loan Index</a>

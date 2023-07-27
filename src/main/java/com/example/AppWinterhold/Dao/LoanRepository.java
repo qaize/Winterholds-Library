@@ -38,17 +38,17 @@ public interface LoanRepository extends JpaRepository<Loan,Long> {
             """)
     Long getCountPage(String title, String name);
 
-    @Query("""
-            SELECT new com.example.AppWinterhold.Dto.Loan.LoanInsertDto
-            (
-            l.id, l.customerNumber,l.bookCode,
-            l.loanDate,l.dueDate,l.returnDate,l.note,l.denda
-            )
-            FROM Loan AS l
-               
-                WHERE l.id = :id
-            """)
-    LoanInsertDto getLoanById(Long id);
+//    @Query("""
+//            SELECT new com.example.AppWinterhold.Dto.Loan.LoanInsertDto
+//            (
+//            l.id, l.customerNumber,l.bookCode,
+//            l.loanDate,l.dueDate,l.returnDate,l.note,l.denda
+//            )
+//            FROM Loan AS l
+//
+//                WHERE l.id = :id
+//            """)
+//    LoanInsertDto getLoanById(Long id);
 
     @Query("""
             SELECT new com.example.AppWinterhold.Dto.Loan.LoanIndexDto
@@ -63,17 +63,17 @@ public interface LoanRepository extends JpaRepository<Loan,Long> {
             """)
     List<LoanIndexDto> getAll();
 
-    @Query("""
-            SELECT new com.example.AppWinterhold.Dto.Loan.LoanInsertDto
-            (
-            l.id, CONCAT(c.firstName,' ',c.lastName),b.title,
-            l.loanDate,l.dueDate,l.returnDate,l.note,l.denda
-            )
-            FROM Loan AS l
-                LEFT JOIN l.book AS b
-                LEFT JOIN l.customer AS c
-            """)
-    List<LoanInsertDto> getAllByInsert();
+//    @Query("""
+//            SELECT new com.example.AppWinterhold.Dto.Loan.LoanInsertDto
+//            (
+//            l.id, CONCAT(c.firstName,' ',c.lastName),b.title,
+//            l.loanDate,l.dueDate,l.returnDate,l.note,l.denda
+//            )
+//            FROM Loan AS l
+//                LEFT JOIN l.book AS b
+//                LEFT JOIN l.customer AS c
+//            """)
+//    List<LoanInsertDto> getAllByInsert();
 
     @Query("""
             SELECT l.extend
@@ -92,11 +92,26 @@ public interface LoanRepository extends JpaRepository<Loan,Long> {
     Long CheckBook(String code);
 
     @Query("""
-            SELECT l
-            FROM Loan as l
-                where l.denda IS NOT NULL AND l.denda != 0
+            SELECT new com.example.AppWinterhold.Dto.Loan.LoanIndexDto
+            (
+            l.id, CONCAT(c.firstName,' ',c.lastName),b.title,
+            l.loanDate,l.dueDate,l.returnDate,l.note,l.denda
+            )
+            FROM Loan AS l
+                LEFT JOIN l.book AS b
+                LEFT JOIN l.customer AS c
+            WHERE l.denda > 0
             """)
-    List<Loan> getOnDenda();
+    List<LoanIndexDto> getOnDenda(Pageable page);
+
+    @Query("""
+            SELECT COUNT(id)
+            FROM Loan AS l
+                LEFT JOIN l.book AS b
+                LEFT JOIN l.customer AS c
+            WHERE l.denda > 0
+            """)
+    Long getCountPageDenda();
 
 
     @Query("""

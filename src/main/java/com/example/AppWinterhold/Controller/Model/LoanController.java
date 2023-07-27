@@ -56,35 +56,14 @@ public class LoanController {
 
         for (LoanIndexDto val : listLoan
         ) {
-            if (val.getReturnDate() == null && LocalDate.now().isBefore(val.getDueDate())) {
-                Long between = ChronoUnit.DAYS.between(LocalDate.now(), val.getDueDate());
-                if (between == 0) {
-                    val.setDayLeft(between.toString());
-                    val.setLateLoan("Last Day");
-
-                } else {
-                    val.setDayLeft(between.toString());
-                    val.setLateLoan("On Loan");
-                }
-            } else if (val.getReturnDate() == null && LocalDate.now().isAfter(val.getDueDate())) {
-                Long between = ChronoUnit.DAYS.between(val.getDueDate(), LocalDate.now());
-                val.setDayLeft("WARNING!");
-                val.setLateLoan("Late : -" + between.toString() + " Days");
-            } else if (val.getReturnDate() != null && LocalDate.now().isAfter(val.getDueDate())) {
-                Long between = ChronoUnit.DAYS.between(val.getDueDate(), val.getReturnDate());
-                val.setDayLeft("END");
-                val.setLateLoan("Late : -" + between.toString() + " Days");
-
-            } else if (val.getReturnDate() == null && LocalDate.now().isEqual(val.getDueDate())) {
-//                Long between = ChronoUnit.DAYS.between(val.getDueDate(),val.getReturnDate());
-                val.setDayLeft("On Loan");
-                val.setLateLoan("Last day loan");
-
+            if (val.getReturnDate() != null) {
+                val.setDayLeft(val.getReturnDate().isBefore(val.getDueDate()) ? "On Time" : "Late");
+                val.setLoanStatus("Returned");
             } else {
-                val.setDayLeft("END");
-                val.setLateLoan("On Time");
+                Long dif = ChronoUnit.DAYS.between(LocalDate.now(), val.getDueDate());
+                val.setDayLeft(dif > 0 ? dif.toString() : "Late");
+                val.setLoanStatus("On Loan");
             }
-
         }
 
         model.addAttribute("listLoan", listLoan);
@@ -103,13 +82,11 @@ public class LoanController {
 
         String insert = "insert";
         var getCustomer = customerService.getAvaliableCustomer();
-        var getLoan = loanService.getAllByInsert();
         var getBook = bookService.getAvailableBook();
         var dropdownCustomer = Dropdown.dropdownCustomer(getCustomer);
         var dropdownBook = Dropdown.dropdownBook(getBook);
         model.addAttribute("dropdownCustomer", dropdownCustomer);
         model.addAttribute("dropdownBook", dropdownBook);
-        dto.setDueDate(LocalDate.now());
         model.addAttribute("dto", dto);
         model.addAttribute("insert", insert);
         return "Loan/insert";
@@ -124,14 +101,12 @@ public class LoanController {
             var getBook = bookService.getAvailableBook();
             var dropdownCustomer = Dropdown.dropdownCustomer(getCustomer);
             var dropdownBook = Dropdown.dropdownBook(getBook);
-            dto.setDueDate(LocalDate.now());
             model.addAttribute("dropdownCustomer", dropdownCustomer);
             model.addAttribute("dropdownBook", dropdownBook);
             model.addAttribute("dto", dto);
             model.addAttribute("insert", insert);
             return "Loan/insert";
         } else {
-            dto.setDueDate(dto.getLoanDate().plusDays(5));
             var book = bookService.getBooksById(dto.getBookCode());
             if (!book.getIsBorrowed()) {
                 book.setIsBorrowed(!book.getIsBorrowed());
@@ -151,10 +126,10 @@ public class LoanController {
             book.setIsBorrowed(false);
             bookService.insert(book);
             data.setReturnDate(LocalDate.now());
-
             Long denda = loanService.getCountDenda(data.getLoanDate(), data.getReturnDate());
             data.setDenda(denda);
-            loanService.insert(data);
+
+            loanService.insertByEntity(data);
             return "redirect:/loan/index";
         } else {
             return "Loan/valid";
@@ -176,24 +151,11 @@ public class LoanController {
         return "loan/detail";
     }
 
-    @GetMapping("/denda")
-    public String denda(Model model) {
-        List<Loan> loanDto = loanService.getOnDenda();
-        model.addAttribute("dataDenda", loanDto);
-        return "loan/denda";
-    }
-
-    @GetMapping("/payment")
-    public String payment(Model model, @RequestParam(required = true) Long id) {
-        loanService.goPayOff(id);
-        return "loan/denda";
-    }
-
     @GetMapping("/update")
     public String update(Model model, @RequestParam(required = true) Long id) {
 
         String update = "update";
-        LoanInsertDto dto = loanService.getLoanById(id);
+        Loan dto = loanService.getLoanById(id);
         var books = bookService.getBooksById(dto.getBookCode());
         if (dto.getReturnDate() == null) {
             books.setIsBorrowed(!books.getIsBorrowed());
@@ -240,6 +202,45 @@ public class LoanController {
         }
 
     }
+
+
+    @GetMapping("/denda")
+    public String denda(Model model, @RequestParam(defaultValue = "1") Integer page) {
+        List<LoanIndexDto> loanDto = loanService.getOnDenda(page);
+
+        Long totalPage = loanService.getCountPageDenda();
+        model.addAttribute("dataDenda", loanDto);
+        if (totalPage == 0) {
+            page = 0;
+        }
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPage", totalPage);
+        return "loan/denda";
+    }
+
+    @GetMapping("/payment")
+    public String payment(Model model, @RequestParam(required = true) Long id) {
+        loanService.goPayOff(id);
+        return "loan/denda";
+    }
+
+    @GetMapping("/extend")
+    public String extend(Model model, @RequestParam Long id) {
+        Loan data = loanService.getLoanById(id);
+        if (data.getExtend() < 4) {
+            Integer counter = data.getExtend();
+            data.setExtend(counter + 1);
+            data.setDueDate(data.getDueDate().plusDays(2));
+            loanService.insertByEntity(data);
+            return "redirect:/loan/index";
+        } else {
+            model.addAttribute("extendValidationHeader", "Unable to Extend");
+            model.addAttribute("extendValidationReason", "User was reached maximum extendable");
+            return "loan/valid";
+        }
+
+    }
+
 }
 
 

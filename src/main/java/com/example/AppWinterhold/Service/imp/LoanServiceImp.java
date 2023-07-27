@@ -14,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -30,18 +32,19 @@ public class LoanServiceImp implements LoanService {
 
     @Autowired
     private LogsIncomeRepository logsIncomeRepository;
+
     @Override
     public List<LoanIndexDto> getListLoanBySearch(Integer page, String title, String name) {
         Integer row = 10;
-        Pageable paging = PageRequest.of(page-1,row, Sort.by("id").descending());
-        return loanRepository.getListLoanBySearch(title,name,paging);
+        Pageable paging = PageRequest.of(page - 1, row, Sort.by("id").descending());
+        return loanRepository.getListLoanBySearch(title, name, paging);
     }
 
     @Override
     public Long getCountPage(String title, String name) {
         Integer row = 10;
-        Double totalData =(double) loanRepository.getCountPage(title,name);
-        Long totaPage =(long)  Math.ceil(totalData/row);
+        Double totalData = (double) loanRepository.getCountPage(title, name);
+        Long totaPage = (long) Math.ceil(totalData / row);
 
         return totaPage;
     }
@@ -49,7 +52,7 @@ public class LoanServiceImp implements LoanService {
     @Override
     public Long getCountDenda(LocalDate loanDate, LocalDate dueLoan) {
 
-        Long between = ChronoUnit.DAYS.between(loanDate,dueLoan) * 2000;
+        Long between = ChronoUnit.DAYS.between(loanDate, dueLoan) * 2000;
 
         return between;
     }
@@ -57,24 +60,21 @@ public class LoanServiceImp implements LoanService {
     @Override
     public void insert(LoanInsertDto dto) {
 
-        Loan en ;
-        if(dto.getDenda() == null) {
-         en = new Loan(dto.getId(),dto.getCustomerNumber(),dto.getBookCode(),dto.getLoanDate(),dto.getDueDate(),dto.getReturnDate(),dto.getNote(),0,null);
-        }
-        else {
-            en = new Loan(dto.getId(),dto.getCustomerNumber(),dto.getBookCode(),dto.getLoanDate(),dto.getDueDate(),dto.getReturnDate(),dto.getNote(),0,dto.getDenda());
+        Loan en;
+        if (dto.getDenda() == null) {
+            en = new Loan(dto.getId(), dto.getCustomerNumber(), dto.getBookCode(), dto.getLoanDate(), dto.getLoanDate().plusDays(5), null, dto.getNote(), 0, null);
+        } else {
+            en = new Loan(dto.getId(), dto.getCustomerNumber(), dto.getBookCode(), dto.getLoanDate(), dto.getLoanDate().plusDays(5), null, dto.getNote(), 0, dto.getDenda());
         }
 
         loanRepository.save(en);
     }
 
 
-
     @Override
-    public LoanInsertDto getLoanById(Long id) {
+    public Loan getLoanById(Long id) {
 //        List<Loan> findByCustomer = loanRepository.findBy()
-
-        return loanRepository.getLoanById(id);
+        return loanRepository.findById(id).get();
     }
 
     @Override
@@ -89,38 +89,32 @@ public class LoanServiceImp implements LoanService {
 
     @Override
     public void update(LoanUpdateDto dto) {
-        Loan en = new Loan(dto.getId(),dto.getCustomerNumber(),dto.getBookCode(),
-                dto.getLoanDate(),dto.getDueDate(),dto.getReturnDate(),dto.getNote(),0,dto.getDenda());
+        Loan en = new Loan(dto.getId(), dto.getCustomerNumber(), dto.getBookCode(),
+                dto.getLoanDate(), dto.getDueDate(), dto.getReturnDate(), dto.getNote(), 0, dto.getDenda());
         loanRepository.save(en);
     }
 
-    @Override
-    public List<LoanInsertDto> getAllByInsert() {
-        return loanRepository.getAllByInsert();
-    }
+//    @Override
+//    public List<LoanInsertDto> getAllByInsert() {
+//        return loanRepository.getAllByInsert();
+//    }
 
     @Override
-    public Long checkLoanBooks(String code){
+    public Long checkLoanBooks(String code) {
         return loanRepository.CheckBook(code);
     }
 
     @Override
-    public List<Loan> getOnDenda() {
-
-
-        return loanRepository.getOnDenda();
-    }
-
-    @Override
     public void goPayOff(Long id) {
-        Loan data = loanRepository.findById(id).get();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String authName = authentication.getName();
 
+        Loan data = loanRepository.findById(id).get();
         List<LogsIncome> logList = logsIncomeRepository.findAll();
 
-
-        if(logList.size()==0){
+        if (logList.size() == 0) {
             LOGGER.info("MASUK");
-            LogsIncome log = new LogsIncome(UUID.randomUUID().toString(),"PELUNASAN","asem",data.getDenda().doubleValue(),0.0,LocalDate.now());
+            LogsIncome log = new LogsIncome(UUID.randomUUID().toString(), "PELUNASAN DENDA ID :" + data.getId() + "/" + data.getCustomerNumber(), authName, data.getDenda().doubleValue(), 0.0, LocalDate.now());
             data.setDenda(0L);
             loanRepository.save(data);
             logsIncomeRepository.save(log);
@@ -136,6 +130,26 @@ public class LoanServiceImp implements LoanService {
 //
 //        }
 
+    }
+
+    @Override
+    public void insertByEntity(Loan data) {
+        loanRepository.save(data);
+    }
+
+    @Override
+    public List<LoanIndexDto> getOnDenda(Integer page) {
+        Integer row = 5;
+        Pageable paging = PageRequest.of(page - 1, row, Sort.by("id").descending());
+        return loanRepository.getOnDenda(paging);
+    }
+
+    @Override
+    public Long getCountPageDenda() {
+        Integer row = 5;
+        Double totalData = (double) loanRepository.getCountPageDenda();
+        Long totaPage = (long) Math.ceil(totalData / row);
+        return totaPage;
     }
 
 }
