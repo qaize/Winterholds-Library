@@ -1,7 +1,6 @@
 package com.example.AppWinterhold.Validation;
 
 import com.example.AppWinterhold.Dao.BookRepository;
-import com.example.AppWinterhold.Dao.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.validation.ConstraintValidator;
@@ -15,7 +14,7 @@ public class BookCodeValidator implements ConstraintValidator<BookCode,String> {
     @Override
     public boolean isValid(String s, ConstraintValidatorContext constraintValidatorContext) {
 
-        Long result = bookRepository.getCountBooks(s);
+        Long result = bookRepository.getCountBooksByCode(s);
         if(result>0){
             return false;
         }

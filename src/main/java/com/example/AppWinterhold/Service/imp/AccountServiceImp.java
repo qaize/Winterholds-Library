@@ -81,14 +81,14 @@ public class AccountServiceImp implements AccountService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userlogin = "Default";
 
-        LOGGER.info(authentication.getName());
+//        LOGGER.info(authentication.getName());
 
         Optional<Account> ac = accountRepository.findById(authentication.getName().toString());
 
         if (ac.get() != null) {
             userlogin = ac.get().getUserLogin() != null ? ac.get().getUserLogin() : authentication.getName();
         }
-        LOGGER.info(userlogin);
+//        LOGGER.info(userlogin);
         return userlogin;
     }
 

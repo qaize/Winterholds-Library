@@ -1,0 +1,1 @@
+ALTER TABLE logs ALTER COLUMN action_name varchar(20);

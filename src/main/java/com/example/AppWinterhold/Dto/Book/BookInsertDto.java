@@ -20,11 +20,11 @@ import java.time.LocalDate;
 @Getter @Setter
 public class BookInsertDto {
 
-    @BookCode(message = "Code Already Used,Please Insert Diffrent Code")
-    @NotBlank(message = "Please Insert Book Code ")
-    @Size(max = 20, message = "Max 20 charachter")
-    @NotNull(message = "this Field cannot be null")
-    private String code;/*20 NN*/
+//    @BookCode(message = "Code Already Used,Please Insert Diffrent Code")
+//    @NotBlank(message = "Please Insert Book Code ")
+//    @Size(max = 20, message = "Max 20 charachter")
+//    @NotNull(message = "this Field cannot be null")
+//    private String code;/*20 NN*/
 
     @Size(max = 100, message = "Max 100 charachter")
     @NotNull(message = "this Field cannot be null")

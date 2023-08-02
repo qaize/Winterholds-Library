@@ -86,11 +86,10 @@ public class AuthorServiceImp implements AuthorService {
     }
 
     @Override
-    public List<AuthorIndexDto> getAll() {
-        List<Author> a = authorRepository.findAll();
-        Integer length = a.size();
+    public List<AuthorIndexDto> getAllAuthor() {
         return authorRepository.getAll();
     }
+
 
     @Override
     public Long getCountPage(String name) {

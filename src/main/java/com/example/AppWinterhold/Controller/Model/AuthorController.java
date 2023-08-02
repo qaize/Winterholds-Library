@@ -4,6 +4,7 @@ import com.example.AppWinterhold.Dto.Author.AuthorInsertDto;
 import com.example.AppWinterhold.Dto.Author.AuthorUpdateDto;
 import com.example.AppWinterhold.Service.abs.AuthorService;
 import com.example.AppWinterhold.Service.abs.BookService;
+import com.example.AppWinterhold.Service.imp.AccountServiceImp;
 import com.example.AppWinterhold.Utility.Dropdown;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.validation.Valid;
@@ -23,10 +24,15 @@ public class AuthorController {
     @Autowired
     private BookService bookService;
 
+    @Autowired
+    private AccountServiceImp accountServiceImp;
+
     @GetMapping("/index")
     public String index(Model model,
                         @RequestParam(defaultValue = "") String name,
                         @RequestParam(defaultValue = "1") Integer page) throws JsonProcessingException {
+
+        model.addAttribute("userLogin", accountServiceImp.getCurrentUserLogin());
 
         model.addAttribute("name", name);
         var listAuthor = authorService.getListAuthorBySearch(page, name);

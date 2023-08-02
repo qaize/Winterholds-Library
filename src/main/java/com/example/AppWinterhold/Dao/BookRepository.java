@@ -75,7 +75,7 @@ public interface BookRepository extends JpaRepository<Book, String> {
     List<BookIndexDto> getlistBooksByAuthorId(Long id);
 
     @Query("""
-            SELECT new com.example.AppWinterhold.Dto.Book.BookInsertDto
+            SELECT new com.example.AppWinterhold.Dto.Book.BookUpdateDto
             (
               
             b.code,b.title,b.categoryName,b.authorId,b.isBorrowed,b.summary,
@@ -84,7 +84,7 @@ public interface BookRepository extends JpaRepository<Book, String> {
             FROM Book AS b
                 WHERE b.code = :bookCode
             """)
-    BookInsertDto getBooksById(String bookCode);
+    BookUpdateDto getBooksById(String bookCode);
 
     @Query("""
             SELECT new com.example.AppWinterhold.Dto.Book.BookIndexDto
@@ -118,7 +118,7 @@ public interface BookRepository extends JpaRepository<Book, String> {
             FROM Loan AS l
               WHERE l.bookCode = :code
             """)
-    Long getCountBooks(String code);
+    Long getCountBooksByCode(String code);
 
     @Query("""
             SELECT new com.example.AppWinterhold.Dto.Book.BookUpdateDto

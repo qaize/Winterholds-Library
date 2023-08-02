@@ -132,5 +132,13 @@
         <comment>ALTER TABLE CUSTOMER LOAN COUNT</comment>
     </changeSet>
 
+    <changeSet id="DDL01-222-20230803-0001"
+               author="iwan">
+        <sqlFile dbms="mssql" relativeToChangelogFile="false"
+                 splitStatements="true" stripComments="true"
+                 path="liquibase/V1/sql/alter_table_logs_20230803.sql"/>
+        <comment>ALTER TABLE LOGS LENGTH ACTION </comment>
+    </changeSet>
+
 
 </databaseChangeLog>

@@ -18,7 +18,7 @@ public interface BookService {
 
     List<BookIndexDto> getlistBooksByAuthorId(Long id);
 
-    BookInsertDto getBooksById(String bookCode);
+    BookUpdateDto getBooksById(String bookCode);
 
     List<BookIndexDto> getAvailableBook();
 
@@ -33,4 +33,5 @@ public interface BookService {
     BookUpdateDto getBooksBycodeUpdate(String bookCode);
 
 
+    String generateBookCodeByCategory(String categoryName);
 }

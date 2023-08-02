@@ -13,7 +13,7 @@ public interface AuthorService {
 
     public List<AuthorIndexDto> getListAuthorBySearchV2(AuthorIndexDtoV2 authorIndexDtoV2) throws JsonProcessingException;
 
-    public List<AuthorIndexDto> getAll();
+    public List<AuthorIndexDto> getAllAuthor();
 
     Long getCountPage(String name);
 

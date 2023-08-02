@@ -145,8 +145,8 @@ public class LoanController {
             var customer = customerService.getCustomerByEntity(dto.getCustomerNumber());
             if (!book.getIsBorrowed()) {
                 book.setIsBorrowed(!book.getIsBorrowed());
-                customer.setLoanCount(customerService.loanCountSetter(dto.getCustomerNumber(),"loan"));
-                bookService.insert(book);
+                customer.setLoanCount(customerService.loanCountSetter(dto.getCustomerNumber(), "loan"));
+                bookService.update(book);
                 customerService.updateWithEntity(customer);
             }
             loanService.insert(dto);
@@ -162,7 +162,7 @@ public class LoanController {
         var customer = customerService.getCustomerByEntity(data.getCustomerNumber());
         if (data.getReturnDate() == null) {
             book.setIsBorrowed(false);
-            bookService.insert(book);
+            bookService.update(book);
             customer.setLoanCount(customerService.loanCountSetter(data.getCustomerNumber(), "Return"));
             customerService.updateWithEntity(customer);
             data.setReturnDate(LocalDate.now());
@@ -199,7 +199,7 @@ public class LoanController {
         var books = bookService.getBooksById(dto.getBookCode());
         if (dto.getReturnDate() == null) {
             books.setIsBorrowed(!books.getIsBorrowed());
-            bookService.insert(books);
+            bookService.update(books);
             var getCustomer = customerService.getAvaliableCustomerEdit(dto.getCustomerNumber());
             var getBook = bookService.getAvailableBook();
             var dropdownCustomer = Dropdown.dropdownCustomer(getCustomer);
@@ -235,7 +235,7 @@ public class LoanController {
         } else {
             var books = bookService.getBooksById(dto.getBookCode());
             books.setIsBorrowed(!books.getIsBorrowed());
-            bookService.insert(books);
+            bookService.update(books);
 //            var extend = loanRepository.getExtendById(dto.getId());
             loanService.update(dto);
             return "redirect:/loan/index";

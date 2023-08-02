@@ -30,9 +30,8 @@ public class BookController {
     public String insert(Model model, @RequestParam(required = true) String categoryName) {
 
         BookInsertDto dto = new BookInsertDto();
-//        Boolean borrowed = false;
         model.addAttribute("categoryName", categoryName);
-        var dropdownauthor = Dropdown.dropdownAuthor(authorService.getAll());
+        var dropdownauthor = Dropdown.dropdownAuthor(authorService.getAllAuthor());
         model.addAttribute("dropdownAuthor", dropdownauthor);
         dto.setIsBorrowed(false);
         dto.setCategoryName(categoryName);
@@ -45,11 +44,12 @@ public class BookController {
         if (bindingResult.hasErrors()) {
             model.addAttribute("dto", dto);
             Boolean borrowed = false;
-            var dropdownauthor = Dropdown.dropdownAuthor(authorService.getAll());
+            var dropdownauthor = Dropdown.dropdownAuthor(authorService.getAllAuthor());
             dto.setIsBorrowed(borrowed);
             model.addAttribute("dropdownAuthor", dropdownauthor);
             return "Book/insert";
         } else {
+//            dto.setCode();
             bookService.insert(dto);
             return "redirect:/category/detail?categoryName=" + dto.getCategoryName();
         }
@@ -57,8 +57,8 @@ public class BookController {
 
     @GetMapping("/update")
     public String update(Model model, @RequestParam(required = true) String bookCode) {
-        BookInsertDto dto = bookService.getBooksById(bookCode);
-        var dropdownauthor = Dropdown.dropdownAuthor(authorService.getAll());
+        BookUpdateDto dto = bookService.getBooksById(bookCode);
+        var dropdownauthor = Dropdown.dropdownAuthor(authorService.getAllAuthor());
         model.addAttribute("dropdownAuthor", dropdownauthor);
         model.addAttribute("dto", dto);
 
@@ -71,7 +71,7 @@ public class BookController {
     public String update(@Valid @ModelAttribute("dto") BookUpdateDto dto, BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("dto", dto);
-            var dropdownauthor = Dropdown.dropdownAuthor(authorService.getAll());
+            var dropdownauthor = Dropdown.dropdownAuthor(authorService.getAllAuthor());
             model.addAttribute("dropdownAuthor", dropdownauthor);
             return "Book/update";
         } else {

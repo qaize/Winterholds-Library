@@ -33,7 +33,7 @@ public class AuthorRestController {
         try {
             List<AuthorIndexDto> mapperAuthor = new ArrayList<>();
 
-            var list = authorService.getAll();
+            var list = authorService.getAllAuthor();
             for (AuthorIndexDto map : list
             ) {
                 mapperAuthor.add(map);
