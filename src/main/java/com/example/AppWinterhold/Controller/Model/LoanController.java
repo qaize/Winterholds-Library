@@ -44,6 +44,37 @@ public class LoanController {
         this.account = account;
     }
 
+    @GetMapping("/history")
+    public String loanHistory(Model model, @RequestParam(defaultValue = "1") Integer page) {
+
+        model.addAttribute("userLogin", account.getCurrentUserLogin());
+
+
+        var listLoan = loanService.getListLoanHistoryBySearch(page);
+        Long totalPage = loanService.getCountHistoryPage();
+
+        for (LoanIndexDto val : listLoan
+        ) {
+            if (val.getReturnDate() != null) {
+                val.setDayLeft(val.getReturnDate().isBefore(val.getDueDate()) ? "On Time" : "Late");
+                val.setLoanStatus("Returned");
+            } else {
+                Long dif = ChronoUnit.DAYS.between(LocalDate.now(), val.getDueDate());
+                val.setDayLeft(dif > 0 ? dif.toString() : "Late");
+                val.setLoanStatus("On Loan");
+            }
+        }
+
+        model.addAttribute("listLoan", listLoan);
+        if (totalPage == 0) {
+            page = 0;
+        }
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPage", totalPage);
+
+        return "Loan/LoanHistory";
+    }
+
     @GetMapping("/index")
     public String index(Model model,
                         @RequestParam(defaultValue = "") String title,
@@ -111,9 +142,12 @@ public class LoanController {
             return "Loan/insert";
         } else {
             var book = bookService.getBooksById(dto.getBookCode());
+            var customer = customerService.getCustomerByEntity(dto.getCustomerNumber());
             if (!book.getIsBorrowed()) {
                 book.setIsBorrowed(!book.getIsBorrowed());
+                customer.setLoanCount(customerService.loanCountSetter(dto.getCustomerNumber(),"loan"));
                 bookService.insert(book);
+                customerService.updateWithEntity(customer);
             }
             loanService.insert(dto);
             return "redirect:/loan/index";
@@ -125,14 +159,17 @@ public class LoanController {
     public String ret(@RequestParam(required = true) Long id) {
         var data = loanService.getLoanById(id);
         var book = bookService.getBooksById(data.getBookCode());
+        var customer = customerService.getCustomerByEntity(data.getCustomerNumber());
         if (data.getReturnDate() == null) {
             book.setIsBorrowed(false);
             bookService.insert(book);
+            customer.setLoanCount(customerService.loanCountSetter(data.getCustomerNumber(), "Return"));
+            customerService.updateWithEntity(customer);
             data.setReturnDate(LocalDate.now());
-            Long denda = loanService.getCountDenda(data.getLoanDate(), data.getReturnDate());
+            Long denda = loanService.getCountDenda(data.getDueDate());
             data.setDenda(denda);
 
-            loanService.insertByEntity(data);
+            loanService.extendLoan(data);
             return "redirect:/loan/index";
         } else {
             return "Loan/valid";
@@ -234,7 +271,7 @@ public class LoanController {
             Integer counter = data.getExtend();
             data.setExtend(counter + 1);
             data.setDueDate(data.getDueDate().plusDays(2));
-            loanService.insertByEntity(data);
+            loanService.extendLoan(data);
             return "redirect:/loan/index";
         } else {
 
@@ -246,7 +283,7 @@ public class LoanController {
     }
 
     @GetMapping("/paymentHistory")
-    public String paymentHistory(Model model,@RequestParam(defaultValue = "1") Integer page){
+    public String paymentHistory(Model model, @RequestParam(defaultValue = "1") Integer page) {
         List<LogsIncome> logs = loanService.getLoanPaymentHistory(page);
 
         Long totalPage = loanService.getCountPaymentHistory();
@@ -255,7 +292,7 @@ public class LoanController {
         }
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPage", totalPage);
-        model.addAttribute("logs",logs);
+        model.addAttribute("logs", logs);
         return "loan/paymentHistory";
     }
 

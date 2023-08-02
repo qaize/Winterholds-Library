@@ -6,16 +6,16 @@ import com.example.AppWinterhold.Entity.Customer;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
-import java.util.Date;
 import java.util.List;
 
-public interface CustomerRepository extends JpaRepository<Customer,String> {
+public interface CustomerRepository extends JpaRepository<Customer, String> {
 
     @Query("""
             SELECT new com.example.AppWinterhold.Dto.Customer.CustomerIndexDto
             (
-            
+                        
             c.membershipNumber,c.firstName,c.lastName,c.birthDate,
             c.gender,c.phone,c.address,c.membershipExpireDate
             )
@@ -35,7 +35,7 @@ public interface CustomerRepository extends JpaRepository<Customer,String> {
     @Query("""
             SELECT new com.example.AppWinterhold.Dto.Customer.CustomerIndexDto
             (
-            
+                        
             c.membershipNumber,c.firstName,c.lastName,c.birthDate,
             c.gender,c.phone,c.address,c.membershipExpireDate
             )
@@ -46,7 +46,7 @@ public interface CustomerRepository extends JpaRepository<Customer,String> {
     @Query("""
             SELECT DISTINCT  new com.example.AppWinterhold.Dto.Customer.CustomerIndexDto
             (
-            
+                        
             c.membershipNumber,c.firstName,c.lastName,c.birthDate,
             c.gender,c.phone,c.address,c.membershipExpireDate
             )
@@ -57,10 +57,11 @@ public interface CustomerRepository extends JpaRepository<Customer,String> {
                                                                           WHERE l.returnDate IS NULL AND l.denda != 0 AND l.loanDate != FORMAT(GETDATE(),'yyyy-MM-dd')) 
             """)
     List<CustomerIndexDto> getAvaliableCustomer();
+
     @Query("""
             SELECT DISTINCT  new com.example.AppWinterhold.Dto.Customer.CustomerIndexDto
             (
-            
+                        
             c.membershipNumber,c.firstName,c.lastName,c.birthDate,
             c.gender,c.phone,c.address,c.membershipExpireDate
             )
@@ -72,7 +73,7 @@ public interface CustomerRepository extends JpaRepository<Customer,String> {
     @Query("""
             SELECT new com.example.AppWinterhold.Dto.Customer.CustomerIndexDto
             (
-            
+                        
             c.membershipNumber,c.firstName,c.lastName,c.birthDate,
             c.gender,c.phone,c.address,c.membershipExpireDate
             )
@@ -84,7 +85,7 @@ public interface CustomerRepository extends JpaRepository<Customer,String> {
     @Query("""
             SELECT new com.example.AppWinterhold.Dto.Customer.CustomerInsertDto
             (
-            
+                        
             c.membershipNumber,c.firstName,c.lastName,c.birthDate,
             c.gender,c.phone,c.address,c.membershipExpireDate
             )
@@ -100,10 +101,25 @@ public interface CustomerRepository extends JpaRepository<Customer,String> {
             """)
     Long getCountCustomer(String number);
 
-    @Query(nativeQuery = true,value = """
+
+    @Query(nativeQuery = true, value = """
             update Customer\s
             set MembershipExpireDate = DATEADD(year,2,MembershipExpireDate)
             where MembershipNumber = :member
             """)
     void extend(String member);
+
+    @Query("""
+            SELECT COUNT(c.membershipNumber)
+            FROM Customer AS c
+              WHERE c.membershipNumber = :number
+            """)
+    Long checkCustomerById(@Param("number") String s);
+
+    @Query("""
+            SELECT c.loanCount
+            FROM Customer as c
+            WHERE c.membershipNumber = :member
+            """)
+    Integer getLoanCountCurrentCustomer(@Param("member") String membershipNumber);
 }

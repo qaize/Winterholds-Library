@@ -1,7 +1,5 @@
 package com.example.AppWinterhold.Controller.Model;
 
-import com.example.AppWinterhold.Dto.Author.AuthorIndexDto;
-import com.example.AppWinterhold.Dto.Author.AuthorInsertDto;
 import com.example.AppWinterhold.Dto.Book.BookInsertDto;
 import com.example.AppWinterhold.Dto.Book.BookUpdateDto;
 import com.example.AppWinterhold.Service.abs.AuthorService;
@@ -33,7 +31,7 @@ public class BookController {
 
         BookInsertDto dto = new BookInsertDto();
 //        Boolean borrowed = false;
-        model.addAttribute("categoryName",categoryName);
+        model.addAttribute("categoryName", categoryName);
         var dropdownauthor = Dropdown.dropdownAuthor(authorService.getAll());
         model.addAttribute("dropdownAuthor", dropdownauthor);
         dto.setIsBorrowed(false);
@@ -53,7 +51,7 @@ public class BookController {
             return "Book/insert";
         } else {
             bookService.insert(dto);
-            return "redirect:/category/detail?categoryName="+dto.getCategoryName();
+            return "redirect:/category/detail?categoryName=" + dto.getCategoryName();
         }
     }
 
@@ -78,7 +76,7 @@ public class BookController {
             return "Book/update";
         } else {
             bookService.update(dto);
-            return "redirect:/category/detail?categoryName="+dto.getCategoryName();
+            return "redirect:/category/detail?categoryName=" + dto.getCategoryName();
         }
 
     }
@@ -87,24 +85,22 @@ public class BookController {
     public String delete(@RequestParam(required = true) String bookCode) {
         var data = bookService.getBooksById(bookCode);
         Boolean result = bookService.delete(bookCode);
-        if(!result){
+        if (!result) {
             return "Category/delete";
         }
-        return "redirect:/category/detail?categoryName="+data.getCategoryName();
+        return "redirect:/category/detail?categoryName=" + data.getCategoryName();
     }
 
     @GetMapping("/borrow")
-    public String borrow(Model model,@RequestParam(required = true) String bookCode,@RequestParam(required = true) String categoryName){
+    public String borrow(Model model, @RequestParam(required = true) String bookCode, @RequestParam(required = true) String categoryName) {
         var data = bookService.getBooksBycodeUpdate(bookCode);
-        if(loanServiceImp.checkLoanBooks(bookCode)>0)
-        {
-            model.addAttribute("categoryName",categoryName);
+        if (loanServiceImp.checkLoanBooks(bookCode) > 0) {
+            model.addAttribute("categoryName", categoryName);
             return "Category/valid";
-        }
-        else{
+        } else {
             data.setIsBorrowed(!data.getIsBorrowed());
             bookService.update(data);
-            return "redirect:/category/detail?categoryName="+categoryName;
+            return "redirect:/category/detail?categoryName=" + categoryName;
         }
     }
 }

@@ -1,4 +1,5 @@
 package com.example.AppWinterhold.Controller.Rest;
+
 import com.example.AppWinterhold.Dto.Account.AccountInsertDto;
 import com.example.AppWinterhold.Dto.Account.AccountUpdateDto;
 import com.example.AppWinterhold.Dto.Ajax.AjaxResponseBodyDto;
@@ -8,6 +9,7 @@ import com.example.AppWinterhold.Entity.Mail;
 import com.example.AppWinterhold.Service.abs.AccountService;
 import com.example.AppWinterhold.Service.abs.EmailService;
 import com.example.AppWinterhold.Utility.JwtToken;
+import io.swagger.annotations.ApiOperation;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,7 +20,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
-import io.swagger.annotations.ApiOperation;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -39,7 +40,7 @@ public class AccountRestController {
 
     @Autowired
     public AccountRestController(AuthenticationManager authenticationManager,
-                                 JwtToken jwtToken, EmailService emailService, AccountService accountService){
+                                 JwtToken jwtToken, EmailService emailService, AccountService accountService) {
 
         this.authenticationManager = authenticationManager;
         this.jwtToken = jwtToken;
@@ -48,26 +49,25 @@ public class AccountRestController {
     }
 
     @PostMapping("/authenticate")
-    public ResponseCrudRestDto post(@RequestBody RequestRestDto dto){
+    public ResponseCrudRestDto post(@RequestBody RequestRestDto dto) {
         ResponseCrudRestDto responseCrudRestDto = new ResponseCrudRestDto();
-        
+
         try {
             UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
                     dto.getUsername(),
                     dto.getPassword());
             authenticationManager.authenticate(token);
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             System.out.println(e);
         }
-        try{
-            String generatedToken = jwtToken.generateToken(dto.getSubject(),dto.getSecretKey(),dto.getAudience(),dto.getUsername());
-            var response = new ResponseRestDto(dto.getUsername(),generatedToken);
+        try {
+            String generatedToken = jwtToken.generateToken(dto.getSubject(), dto.getSecretKey(), dto.getAudience(), dto.getUsername());
+            var response = new ResponseRestDto(dto.getUsername(), generatedToken);
             responseCrudRestDto.setMessage("Success");
             responseCrudRestDto.setStatus(HttpStatus.OK);
             responseCrudRestDto.setObject(response);
 
-        }catch (Exception ex){
+        } catch (Exception ex) {
             responseCrudRestDto.setMessage("ERROR ON SERVER");
             responseCrudRestDto.setStatus(HttpStatus.INTERNAL_SERVER_ERROR);
             responseCrudRestDto.setObject(null);
@@ -79,104 +79,97 @@ public class AccountRestController {
     }
 
     @GetMapping("/getAccount")
-    @ApiOperation(value = "Get list Account ",nickname = "get List Account")
-    public ResponseEntity<Object> getAccount(){
-        try{
+    @ApiOperation(value = "Get list Account ", nickname = "get List Account")
+    public ResponseEntity<Object> getAccount() {
+        try {
             var list = accountService.getlist();
             return ResponseEntity.status(HttpStatus.OK).body(list);
-        }
-        catch  (Exception e){
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(RUNTIME_ERROR_SERVER.getMessage());
         }
     }
 
     @GetMapping
-    public ResponseEntity<Object> get(@RequestParam String username){
-        try{
+    public ResponseEntity<Object> get(@RequestParam String username) {
+        try {
             var list = accountService.getAccountByUsername(username);
             return ResponseEntity.status(HttpStatus.OK).body(list);
-        }
-        catch  (Exception e){
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(RUNTIME_ERROR_SERVER.getMessage());
         }
     }
 
 
-
     @PostMapping
-    public ResponseEntity<Object> post(@Valid @RequestBody AccountInsertDto dto, BindingResult bindingResult){
-        try{
-            if(!bindingResult.hasErrors()){
+    public ResponseEntity<Object> post(@Valid @RequestBody AccountInsertDto dto, BindingResult bindingResult) {
+        try {
+            if (!bindingResult.hasErrors()) {
                 accountService.insert(dto);
-                return ResponseEntity.status(HttpStatus.OK).body(new ResponseCrudRestDto(HttpStatus.OK,"Success Insert",dto));
-            }
-            else{
+                return ResponseEntity.status(HttpStatus.OK).body(new ResponseCrudRestDto(HttpStatus.OK, "Success Insert", dto));
+            } else {
                 List<ValidatorRestDto> list = new ArrayList<>();
                 List<FieldError> errorList = bindingResult.getFieldErrors();
                 List<ObjectError> objectErrorList = bindingResult.getGlobalErrors();
-                for (FieldError err:errorList
+                for (FieldError err : errorList
                 ) {
-                    var data = new ValidatorRestDto(err.getField(),err.getDefaultMessage());
+                    var data = new ValidatorRestDto(err.getField(), err.getDefaultMessage());
                     list.add(data);
                 }
 
-                for (ObjectError err:objectErrorList
+                for (ObjectError err : objectErrorList
                 ) {
-                    var data = new ValidatorRestDto(err.getObjectName(),err.getDefaultMessage());
+                    var data = new ValidatorRestDto(err.getObjectName(), err.getDefaultMessage());
                     list.add(data);
                 }
 
-                return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(new InsertFailedDto(HttpStatus.UNPROCESSABLE_ENTITY,"Validate Error",list));
+                return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(new InsertFailedDto(HttpStatus.UNPROCESSABLE_ENTITY, "Validate Error", list));
             }
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(INTERNAL_SERVER_ERROR.getMessage());
         }
 
     }
 
     @PutMapping()
-    public ResponseCrudRestDto put(@Valid @RequestBody AccountInsertDto dto, BindingResult bindingResult){
+    public ResponseCrudRestDto put(@Valid @RequestBody AccountInsertDto dto, BindingResult bindingResult) {
 
-        try{
-            if(!bindingResult.hasErrors()){
+        try {
+            if (!bindingResult.hasErrors()) {
                 accountService.insert(dto);
-                return new ResponseCrudRestDto(HttpStatus.OK,"Success Update",dto);
-            }
-            else{
+                return new ResponseCrudRestDto(HttpStatus.OK, "Success Update", dto);
+            } else {
                 List<ValidatorRestDto> list = new ArrayList<>();
                 List<FieldError> errorList = bindingResult.getFieldErrors();
                 List<ObjectError> objectErrorList = bindingResult.getGlobalErrors();
-                for (FieldError err:errorList
+                for (FieldError err : errorList
                 ) {
-                    var data = new ValidatorRestDto(err.getField(),err.getDefaultMessage());
+                    var data = new ValidatorRestDto(err.getField(), err.getDefaultMessage());
                     list.add(data);
                 }
 
-                for (ObjectError err:objectErrorList
+                for (ObjectError err : objectErrorList
                 ) {
-                    var data = new ValidatorRestDto(err.getObjectName(),err.getDefaultMessage());
+                    var data = new ValidatorRestDto(err.getObjectName(), err.getDefaultMessage());
                     list.add(data);
                 }
-                return new ResponseCrudRestDto(HttpStatus.UNPROCESSABLE_ENTITY,"Validation Failed",list);
+                return new ResponseCrudRestDto(HttpStatus.UNPROCESSABLE_ENTITY, "Validation Failed", list);
 
             }
 
-        }catch (Exception e){
-            return new ResponseCrudRestDto(HttpStatus.INTERNAL_SERVER_ERROR,INTERNAL_SERVER_ERROR.getMessage(),dto);
+        } catch (Exception e) {
+            return new ResponseCrudRestDto(HttpStatus.INTERNAL_SERVER_ERROR, INTERNAL_SERVER_ERROR.getMessage(), dto);
         }
     }
 
     @DeleteMapping("/deleteAccount={username}")
-    public ResponseCrudRestDto delete(@PathVariable String username){
+    public ResponseCrudRestDto delete(@PathVariable String username) {
 
-        try{
+        try {
             accountService.delete(username);
-            return new ResponseCrudRestDto(HttpStatus.OK,"Username "+username+" Deleted");
+            return new ResponseCrudRestDto(HttpStatus.OK, "Username " + username + " Deleted");
 
-        }catch (Exception e){
-            return new ResponseCrudRestDto(HttpStatus.INTERNAL_SERVER_ERROR,INTERNAL_SERVER_ERROR.getMessage());
+        } catch (Exception e) {
+            return new ResponseCrudRestDto(HttpStatus.INTERNAL_SERVER_ERROR, INTERNAL_SERVER_ERROR.getMessage());
         }
     }
 
@@ -217,7 +210,7 @@ public class AccountRestController {
 
     @PostMapping("/createAccount")
     public ResponseEntity<?> insertAccount(@Valid @RequestBody AccountInsertDto dto,
-                                            BindingResult bindingResult) {
+                                           BindingResult bindingResult) {
         AjaxResponseBodyDto result;
         try {
             if (!bindingResult.hasErrors()) {

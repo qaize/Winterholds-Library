@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
-public interface AccountRepository extends JpaRepository<Account,String> {
+public interface AccountRepository extends JpaRepository<Account, String> {
 
     @Query("""
             SELECT new com.example.AppWinterhold.Dto.Account.AccountIndexDto
@@ -24,7 +24,7 @@ public interface AccountRepository extends JpaRepository<Account,String> {
             a.username, a.password
             )
             FROM Account AS a
-            
+                        
             WHERE a.username = :username
             """)
     AccountIndexDto getAccountByUsername(String username);

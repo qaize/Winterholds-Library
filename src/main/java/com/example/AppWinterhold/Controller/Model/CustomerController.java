@@ -1,10 +1,7 @@
 package com.example.AppWinterhold.Controller.Model;
 
-import com.example.AppWinterhold.Dto.Author.AuthorIndexDto;
-import com.example.AppWinterhold.Dto.Author.AuthorInsertDto;
 import com.example.AppWinterhold.Dto.Customer.CustomerInsertDto;
 import com.example.AppWinterhold.Dto.Customer.CustomerUpdateDto;
-import com.example.AppWinterhold.Service.abs.AuthorService;
 import com.example.AppWinterhold.Service.abs.CustomerService;
 import com.example.AppWinterhold.Service.imp.AccountServiceImp;
 import com.example.AppWinterhold.Utility.Dropdown;
@@ -32,17 +29,19 @@ public class CustomerController {
     public String index(Model model,
                         @RequestParam(defaultValue = "") String number,
                         @RequestParam(defaultValue = "") String name,
-                        @RequestParam(defaultValue = "1") Integer page){
+                        @RequestParam(defaultValue = "1") Integer page) {
 
-        model.addAttribute("userLogin",account.getCurrentUserLogin());
+        model.addAttribute("userLogin", account.getCurrentUserLogin());
 
-        model.addAttribute("name",name);
-        var listCustomer = customerService.getListCustomerBySearch(page,number,name);
-        Long totalPage = customerService.getCountPage(number,name);
-        model.addAttribute("listCustomer",listCustomer);
-        if(totalPage==0){page=0;}
-        model.addAttribute("currentPage",page);
-        model.addAttribute("totalPage",totalPage);
+        model.addAttribute("name", name);
+        var listCustomer = customerService.getListCustomerBySearch(page, number, name);
+        Long totalPage = customerService.getCountPage(number, name);
+        model.addAttribute("listCustomer", listCustomer);
+        if (totalPage == 0) {
+            page = 0;
+        }
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPage", totalPage);
 
         return "Customer/index";
     }
@@ -72,7 +71,7 @@ public class CustomerController {
     }
 
     @GetMapping("/update")
-    public String update(Model model,@RequestParam(required = false) String number) {
+    public String update(Model model, @RequestParam(required = false) String number) {
         CustomerInsertDto dto = customerService.getCustomerByMemberInsert(number);
         model.addAttribute("dto", dto);
         model.addAttribute("dropdownGender", Dropdown.dropdownGender());
@@ -97,7 +96,7 @@ public class CustomerController {
     public String delete(@RequestParam(required = true) String number) {
 
         Boolean result = customerService.delete(number);
-        if(!result){
+        if (!result) {
             return "Customer/delete";
         }
         return "redirect:/customer/index";
@@ -113,7 +112,7 @@ public class CustomerController {
 
     @GetMapping("/detail")
     public String detail(Model model, @RequestParam(required = true) String number) {
-        model.addAttribute("membershipNumber",number);
+        model.addAttribute("membershipNumber", number);
         var memberDto = customerService.getCustomerByMember(number);
         model.addAttribute("memberDto", memberDto);
         return "Customer/Detail";

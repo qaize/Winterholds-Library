@@ -1,8 +1,6 @@
 package com.example.AppWinterhold.Dao;
 
-import com.example.AppWinterhold.Dto.Book.BookIndexDto;
 import com.example.AppWinterhold.Dto.Loan.LoanIndexDto;
-import com.example.AppWinterhold.Dto.Loan.LoanInsertDto;
 import com.example.AppWinterhold.Entity.Loan;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -11,7 +9,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
-public interface LoanRepository extends JpaRepository<Loan,Long> {
+public interface LoanRepository extends JpaRepository<Loan, Long> {
 
 
     @Query("""
@@ -23,7 +21,7 @@ public interface LoanRepository extends JpaRepository<Loan,Long> {
             FROM Loan AS l
                 LEFT JOIN l.book AS b
                 LEFT JOIN l.customer AS c            
-                WHERE b.title LIKE %:title% AND CONCAT(c.firstName,' ',c.lastName) LIKE %:name%
+                WHERE b.title LIKE %:title% AND CONCAT(c.firstName,' ',c.lastName) LIKE %:name% AND l.returnDate IS NULL
                 
             """)
     List<LoanIndexDto> getListLoanBySearch(String title, String name, Pageable paging);
@@ -34,7 +32,7 @@ public interface LoanRepository extends JpaRepository<Loan,Long> {
             FROM Loan AS l
                 LEFT JOIN l.book AS b
                 LEFT JOIN l.customer AS c
-             WHERE b.title LIKE %:title% AND CONCAT(c.firstName,' ',c.lastName) LIKE %:name%
+             WHERE b.title LIKE %:title% AND CONCAT(c.firstName,' ',c.lastName) LIKE %:name% AND l.returnDate IS NULL
             """)
     Long getCountPage(String title, String name);
 
@@ -119,5 +117,25 @@ public interface LoanRepository extends JpaRepository<Loan,Long> {
             FROM Loan AS l
              WHERE l.customerNumber = :CustomerNumber AND l.denda != 0 AND l.denda IS NOT NULL
             """)
-    Long findCostumerOnLoan(@Param("CustomerNumber")String s);
+    Long findCostumerOnLoan(@Param("CustomerNumber") String s);
+
+    @Query("""
+            SELECT new com.example.AppWinterhold.Dto.Loan.LoanIndexDto
+            (
+            l.id, CONCAT(c.firstName,' ',c.lastName),b.title,
+            l.loanDate,l.dueDate,l.returnDate,l.note,l.denda
+            )
+            FROM Loan AS l
+                LEFT JOIN l.book AS b
+                LEFT JOIN l.customer AS c            
+                WHERE l.returnDate IS NOT NULL
+            """)
+    List<LoanIndexDto> getListLoanHistoryBySearch(Pageable paging);
+
+    @Query("""
+            SELECT COUNT(id)
+            FROM Loan AS l
+            WHERE l.returnDate IS NOT NULL
+            """)
+    Long getCountHistoryPage();
 }

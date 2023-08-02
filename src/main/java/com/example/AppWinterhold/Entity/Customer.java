@@ -1,12 +1,19 @@
 package com.example.AppWinterhold.Entity;
-import lombok.*;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter @Setter
+@Getter
+@Setter
 @Entity
 @Table(name = "Customer")
 public class Customer {
@@ -29,11 +36,17 @@ public class Customer {
     @Column(name = "MembershipExpireDate")
     private LocalDate membershipExpireDate;/* nn*/
 
+    @Column(name = "createdDate")
+    private LocalDateTime createdDate;
+
+    @Column(name = "loanCount")
+    private Integer loanCount;
+
     @OneToMany
-    @JoinColumn(name="CustomerNumber")
+    @JoinColumn(name = "CustomerNumber")
     private List<Loan> loan;
 
-    public Customer(String membershipNumber, String firstName, String lastName, LocalDate birthDate, String gender, String phone, String address, LocalDate membershipExpireDate) {
+    public Customer(String membershipNumber, String firstName, String lastName, LocalDate birthDate, String gender, String phone, String address, LocalDate membershipExpireDate, LocalDateTime createdDate, Integer loanCount) {
         this.membershipNumber = membershipNumber;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -42,5 +55,7 @@ public class Customer {
         this.phone = phone;
         this.address = address;
         this.membershipExpireDate = membershipExpireDate;
+        this.createdDate = createdDate;
+        this.loanCount = loanCount;
     }
 }

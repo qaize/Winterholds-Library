@@ -1,6 +1,7 @@
 package com.example.AppWinterhold.Dto.Loan;
 
 import com.example.AppWinterhold.Validation.DendaChecker;
+import com.example.AppWinterhold.Validation.LoanChecker;
 import com.example.AppWinterhold.Validation.TodayTime;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -24,6 +25,7 @@ public class LoanInsertDto {
     @NotNull(message = "Please Select the customers")
     @NotBlank(message = "Please Select the customers")
     @DendaChecker(message = "Customer ini belum membayar denda")
+    @LoanChecker(message = "Customer sudah mencapai maksimum peminjaman")
     private String customerNumber;/*20 nn*/
 
     @NotBlank(message = "Please Select the Books")

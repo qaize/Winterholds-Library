@@ -45,14 +45,12 @@ public class CategoryServiceImp implements CategoryService {
     @Override
     public void insert(CategoryInsertDto dto) {
         try {
-
             Category en = new Category(dto.getName(), dto.getFloor(),
                     dto.getIsle(), dto.getBay());
             categoryRepository.save(en);
             logService.saveLogs(CATEGORY, SUCCESS, INSERT);
-
         } catch (Exception e) {
-            logService.saveLogs(CATEGORY, FAILED, INSERT);
+            logService.saveLogs(CATEGORY, e.getMessage(), INSERT);
         }
     }
 

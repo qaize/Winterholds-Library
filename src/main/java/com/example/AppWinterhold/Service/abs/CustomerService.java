@@ -3,6 +3,7 @@ package com.example.AppWinterhold.Service.abs;
 import com.example.AppWinterhold.Dto.Customer.CustomerIndexDto;
 import com.example.AppWinterhold.Dto.Customer.CustomerInsertDto;
 import com.example.AppWinterhold.Dto.Customer.CustomerUpdateDto;
+import com.example.AppWinterhold.Entity.Customer;
 
 import java.util.List;
 
@@ -26,4 +27,10 @@ public interface CustomerService {
     void update(CustomerUpdateDto dto);
 
     List<CustomerIndexDto> getAvaliableCustomerEdit(String customerNumber);
+
+    Customer getCustomerByEntity(String customerNumber);
+
+    void updateWithEntity(Customer customer);
+
+    Integer loanCountSetter(String customerNumber, String aReturn);
 }

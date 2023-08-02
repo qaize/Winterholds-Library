@@ -1,13 +1,12 @@
 package com.example.AppWinterhold.Validation;
 
-import com.example.AppWinterhold.Dao.CategoryRepository;
 import com.example.AppWinterhold.Dao.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
-public class CustomerNameValidator implements ConstraintValidator<CustomerName,String> {
+public class LoanCheckerValidator implements ConstraintValidator<LoanChecker, String> {
 
     @Autowired
     private CustomerRepository customerRepository;
@@ -15,8 +14,8 @@ public class CustomerNameValidator implements ConstraintValidator<CustomerName,S
     @Override
     public boolean isValid(String s, ConstraintValidatorContext constraintValidatorContext) {
 
-        Long result = customerRepository.checkCustomerById(s);
-        if(result>0){
+        Integer result = customerRepository.getLoanCountCurrentCustomer(s);
+        if (result >= 3) {
             return false;
         }
         return true;

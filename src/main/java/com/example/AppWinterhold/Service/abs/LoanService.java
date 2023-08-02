@@ -14,7 +14,7 @@ public interface LoanService {
 
     Long getCountPage(String title, String name);
 
-    Long getCountDenda(LocalDate loanDate, LocalDate dueLoan );
+    Long getCountDenda(LocalDate dueDate);
 
     void insert(LoanInsertDto dto);
 
@@ -34,11 +34,15 @@ public interface LoanService {
 
     void goPayOff(Long id);
 
-    void insertByEntity(Loan data);
+    void extendLoan(Loan data);
 
     Long getCountPageDenda();
 
     List<LogsIncome> getLoanPaymentHistory(Integer page);
 
     Long getCountPaymentHistory();
+
+    List<LoanIndexDto> getListLoanHistoryBySearch(Integer page);
+
+    Long getCountHistoryPage();
 }

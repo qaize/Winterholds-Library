@@ -10,6 +10,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -30,7 +31,7 @@ public class Logs {
     @Column(name = "createdBy")
     private String createdBy;
     @Column(name = "process_date")
-    private LocalDate date;
+    private LocalDateTime date;
     @Column(name = "action_name")
     private String action;
 

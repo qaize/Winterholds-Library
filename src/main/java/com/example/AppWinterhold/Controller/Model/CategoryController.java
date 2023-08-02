@@ -27,17 +27,19 @@ public class CategoryController {
     @GetMapping("/index")
     public String index(Model model,
                         @RequestParam(defaultValue = "") String name,
-                        @RequestParam(defaultValue = "1") Integer page){
+                        @RequestParam(defaultValue = "1") Integer page) {
 
-        model.addAttribute("userLogin",account.getCurrentUserLogin());
+        model.addAttribute("userLogin", account.getCurrentUserLogin());
 
-        model.addAttribute("name",name);
-        var listCategory = categoryService.getListCategoryBySearch(page,name);
+        model.addAttribute("name", name);
+        var listCategory = categoryService.getListCategoryBySearch(page, name);
         Long totalPage = categoryService.getCountPage(name);
-        model.addAttribute("listCategory",listCategory);
-        if(totalPage==0){page=0;}
-        model.addAttribute("currentPage",page);
-        model.addAttribute("totalPage",totalPage);
+        model.addAttribute("listCategory", listCategory);
+        if (totalPage == 0) {
+            page = 0;
+        }
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPage", totalPage);
 
         return "Category/index";
     }
@@ -85,12 +87,12 @@ public class CategoryController {
                          @RequestParam(required = true) String categoryName,
                          @RequestParam(defaultValue = "") String title,
                          @RequestParam(defaultValue = "") String author
-                         ) {
-        model.addAttribute("categoryName",categoryName);
-        model.addAttribute("title",title);
-        model.addAttribute("author",author);
+    ) {
+        model.addAttribute("categoryName", categoryName);
+        model.addAttribute("title", title);
+        model.addAttribute("author", author);
         var categoryDto = categoryService.getCategoryByCategoryName(categoryName);
-        var listBooks = bookService.getlistBooksByCategoryName(categoryName,title,author);
+        var listBooks = bookService.getlistBooksByCategoryName(categoryName, title, author);
         model.addAttribute("categoryDto", categoryDto);
         model.addAttribute("listBooks", listBooks);
         return "Category/detail";
@@ -100,14 +102,14 @@ public class CategoryController {
     public String delete(@RequestParam(required = true) String categoryName) {
 
         Boolean result = categoryService.delete(categoryName);
-        if(!result){
+        if (!result) {
             return "Category/delete";
         }
         return "redirect:/category/index";
     }
 
     @GetMapping("/valid")
-    public String valid(Model model,@RequestParam String categoryName){
-        return "redirect:/category/detail?categoryName="+categoryName;
+    public String valid(Model model, @RequestParam String categoryName) {
+        return "redirect:/category/detail?categoryName=" + categoryName;
     }
 }

@@ -9,16 +9,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class LoginController {
 
     @GetMapping("/loginForm")
-    public String loginForm(){
+    public String loginForm() {
         return "Login/LoginForm";
     }
+
     @GetMapping("/accessDenied")
-    public String accessDenied(){
+    public String accessDenied() {
         return "Login/access-denied";
     }
 
     @GetMapping("/loginFailed")
-    public String loginError(){
+    public String loginError() {
         return "Login/login-failed";
     }
 

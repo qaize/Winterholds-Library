@@ -5,6 +5,10 @@ import lombok.Getter;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import java.sql.Date;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 @Service
 public class JwtToken {
 
@@ -31,6 +35,7 @@ public class JwtToken {
                 .claim("username",username)
                 .setIssuer("http://localhost:7081")
                 .setAudience(audience)
+                .setExpiration(Date.valueOf(LocalDate.now().plusDays(1)))
                 .signWith(SignatureAlgorithm.HS256,secret_key);
         return jwtBuilder.compact();
     }

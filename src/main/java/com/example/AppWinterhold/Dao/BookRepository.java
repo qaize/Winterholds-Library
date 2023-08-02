@@ -10,7 +10,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
-public interface BookRepository extends JpaRepository<Book,String> {
+public interface BookRepository extends JpaRepository<Book, String> {
 
 
     @Query("""
@@ -19,30 +19,31 @@ public interface BookRepository extends JpaRepository<Book,String> {
               
             b.code,b.title,b.categoryName,CONCAT(a.title,'.',a.firstName,' ',a.lastName),b.isBorrowed,b.summary,
             b.releaseDate,b.totalPage
-          
+                      
             )
             FROM Book AS b
                 LEFT JOIN b.author AS a
                 LEFT JOIN b.category AS c
-          
+                      
             WHERE b.categoryName LIKE %:categoryName%
-            
+                        
             """)
     List<BookIndexDto> getlistBooksByCategoryName(@Param("categoryName") String categoryName);
+
     @Query("""
             SELECT new com.example.AppWinterhold.Dto.Book.BookIndexDto
             (
               
             b.code,b.title,b.categoryName,CONCAT(a.title,'.',a.firstName,' ',a.lastName),b.isBorrowed,b.summary,
             b.releaseDate,b.totalPage
-          
+                      
             )
             FROM Book AS b
                 LEFT JOIN b.author AS a
                 LEFT JOIN b.category AS c
-          
+                      
             WHERE b.title LIKE %:title% AND b.categoryName LIKE %:categoryName% AND CONCAT(a.firstName,' ',a.lastName) LIKE %:author%
-            
+                        
             """)
     List<BookIndexDto> getlistBooksByCategoryName(@Param("categoryName") String categoryName, String title, String author);
 
@@ -107,7 +108,7 @@ public interface BookRepository extends JpaRepository<Book,String> {
             )
             FROM Book AS b
                 LEFT JOIN b.author AS a
-      
+                  
                 WHERE b.code = :bookCode
             """)
     BookIndexDto getBooksBycode(String bookCode);

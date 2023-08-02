@@ -12,34 +12,46 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
+
+import static com.example.AppWinterhold.Const.actionConst.*;
 
 @Service
 public class CustomerServiceImp implements CustomerService {
 
     @Autowired
     private CustomerRepository customerRepository;
+
+    @Autowired
+    private LogServiceImpl logService;
+
     @Override
     public List<CustomerIndexDto> getListCustomerBySearch(Integer page, String number, String name) {
         Integer row = 10;
-        Pageable paging = PageRequest.of(page-1,row, Sort.by("membershipNumber"));
-        return customerRepository.getListCustomerBySearch(number,name,paging);
+        Pageable paging = PageRequest.of(page - 1, row, Sort.by("membershipNumber"));
+        return customerRepository.getListCustomerBySearch(number, name, paging);
     }
 
     @Override
     public Long getCountPage(String number, String name) {
         Integer row = 10;
-        Double totalData =(double) customerRepository.getCountPage(number,name);
-        Long totaPage =(long)  Math.ceil(totalData/row);
+        Double totalData = (double) customerRepository.getCountPage(number, name);
+        Long totaPage = (long) Math.ceil(totalData / row);
         return totaPage;
     }
 
     @Override
     public void insert(CustomerInsertDto dto) {
-        Customer en = new Customer(dto.getMembershipNumber(), dto.getFirstName(),dto.getLastName(),dto.getBirthDate(),
-                dto.getGender(),dto.getPhone(),dto.getAddress(),dto.getMembershipExpireDate());
-
-        customerRepository.save(en);
+        try {
+            LocalDateTime date = LocalDateTime.now();
+            Customer en = new Customer(dto.getMembershipNumber(), dto.getFirstName(), dto.getLastName(), dto.getBirthDate(),
+                    dto.getGender(), dto.getPhone(), dto.getAddress(), dto.getMembershipExpireDate(), date, 0);
+            customerRepository.save(en);
+            logService.saveLogs(CUSTOMER, SUCCESS, INSERT);
+        } catch (Exception e) {
+            logService.saveLogs(CUSTOMER, e.getMessage(), INSERT);
+        }
     }
 
     @Override
@@ -65,7 +77,7 @@ public class CustomerServiceImp implements CustomerService {
     @Override
     public Boolean delete(String number) {
         Long data = customerRepository.getCountCustomer(number);
-        if(data>0){
+        if (data > 0) {
 
             return false;
         }
@@ -75,14 +87,46 @@ public class CustomerServiceImp implements CustomerService {
 
     @Override
     public void update(CustomerUpdateDto dto) {
-        Customer en = new Customer(dto.getMembershipNumber(), dto.getFirstName(),dto.getLastName(),dto.getBirthDate(),
-                dto.getGender(),dto.getPhone(),dto.getAddress(),dto.getMembershipExpireDate());
+        try {
 
-        customerRepository.save(en);
+            Integer lastLoanCount = customerRepository.getLoanCountCurrentCustomer(dto.getMembershipNumber());
+            LocalDateTime datenow = LocalDateTime.now();
+            Customer en = new Customer(dto.getMembershipNumber(), dto.getFirstName(), dto.getLastName(), dto.getBirthDate(),
+                    dto.getGender(), dto.getPhone(), dto.getAddress(), dto.getMembershipExpireDate(), datenow, lastLoanCount);
+            customerRepository.save(en);
+            logService.saveLogs(CUSTOMER, SUCCESS, INSERT);
+        } catch (Exception e) {
+            logService.saveLogs(CUSTOMER, e.getMessage(), INSERT);
+
+        }
     }
 
     @Override
     public List<CustomerIndexDto> getAvaliableCustomerEdit(String customerNumber) {
         return customerRepository.getAvaliableCustomerEdit(customerNumber);
+    }
+
+    @Override
+    public Customer getCustomerByEntity(String customerNumber) {
+        return customerRepository.findById(customerNumber).get();
+    }
+
+    @Override
+    public void updateWithEntity(Customer customer) {
+        customerRepository.save(customer);
+    }
+
+    @Override
+    public Integer loanCountSetter(String customerNumber, String aReturn) {
+
+        Integer data = customerRepository.getLoanCountCurrentCustomer(customerNumber);
+        if(aReturn.equals("Return")){
+            if(data!=0){
+            data = data - 1;
+            }
+        }else{
+            data = data + 1;
+        }
+        return data;
     }
 }

@@ -1,12 +1,10 @@
 package com.example.AppWinterhold.Controller.Rest;
 
 import com.example.AppWinterhold.Dto.Category.CategoryInsertDto;
-import com.example.AppWinterhold.Dto.Customer.CustomerInsertDto;
 import com.example.AppWinterhold.Dto.Rest.InsertFailedDto;
 import com.example.AppWinterhold.Dto.Rest.ResponseCrudRestDto;
 import com.example.AppWinterhold.Dto.Rest.ValidatorRestDto;
 import com.example.AppWinterhold.Service.abs.CategoryService;
-import com.example.AppWinterhold.Service.abs.CustomerService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -29,108 +27,99 @@ public class CategoryRestController {
     private CategoryService categoryService;
 
     @GetMapping("/getCategory")
-    public ResponseEntity<Object> getAuthor(){
-        try{
+    public ResponseEntity<Object> getAuthor() {
+        try {
             var list = categoryService.getAll();
             return ResponseEntity.status(HttpStatus.OK).body(list);
-        }
-        catch  (Exception e){
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Runtime Error on the server");
         }
     }
 
     @GetMapping
-    public ResponseEntity<Object> get(@RequestParam(required = true) String categoryName){
-        try{
+    public ResponseEntity<Object> get(@RequestParam(required = true) String categoryName) {
+        try {
             var list = categoryService.getCategoryByCategoryName(categoryName);
             return ResponseEntity.status(HttpStatus.OK).body(list);
-        }
-        catch  (Exception e){
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Runtime Error on the server");
         }
     }
 
 
-
     @PostMapping
-    public ResponseEntity<Object> post(@Valid @RequestBody CategoryInsertDto dto, BindingResult bindingResult){
-        try{
-            if(!bindingResult.hasErrors()){
+    public ResponseEntity<Object> post(@Valid @RequestBody CategoryInsertDto dto, BindingResult bindingResult) {
+        try {
+            if (!bindingResult.hasErrors()) {
                 categoryService.insert(dto);
-                return ResponseEntity.status(HttpStatus.OK).body(new ResponseCrudRestDto(HttpStatus.OK,"Berhasil Insert",dto));
-            }
-
-
-            else{
+                return ResponseEntity.status(HttpStatus.OK).body(new ResponseCrudRestDto(HttpStatus.OK, "Berhasil Insert", dto));
+            } else {
                 List<ValidatorRestDto> list = new ArrayList<>();
                 List<FieldError> errorList = bindingResult.getFieldErrors();
                 List<ObjectError> objectErrorList = bindingResult.getGlobalErrors();
-                for (FieldError err:errorList
+                for (FieldError err : errorList
                 ) {
-                    var data = new ValidatorRestDto(err.getField(),err.getDefaultMessage());
+                    var data = new ValidatorRestDto(err.getField(), err.getDefaultMessage());
                     list.add(data);
                 }
 
-                for (ObjectError err:objectErrorList
+                for (ObjectError err : objectErrorList
                 ) {
-                    var data = new ValidatorRestDto(err.getObjectName(),err.getDefaultMessage());
+                    var data = new ValidatorRestDto(err.getObjectName(), err.getDefaultMessage());
                     list.add(data);
                 }
 
-                return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(new InsertFailedDto(HttpStatus.UNPROCESSABLE_ENTITY,"Validate Error",list));
+                return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(new InsertFailedDto(HttpStatus.UNPROCESSABLE_ENTITY, "Validate Error", list));
             }
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Runtime Error on the server");
         }
 
     }
 
     @PutMapping
-    public ResponseCrudRestDto put(@Valid @RequestBody CategoryInsertDto dto, BindingResult bindingResult){
+    public ResponseCrudRestDto put(@Valid @RequestBody CategoryInsertDto dto, BindingResult bindingResult) {
 
-        try{
-            if(!bindingResult.hasErrors()){
+        try {
+            if (!bindingResult.hasErrors()) {
                 categoryService.insert(dto);
-                return new ResponseCrudRestDto(HttpStatus.OK,"Berhasil Update",dto);
-            }
-            else{
+                return new ResponseCrudRestDto(HttpStatus.OK, "Berhasil Update", dto);
+            } else {
                 List<ValidatorRestDto> list = new ArrayList<>();
                 List<FieldError> errorList = bindingResult.getFieldErrors();
                 List<ObjectError> objectErrorList = bindingResult.getGlobalErrors();
-                for (FieldError err:errorList
+                for (FieldError err : errorList
                 ) {
-                    var data = new ValidatorRestDto(err.getField(),err.getDefaultMessage());
+                    var data = new ValidatorRestDto(err.getField(), err.getDefaultMessage());
                     list.add(data);
                 }
 
-                for (ObjectError err:objectErrorList
+                for (ObjectError err : objectErrorList
                 ) {
-                    var data = new ValidatorRestDto(err.getObjectName(),err.getDefaultMessage());
+                    var data = new ValidatorRestDto(err.getObjectName(), err.getDefaultMessage());
                     list.add(data);
                 }
-                return new ResponseCrudRestDto(HttpStatus.UNPROCESSABLE_ENTITY,"Validation Failed",list);
+                return new ResponseCrudRestDto(HttpStatus.UNPROCESSABLE_ENTITY, "Validation Failed", list);
 
             }
 
-        }catch (Exception e){
-            return new ResponseCrudRestDto(HttpStatus.INTERNAL_SERVER_ERROR,"Internal Server Error",dto);
+        } catch (Exception e) {
+            return new ResponseCrudRestDto(HttpStatus.INTERNAL_SERVER_ERROR, "Internal Server Error", dto);
         }
     }
 
     @DeleteMapping("/deleteCategory={categoryName}")
-    public ResponseCrudRestDto delete(@PathVariable(required = true) String categoryName){
+    public ResponseCrudRestDto delete(@PathVariable(required = true) String categoryName) {
 
-        try{
+        try {
             Boolean result = categoryService.delete(categoryName);
-            if(!result){
-                return new ResponseCrudRestDto(HttpStatus.UNPROCESSABLE_ENTITY,"Category Name "+categoryName+" Cannot Be Deleted");
+            if (!result) {
+                return new ResponseCrudRestDto(HttpStatus.UNPROCESSABLE_ENTITY, "Category Name " + categoryName + " Cannot Be Deleted");
             }
-            return new ResponseCrudRestDto(HttpStatus.OK,"Category Name "+categoryName+" Deleted");
+            return new ResponseCrudRestDto(HttpStatus.OK, "Category Name " + categoryName + " Deleted");
 
-        }catch (Exception e){
-            return new ResponseCrudRestDto(HttpStatus.INTERNAL_SERVER_ERROR,"Internal Error Server");
+        } catch (Exception e) {
+            return new ResponseCrudRestDto(HttpStatus.INTERNAL_SERVER_ERROR, "Internal Error Server");
         }
     }
 }

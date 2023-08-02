@@ -1,6 +1,5 @@
 package com.example.AppWinterhold.Controller.Model;
 
-import com.example.AppWinterhold.Dto.Author.AuthorIndexDto;
 import com.example.AppWinterhold.Dto.Author.AuthorInsertDto;
 import com.example.AppWinterhold.Dto.Author.AuthorUpdateDto;
 import com.example.AppWinterhold.Service.abs.AuthorService;
@@ -13,8 +12,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @Controller
 @RequestMapping("/author")
@@ -31,13 +28,15 @@ public class AuthorController {
                         @RequestParam(defaultValue = "") String name,
                         @RequestParam(defaultValue = "1") Integer page) throws JsonProcessingException {
 
-        model.addAttribute("name",name);
-        var listAuthor = authorService.getListAuthorBySearch(page,name);
+        model.addAttribute("name", name);
+        var listAuthor = authorService.getListAuthorBySearch(page, name);
         Long totalPage = authorService.getCountPage(name);
-        model.addAttribute("listAuthor",listAuthor);
-        if(totalPage==0){page=0;}
-        model.addAttribute("currentPage",page);
-        model.addAttribute("totalPage",totalPage);
+        model.addAttribute("listAuthor", listAuthor);
+        if (totalPage == 0) {
+            page = 0;
+        }
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPage", totalPage);
 
         return "Author/index";
     }
@@ -64,7 +63,7 @@ public class AuthorController {
 
     @GetMapping("/detail")
     public String detail(Model model, @RequestParam(required = true) Long id) {
-        model.addAttribute("authorId",id);
+        model.addAttribute("authorId", id);
         var authorDto = authorService.getAuthorById(id);
         var listBooks = bookService.getlistBooksByAuthorId(id);
         model.addAttribute("authorDto", authorDto);
@@ -73,7 +72,7 @@ public class AuthorController {
     }
 
     @GetMapping("/update")
-    public String update(Model model,@RequestParam(required = false) Long id) {
+    public String update(Model model, @RequestParam(required = false) Long id) {
         AuthorInsertDto dto = authorService.getAuthorByIdinsert(id);
         model.addAttribute("dropdownTitle", Dropdown.dropdownTitle());
         model.addAttribute("dto", dto);
@@ -97,7 +96,7 @@ public class AuthorController {
     public String delete(@RequestParam(required = true) Long id) {
 
         Boolean result = authorService.delete(id);
-        if(!result){
+        if (!result) {
             return "Author/delete";
         }
         return "redirect:/author/index";

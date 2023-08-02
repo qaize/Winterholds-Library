@@ -14,7 +14,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Getter @Setter
 public class CustomerInsertDto {
-    @CustomerName(message = "This Customer Name Already Exist")
+    @CustomerName(message = "This Customer ID Already Exist")
     @NotBlank(message = "Membership Number cannot Blank")
     @NotNull(message = "Cannot be Null")
     private String membershipNumber; /*20 nn*/

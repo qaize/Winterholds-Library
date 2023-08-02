@@ -17,4 +17,7 @@ public class actionConst {
     final public static String CUSTOMER = " Customer";
     final public static String SUCCESS = " Success";
     final public static String FAILED = " Failed";
+    final public static String PAY = " Acquittance";
+    final public static String EXTEND = " Extend";
+
 }

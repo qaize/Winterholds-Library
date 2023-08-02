@@ -30,7 +30,7 @@ public class AccountServiceImp implements AccountService {
     @Override
     public void insert(AccountInsertDto dto) {
         String hash = passwordEncoder.encode(dto.getPassword());
-        Account en = new Account(dto.getUsername(), hash, false, 0, "Sementara");
+        Account en = new Account(dto.getUsername(), hash, false, 0, dto.getName());
         accountRepository.save(en);
     }
 
