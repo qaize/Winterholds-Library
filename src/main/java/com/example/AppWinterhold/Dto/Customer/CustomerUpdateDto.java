@@ -1,6 +1,7 @@
 package com.example.AppWinterhold.Dto.Customer;
 
-import com.example.AppWinterhold.Validation.CustomerName;
+//import com.example.AppWinterhold.Validation.CustomerName;
+
 import com.example.AppWinterhold.Validation.TodayTime;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -15,7 +16,8 @@ import java.time.LocalDate;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter @Setter
+@Getter
+@Setter
 public class CustomerUpdateDto {
 
     @NotNull(message = "Cannot be Null")
@@ -23,11 +25,11 @@ public class CustomerUpdateDto {
 
     @NotBlank(message = "First Name cannot Blank")
     @NotNull(message = "First Name cannot null")
-    @Size(max = 50,message = "max 50 char")
+    @Size(max = 50, message = "max 50 char")
     private String firstName;/*50 nn*/
 
 
-    @Size(max = 50,message = "max 50 char")
+    @Size(max = 50, message = "max 50 char")
     private String lastName;/*50 n*/
 
     @TodayTime(message = "Cannot insert date more than today!")
@@ -37,13 +39,13 @@ public class CustomerUpdateDto {
 
     @NotBlank(message = "Chose gender properly")
     @NotNull(message = "Gender cannot null")
-    @Size(max = 10,message = "max 10 char")
+    @Size(max = 10, message = "max 10 char")
     private String gender;/*10 nn*/
 
-    @Size(max = 20,message = "max 20 char")
+    @Size(max = 20, message = "max 20 char")
     private String phone;/*20 n*/
 
-    @Size(max = 500,message = "max 500 char")
+    @Size(max = 500, message = "max 500 char")
     private String address;/*500 n*/
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")

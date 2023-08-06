@@ -72,7 +72,7 @@ public class CustomerController {
 
     @GetMapping("/update")
     public String update(Model model, @RequestParam(required = false) String number) {
-        CustomerInsertDto dto = customerService.getCustomerByMemberInsert(number);
+        CustomerUpdateDto dto = customerService.getCustomerByMemberInsert(number);
         model.addAttribute("dto", dto);
         model.addAttribute("dropdownGender", Dropdown.dropdownGender());
         return "Customer/update";
@@ -106,7 +106,7 @@ public class CustomerController {
     public String extend(@RequestParam(required = true) String number) {
         var data = customerService.getCustomerByMemberInsert(number);
         data.setMembershipExpireDate(data.getMembershipExpireDate().plusYears(2));
-        customerService.insert(data);
+        customerService.update(data);
         return "redirect:/customer/index";
     }
 

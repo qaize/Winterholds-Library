@@ -34,6 +34,6 @@ public class BookIndexDto {
         this.summary = summary;
         this.releaseDate = releaseDate;
         this.totalPage = totalPage;
-        this.isBorrowedStr = isBorrowed ? "Borrowed" : "Available";
+        this.isBorrowedStr = isBorrowed ? "Not Available" : "Available";
     }
 }

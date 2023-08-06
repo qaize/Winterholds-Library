@@ -5,28 +5,9 @@
 <body>
 <nav th:replace="~{layout::navigation}"></nav>
 <main>
-    <form method="get" th:attr="action=@{/customer/index}">
-        <fieldset>
-            <legend>Search by:</legend>
-            <div>
-                <span>MemberShip    :</span>
-                <input type="text" name="number" placeholder="Membership Number" th:attr="value=${number}">
-            </div>
-            <div>
-                <span>Customer Name :</span>
-                <input type="text" name="name" placeholder="name" th:attr="value=${name}">
-            </div>
-            <div class="divSearch">
-                <button class="btn search-button" type="submit">Search</button>
-            </div>
-        </fieldset>
-
-
-    </form>
 
     <div class="filter">
-        <a class="btn add-button" th:href="@{/customer/insert}"> Add new Customer </a>
-        <a class="btn add-button" th:href="@{/customer/banned}"> Banned Member </a>
+        <a class="btn add-button" th:href="@{/customer/index}"> back to index</a>
     </div>
     <div class="divTable">
         <table class="table table-hover">
@@ -36,7 +17,6 @@
                 <th>Membership Number</th>
                 <th>Full Name</th>
                 <th>Membership Expire Date</th>
-
             </tr>
             </thead>
             <tbody>
@@ -44,9 +24,7 @@
                 <td class="action">
                     <div class="button-wrapper">
                         <a class="btn back-warning" th:href="@{/customer/update(number=*{membershipNumber})}">Edit</a>
-                        <a class="btn delete-btn" th:href="@{/customer/delete(number=*{membershipNumber})}">Delete</a>
-                        <a class="btn" th:href="@{/customer/index}">Ban</a>
-                        <a class="btn detail-btn" th:href="@{/customer/extend(number=*{membershipNumber})}">Extend</a>
+                        <a class="btn delete-btn" th:href="@{/customer/index}">Unban</a>
                     </div>
                 </td>
                 <td><a class="customerLink" th:text="*{membershipNumber}"

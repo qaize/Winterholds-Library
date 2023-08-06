@@ -1,5 +1,5 @@
 package com.example.AppWinterhold.Dto.Customer;
-import com.example.AppWinterhold.Validation.CustomerName;
+//import com.example.AppWinterhold.Validation.CustomerName;
 import com.example.AppWinterhold.Validation.TodayTime;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -14,10 +14,10 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Getter @Setter
 public class CustomerInsertDto {
-    @CustomerName(message = "This Customer ID Already Exist")
-    @NotBlank(message = "Membership Number cannot Blank")
-    @NotNull(message = "Cannot be Null")
-    private String membershipNumber; /*20 nn*/
+//    @CustomerName(message = "This Customer ID Already Exist")
+//    @NotBlank(message = "Membership Number cannot Blank")
+//    @NotNull(message = "Cannot be Null")
+//    private String membershipNumber; /*20 nn*/
 
     @NotBlank(message = "First Name cannot Blank")
     @NotNull(message = "First Name cannot null")

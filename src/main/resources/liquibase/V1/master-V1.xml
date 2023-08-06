@@ -137,7 +137,15 @@
         <sqlFile dbms="mssql" relativeToChangelogFile="false"
                  splitStatements="true" stripComments="true"
                  path="liquibase/V1/sql/alter_table_logs_20230803.sql"/>
-        <comment>ALTER TABLE LOGS LENGTH ACTION </comment>
+        <comment>ALTER TABLE LOGS LENGTH ACTION</comment>
+    </changeSet>
+
+    <changeSet id="DDL01-222-20230803-0002"
+               author="iwan">
+        <sqlFile dbms="mssql" relativeToChangelogFile="false"
+                 splitStatements="true" stripComments="true"
+                 path="liquibase/V1/sql/alter_table_customer_20230803.sql"/>
+        <comment>ALTER TABLE CUSTOMER ADD BAN COLUMN</comment>
     </changeSet>
 
 

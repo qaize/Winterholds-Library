@@ -20,7 +20,7 @@ public interface CustomerService {
 
     CustomerIndexDto getCustomerByMember(String customerNumber);
 
-    CustomerInsertDto getCustomerByMemberInsert(String number);
+    CustomerUpdateDto getCustomerByMemberInsert(String number);
 
     Boolean delete(String number);
 
@@ -32,5 +32,9 @@ public interface CustomerService {
 
     void updateWithEntity(Customer customer);
 
-    Integer loanCountSetter(String customerNumber, String aReturn);
+    Integer loanCountSetter(String customerNumber, String action);
+
+    String customerNumberGenerator();
+
+    Boolean CustomerMemberChecker(String s);
 }

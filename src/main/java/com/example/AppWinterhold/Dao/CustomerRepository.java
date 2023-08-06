@@ -2,6 +2,7 @@ package com.example.AppWinterhold.Dao;
 
 import com.example.AppWinterhold.Dto.Customer.CustomerIndexDto;
 import com.example.AppWinterhold.Dto.Customer.CustomerInsertDto;
+import com.example.AppWinterhold.Dto.Customer.CustomerUpdateDto;
 import com.example.AppWinterhold.Entity.Customer;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -83,7 +84,7 @@ public interface CustomerRepository extends JpaRepository<Customer, String> {
     CustomerIndexDto getCustomerByMember(String customerNumber);
 
     @Query("""
-            SELECT new com.example.AppWinterhold.Dto.Customer.CustomerInsertDto
+            SELECT new com.example.AppWinterhold.Dto.Customer.CustomerUpdateDto
             (
                         
             c.membershipNumber,c.firstName,c.lastName,c.birthDate,
@@ -92,7 +93,7 @@ public interface CustomerRepository extends JpaRepository<Customer, String> {
             FROM Customer AS c
              WHERE c.membershipNumber = :number
             """)
-    CustomerInsertDto getCustomerByMemberInsert(String number);
+    CustomerUpdateDto getCustomerByMemberInsert(String number);
 
     @Query("""
             SELECT COUNT(l.id)

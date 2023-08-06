@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Random;
 
 import static com.example.AppWinterhold.Const.actionConst.*;
 
@@ -44,8 +45,9 @@ public class CustomerServiceImp implements CustomerService {
     @Override
     public void insert(CustomerInsertDto dto) {
         try {
+            String generatedMember = customerNumberGenerator();
             LocalDateTime date = LocalDateTime.now();
-            Customer en = new Customer(dto.getMembershipNumber(), dto.getFirstName(), dto.getLastName(), dto.getBirthDate(),
+            Customer en = new Customer(generatedMember, dto.getFirstName(), dto.getLastName(), dto.getBirthDate(),
                     dto.getGender(), dto.getPhone(), dto.getAddress(), dto.getMembershipExpireDate(), date, 0);
             customerRepository.save(en);
             logService.saveLogs(CUSTOMER, SUCCESS, INSERT);
@@ -70,7 +72,7 @@ public class CustomerServiceImp implements CustomerService {
     }
 
     @Override
-    public CustomerInsertDto getCustomerByMemberInsert(String number) {
+    public CustomerUpdateDto getCustomerByMemberInsert(String number) {
         return customerRepository.getCustomerByMemberInsert(number);
     }
 
@@ -94,9 +96,9 @@ public class CustomerServiceImp implements CustomerService {
             Customer en = new Customer(dto.getMembershipNumber(), dto.getFirstName(), dto.getLastName(), dto.getBirthDate(),
                     dto.getGender(), dto.getPhone(), dto.getAddress(), dto.getMembershipExpireDate(), datenow, lastLoanCount);
             customerRepository.save(en);
-            logService.saveLogs(CUSTOMER, SUCCESS, INSERT);
+            logService.saveLogs(CUSTOMER, SUCCESS, UPDATE);
         } catch (Exception e) {
-            logService.saveLogs(CUSTOMER, e.getMessage(), INSERT);
+            logService.saveLogs(CUSTOMER, e.getMessage(), UPDATE);
 
         }
     }
@@ -120,13 +122,40 @@ public class CustomerServiceImp implements CustomerService {
     public Integer loanCountSetter(String customerNumber, String aReturn) {
 
         Integer data = customerRepository.getLoanCountCurrentCustomer(customerNumber);
-        if(aReturn.equals("Return")){
-            if(data!=0){
-            data = data - 1;
+        if (aReturn.equals("Return")) {
+            if (data != 0) {
+                data = data - 1;
             }
-        }else{
+        } else {
             data = data + 1;
         }
         return data;
+    }
+
+    @Override
+    public String customerNumberGenerator() {
+        int bound = 1000;
+        Random randomer = new Random();
+        int genratedValue = randomer.nextInt(bound);
+        String genrator = "";
+        Boolean membershipChecker = true;
+        while (membershipChecker) {
+            if (!CustomerMemberChecker(genrator)) {
+                genratedValue++;
+            } else {
+                genrator = "CUS" + genratedValue;
+                membershipChecker = false;
+            }
+        }
+        return genrator;
+    }
+
+    @Override
+    public Boolean CustomerMemberChecker(String s) {
+        Long result = customerRepository.checkCustomerById(s);
+        if (result > 0) {
+            return false;
+        }
+        return true;
     }
 }

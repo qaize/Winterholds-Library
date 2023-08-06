@@ -93,7 +93,7 @@ public class BookController {
 
     @GetMapping("/borrow")
     public String borrow(Model model, @RequestParam(required = true) String bookCode, @RequestParam(required = true) String categoryName) {
-        var data = bookService.getBooksBycodeUpdate(bookCode);
+        BookUpdateDto data = bookService.getBooksBycodeUpdate(bookCode);
         if (loanServiceImp.checkLoanBooks(bookCode) > 0) {
             model.addAttribute("categoryName", categoryName);
             return "Category/valid";

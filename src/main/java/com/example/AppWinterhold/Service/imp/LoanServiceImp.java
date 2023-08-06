@@ -61,6 +61,9 @@ public class LoanServiceImp implements LoanService {
     public Long getCountDenda(LocalDate dueDate) {
 
         Long between = ChronoUnit.DAYS.between(dueDate, LocalDate.now()) * 2000;
+        if(between<0){
+            between = 0L;
+        }
 
         return between;
     }
