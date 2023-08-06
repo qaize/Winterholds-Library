@@ -21,7 +21,7 @@ public interface CustomerRepository extends JpaRepository<Customer, String> {
             c.gender,c.phone,c.address,c.membershipExpireDate
             )
             FROM Customer AS c
-                WHERE c.membershipNumber LIKE %:number% AND (c.firstName LIKE %:name% OR c.lastName LIKE %:name%) 
+                WHERE c.membershipNumber LIKE %:number% AND (c.firstName LIKE %:name% OR c.lastName LIKE %:name%) AND c.banned = 0
             """)
     List<CustomerIndexDto> getListCustomerBySearch(String number, String name, Pageable paging);
 

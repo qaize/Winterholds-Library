@@ -275,8 +275,8 @@ public class LoanController {
             return "redirect:/loan/index";
         } else {
 
-            model.addAttribute("extendValidationHeader", "Unable to Extend");
-            model.addAttribute("extendValidationReason", "User was reached maximum extendable");
+            model.addAttribute("validationHeader", "Unable to Extend");
+            model.addAttribute("validationReason", "User was reached maximum extendable");
             return "loan/valid";
         }
 

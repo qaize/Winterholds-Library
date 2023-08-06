@@ -117,5 +117,24 @@ public class CustomerController {
         model.addAttribute("memberDto", memberDto);
         return "Customer/Detail";
     }
+    @GetMapping("/valid")
+    public String valid(Model model, @RequestParam String customerNumber)
+    {
+        model.addAttribute("validationHeader","Are you sure want to ban : "+customerNumber+" ?");
+        model.addAttribute("validationReason","cancel this by clicking back button!");
+        model.addAttribute("membershipNumber",customerNumber);
+        return "Customer/valid";
 
+    }
+    @GetMapping("/ban")
+    public String ban(@RequestParam String customerNumber){
+        customerService.doBanCustomer(customerNumber);
+        return "redirect:/customer/index";
+    }
+
+    @GetMapping("/banned-customer")
+    public String bannedlist(Model model){
+
+        return "Customer/bannedList";
+    }
 }

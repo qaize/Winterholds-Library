@@ -10,7 +10,8 @@
     <h3 th:text="${validationReason}">Data Already Returned!</h3>
   </div>
   <div>
-    <a class="btn back-warning" th:href="@{/loan/index}">Back to Loan Index</a>
+    <a class="btn back-warning" th:href="@{/customer/index}">Back to Index</a>
+    <a class="btn back-warning" th:href="@{/customer/ban(customerNumber=${membershipNumber})}">Ban</a>
   </div>
 </main>
 

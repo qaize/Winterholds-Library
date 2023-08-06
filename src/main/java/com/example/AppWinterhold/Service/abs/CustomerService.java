@@ -37,4 +37,6 @@ public interface CustomerService {
     String customerNumberGenerator();
 
     Boolean CustomerMemberChecker(String s);
+
+    void doBanCustomer(String customerNumber);
 }

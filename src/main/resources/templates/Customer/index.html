@@ -26,7 +26,7 @@
 
     <div class="filter">
         <a class="btn add-button" th:href="@{/customer/insert}"> Add new Customer </a>
-        <a class="btn add-button" th:href="@{/customer/banned}"> Banned Member </a>
+        <a class="btn add-button" th:href="@{/customer/banned-customer}"> Banned Member </a>
     </div>
     <div class="divTable">
         <table class="table table-hover">
@@ -45,7 +45,7 @@
                     <div class="button-wrapper">
                         <a class="btn back-warning" th:href="@{/customer/update(number=*{membershipNumber})}">Edit</a>
                         <a class="btn delete-btn" th:href="@{/customer/delete(number=*{membershipNumber})}">Delete</a>
-                        <a class="btn" th:href="@{/customer/index}">Ban</a>
+                        <a class="btn delete-btn" th:href="@{/customer/valid(customerNumber=*{membershipNumber})}">ban</a>
                         <a class="btn detail-btn" th:href="@{/customer/extend(number=*{membershipNumber})}">Extend</a>
                     </div>
                 </td>

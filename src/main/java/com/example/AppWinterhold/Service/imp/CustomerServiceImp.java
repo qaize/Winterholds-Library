@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 
 import static com.example.AppWinterhold.Const.actionConst.*;
@@ -48,7 +49,7 @@ public class CustomerServiceImp implements CustomerService {
             String generatedMember = customerNumberGenerator();
             LocalDateTime date = LocalDateTime.now();
             Customer en = new Customer(generatedMember, dto.getFirstName(), dto.getLastName(), dto.getBirthDate(),
-                    dto.getGender(), dto.getPhone(), dto.getAddress(), dto.getMembershipExpireDate(), date, 0);
+                    dto.getGender(), dto.getPhone(), dto.getAddress(), dto.getMembershipExpireDate(), date, 0,0);
             customerRepository.save(en);
             logService.saveLogs(CUSTOMER, SUCCESS, INSERT);
         } catch (Exception e) {
@@ -56,6 +57,29 @@ public class CustomerServiceImp implements CustomerService {
         }
     }
 
+    @Override
+    public void update(CustomerUpdateDto dto) {
+        try {
+            Customer en = mapCustomerUpdate(dto);
+            customerRepository.save(en);
+            logService.saveLogs(CUSTOMER, SUCCESS, UPDATE);
+        } catch (Exception e) {
+            logService.saveLogs(CUSTOMER, e.getMessage(), UPDATE);
+        }
+    }
+
+    private Customer mapCustomerUpdate(CustomerUpdateDto dto){
+        Optional<Customer> dataCus = customerRepository.findById(dto.getMembershipNumber());
+        dataCus.get().setFirstName(dto.getFirstName());
+        dataCus.get().setLastName(dto.getLastName());
+        dataCus.get().setGender(dto.getGender());
+        dataCus.get().setPhone(dto.getPhone());
+        dataCus.get().setAddress(dto.getAddress());
+        if(!dto.getMembershipExpireDate().equals(dataCus.get().getMembershipExpireDate()) || dataCus.get().getMembershipExpireDate() != null) {
+            dataCus.get().setMembershipExpireDate(dto.getMembershipExpireDate());
+        }
+        return dataCus.get();
+    }
     @Override
     public List<CustomerIndexDto> getAll() {
         return customerRepository.getAll();
@@ -87,21 +111,6 @@ public class CustomerServiceImp implements CustomerService {
         return true;
     }
 
-    @Override
-    public void update(CustomerUpdateDto dto) {
-        try {
-
-            Integer lastLoanCount = customerRepository.getLoanCountCurrentCustomer(dto.getMembershipNumber());
-            LocalDateTime datenow = LocalDateTime.now();
-            Customer en = new Customer(dto.getMembershipNumber(), dto.getFirstName(), dto.getLastName(), dto.getBirthDate(),
-                    dto.getGender(), dto.getPhone(), dto.getAddress(), dto.getMembershipExpireDate(), datenow, lastLoanCount);
-            customerRepository.save(en);
-            logService.saveLogs(CUSTOMER, SUCCESS, UPDATE);
-        } catch (Exception e) {
-            logService.saveLogs(CUSTOMER, e.getMessage(), UPDATE);
-
-        }
-    }
 
     @Override
     public List<CustomerIndexDto> getAvaliableCustomerEdit(String customerNumber) {
@@ -157,5 +166,17 @@ public class CustomerServiceImp implements CustomerService {
             return false;
         }
         return true;
+    }
+
+    @Override
+    public void doBanCustomer(String customerNumber) {
+        try{
+        Optional<Customer> data = customerRepository.findById(customerNumber);
+        data.get().setBanned(1);
+        customerRepository.save(data.get());
+        logService.saveLogs(CUSTOMER,SUCCESS,BAN);
+        }catch(Exception e){
+        logService.saveLogs(CUSTOMER,e.getMessage(),BAN);
+        }
     }
 }
