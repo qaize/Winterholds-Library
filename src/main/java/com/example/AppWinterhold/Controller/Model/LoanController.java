@@ -60,7 +60,7 @@ public class LoanController {
                 val.setLoanStatus("Returned");
             } else {
                 Long dif = ChronoUnit.DAYS.between(LocalDate.now(), val.getDueDate());
-                val.setDayLeft(dif > 0 ? dif.toString() : "Late");
+                val.setDayLeft(dif >= 0 ? dif.toString() : "Late");
                 val.setLoanStatus("On Loan");
             }
         }

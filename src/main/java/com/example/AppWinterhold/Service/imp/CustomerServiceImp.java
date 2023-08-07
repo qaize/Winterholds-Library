@@ -49,7 +49,7 @@ public class CustomerServiceImp implements CustomerService {
             String generatedMember = customerNumberGenerator();
             LocalDateTime date = LocalDateTime.now();
             Customer en = new Customer(generatedMember, dto.getFirstName(), dto.getLastName(), dto.getBirthDate(),
-                    dto.getGender(), dto.getPhone(), dto.getAddress(), dto.getMembershipExpireDate(), date, 0,0);
+                    dto.getGender(), dto.getPhone(), dto.getAddress(), dto.getMembershipExpireDate(), date, 0, 0);
             customerRepository.save(en);
             logService.saveLogs(CUSTOMER, SUCCESS, INSERT);
         } catch (Exception e) {
@@ -68,18 +68,19 @@ public class CustomerServiceImp implements CustomerService {
         }
     }
 
-    private Customer mapCustomerUpdate(CustomerUpdateDto dto){
+    private Customer mapCustomerUpdate(CustomerUpdateDto dto) {
         Optional<Customer> dataCus = customerRepository.findById(dto.getMembershipNumber());
         dataCus.get().setFirstName(dto.getFirstName());
         dataCus.get().setLastName(dto.getLastName());
         dataCus.get().setGender(dto.getGender());
         dataCus.get().setPhone(dto.getPhone());
         dataCus.get().setAddress(dto.getAddress());
-        if(!dto.getMembershipExpireDate().equals(dataCus.get().getMembershipExpireDate()) || dataCus.get().getMembershipExpireDate() != null) {
+        if (!dto.getMembershipExpireDate().equals(dataCus.get().getMembershipExpireDate()) || dataCus.get().getMembershipExpireDate() != null) {
             dataCus.get().setMembershipExpireDate(dto.getMembershipExpireDate());
         }
         return dataCus.get();
     }
+
     @Override
     public List<CustomerIndexDto> getAll() {
         return customerRepository.getAll();
@@ -169,14 +170,39 @@ public class CustomerServiceImp implements CustomerService {
     }
 
     @Override
-    public void doBanCustomer(String customerNumber) {
-        try{
-        Optional<Customer> data = customerRepository.findById(customerNumber);
-        data.get().setBanned(1);
-        customerRepository.save(data.get());
-        logService.saveLogs(CUSTOMER,SUCCESS,BAN);
-        }catch(Exception e){
-        logService.saveLogs(CUSTOMER,e.getMessage(),BAN);
+    public boolean doBanCustomer(String customerNumber) {
+        boolean ban = true;
+        try {
+            Optional<Customer> data = customerRepository.findById(customerNumber);
+            data.get().setBanned(1);
+            if (data.get().getLoanCount() > 0) {
+                ban = false;
+            } else {
+                customerRepository.save(data.get());
+                logService.saveLogs(CUSTOMER, SUCCESS, BAN);
+            }
+        } catch (Exception e) {
+            logService.saveLogs(CUSTOMER, e.getMessage(), BAN);
+            ban = false;
         }
+        return ban;
     }
+
+    @Override
+    public List<Customer> getBannedCustomerlist(Integer page) {
+        int dataCount = 10;
+        Pageable pagination = PageRequest.of(page - 1, dataCount);
+
+        return customerRepository.getBannedListCustomer(pagination);
+    }
+
+    @Override
+    public Long getCountBannedList() {
+        int dataCount = 10;
+        Double data = customerRepository.getCountBannedCustomer();
+        Long totalPage = (long) Math.ceil(data / dataCount);
+        return totalPage;
+    }
+
+
 }

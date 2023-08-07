@@ -1,7 +1,6 @@
 package com.example.AppWinterhold.Dao;
 
 import com.example.AppWinterhold.Dto.Customer.CustomerIndexDto;
-import com.example.AppWinterhold.Dto.Customer.CustomerInsertDto;
 import com.example.AppWinterhold.Dto.Customer.CustomerUpdateDto;
 import com.example.AppWinterhold.Entity.Customer;
 import org.springframework.data.domain.Pageable;
@@ -52,7 +51,7 @@ public interface CustomerRepository extends JpaRepository<Customer, String> {
             c.gender,c.phone,c.address,c.membershipExpireDate
             )
             FROM Customer AS c
-                WHERE c.membershipExpireDate >  GETDATE() AND c.membershipNumber  NOT IN ( select c.membershipNumber
+                WHERE c.banned = 0 AND c.membershipExpireDate >  GETDATE() AND c.membershipNumber  NOT IN ( select c.membershipNumber
                                                                           from Customer AS c
                                                                           JOIN c.loan AS l
                                                                           WHERE l.returnDate IS NULL AND l.denda != 0 AND l.loanDate != FORMAT(GETDATE(),'yyyy-MM-dd')) 
@@ -123,4 +122,18 @@ public interface CustomerRepository extends JpaRepository<Customer, String> {
             WHERE c.membershipNumber = :member
             """)
     Integer getLoanCountCurrentCustomer(@Param("member") String membershipNumber);
+
+    @Query("""
+            SELECT c
+            from Customer as c
+            where c.banned = 1
+            """)
+    List<Customer> getBannedListCustomer(Pageable pagination);
+
+    @Query("""
+            select count(c)
+            from Customer as c
+            where c.banned = 1
+            """)
+    Double getCountBannedCustomer();
 }

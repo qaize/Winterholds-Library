@@ -38,5 +38,8 @@ public interface CustomerService {
 
     Boolean CustomerMemberChecker(String s);
 
-    void doBanCustomer(String customerNumber);
+    boolean doBanCustomer(String customerNumber);
+    List<Customer> getBannedCustomerlist(Integer page);
+
+    Long getCountBannedList();
 }

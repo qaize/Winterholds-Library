@@ -2,6 +2,7 @@ package com.example.AppWinterhold.Controller.Model;
 
 import com.example.AppWinterhold.Dto.Customer.CustomerInsertDto;
 import com.example.AppWinterhold.Dto.Customer.CustomerUpdateDto;
+import com.example.AppWinterhold.Entity.Customer;
 import com.example.AppWinterhold.Service.abs.CustomerService;
 import com.example.AppWinterhold.Service.imp.AccountServiceImp;
 import com.example.AppWinterhold.Utility.Dropdown;
@@ -13,11 +14,11 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Controller
 @RequestMapping("/customer")
 public class CustomerController {
-
 
     @Autowired
     private CustomerService customerService;
@@ -117,24 +118,45 @@ public class CustomerController {
         model.addAttribute("memberDto", memberDto);
         return "Customer/Detail";
     }
+
     @GetMapping("/valid")
-    public String valid(Model model, @RequestParam String customerNumber)
-    {
-        model.addAttribute("validationHeader","Are you sure want to ban : "+customerNumber+" ?");
-        model.addAttribute("validationReason","cancel this by clicking back button!");
-        model.addAttribute("membershipNumber",customerNumber);
+    public String valid(Model model, @RequestParam String customerNumber) {
+        int flag = 0;
+        model.addAttribute("validationHeader", "Are you sure want to ban : " + customerNumber + " ?");
+        model.addAttribute("validationReason", "cancel this by clicking back button!");
+        model.addAttribute("membershipNumber", customerNumber);
+        model.addAttribute("flag", flag);
+
         return "Customer/valid";
 
     }
+
     @GetMapping("/ban")
-    public String ban(@RequestParam String customerNumber){
-        customerService.doBanCustomer(customerNumber);
+    public String ban(Model model,@RequestParam String customerNumber) {
+
+        if(customerService.doBanCustomer(customerNumber)){
         return "redirect:/customer/index";
+        }
+        else{
+            int flag = 1;
+            model.addAttribute("validationHeader", "Sorry you can't ban customer during loan");
+            model.addAttribute("validationReason", "Please, complete the loan session first!");
+            model.addAttribute("flag",flag);
+            return "Customer/valid";
+        }
     }
 
     @GetMapping("/banned-customer")
-    public String bannedlist(Model model){
+    public String bannedlist(Model model, @RequestParam(defaultValue = "1") Integer page) {
 
+        List<Customer> customers = customerService.getBannedCustomerlist(page);
+        Long totalPage = customerService.getCountBannedList();
+        if (totalPage == 0) {
+            page = 0;
+        }
+        model.addAttribute("totalPage", totalPage);
+        model.addAttribute("page",page);
+        model.addAttribute("bannedList",customers);
         return "Customer/bannedList";
     }
 }
