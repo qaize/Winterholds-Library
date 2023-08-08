@@ -1,10 +1,12 @@
 package com.example.AppWinterhold.Service.imp;
 
+import com.example.AppWinterhold.Dao.CustomerRepository;
 import com.example.AppWinterhold.Dao.LoanRepository;
 import com.example.AppWinterhold.Dao.LogsIncomeRepository;
 import com.example.AppWinterhold.Dto.Loan.LoanIndexDto;
 import com.example.AppWinterhold.Dto.Loan.LoanInsertDto;
 import com.example.AppWinterhold.Dto.Loan.LoanUpdateDto;
+import com.example.AppWinterhold.Entity.Customer;
 import com.example.AppWinterhold.Entity.Loan;
 import com.example.AppWinterhold.Entity.LogsIncome;
 import com.example.AppWinterhold.Service.abs.LoanService;
@@ -40,6 +42,11 @@ public class LoanServiceImp implements LoanService {
 
     @Autowired
     private LogServiceImpl logService;
+
+    @Autowired
+    private CustomerServiceImp customerServiceImp;
+    @Autowired
+    private CustomerRepository customerRepository;
 
     @Override
     public List<LoanIndexDto> getListLoanBySearch(Integer page, String title, String name) {
@@ -133,6 +140,7 @@ public class LoanServiceImp implements LoanService {
             Loan data = loanRepository.findById(id).get();
             Sort sort = Sort.by("transactionDate").descending();
             List<LogsIncome> logList = logsIncomeRepository.findAll(sort);
+            Customer customer = customerServiceImp.getCustomerByEntity(data.getCustomerNumber());
             if (logList.size() == 0) {
                 LogsIncome log = new LogsIncome(UUID.randomUUID().toString(), "PELUNASAN DENDA ID :" + data.getId() + "/" + data.getCustomerNumber(), authName, data.getDenda().doubleValue(), 0.0, date);
                 logsIncomeRepository.save(log);
@@ -154,6 +162,8 @@ public class LoanServiceImp implements LoanService {
                     logService.saveLogs(LOAN, SUCCESS, PAY);
                 }
                 data.setDenda(0L);
+                customer.setLoanCount(customerServiceImp.loanCountSetter(customer.getMembershipNumber(),"Return"));
+                customerRepository.save(customer);
                 loanRepository.save(data);
             }
 

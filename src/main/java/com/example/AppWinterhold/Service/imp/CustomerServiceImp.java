@@ -46,6 +46,7 @@ public class CustomerServiceImp implements CustomerService {
     @Override
     public void insert(CustomerInsertDto dto) {
         try {
+
             String generatedMember = customerNumberGenerator();
             LocalDateTime date = LocalDateTime.now();
             Customer en = new Customer(generatedMember, dto.getFirstName(), dto.getLastName(), dto.getBirthDate(),
@@ -60,6 +61,7 @@ public class CustomerServiceImp implements CustomerService {
     @Override
     public void update(CustomerUpdateDto dto) {
         try {
+
             Customer en = mapCustomerUpdate(dto);
             customerRepository.save(en);
             logService.saveLogs(CUSTOMER, SUCCESS, UPDATE);
@@ -116,6 +118,21 @@ public class CustomerServiceImp implements CustomerService {
     @Override
     public List<CustomerIndexDto> getAvaliableCustomerEdit(String customerNumber) {
         return customerRepository.getAvaliableCustomerEdit(customerNumber);
+    }
+
+    @Override
+    public void doUnbanCustomer(String customerNumber) {
+
+        try {
+            Optional<Customer> data = customerRepository.findById(customerNumber);
+            data.get().setBanned(0);
+            customerRepository.save(data.get());
+            logService.saveLogs(CUSTOMER, SUCCESS, BAN);
+        } catch (Exception e) {
+            logService.saveLogs(CUSTOMER, e.getMessage(), BAN);
+
+        }
+
     }
 
     @Override

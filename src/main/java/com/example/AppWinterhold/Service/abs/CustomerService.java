@@ -27,4 +27,6 @@ public interface CustomerService {
     CustomerUpdateDto getCustomerByMemberInsert(String number);
     Integer loanCountSetter(String customerNumber, String action);
     List<CustomerIndexDto> getAvaliableCustomerEdit(String customerNumber);
+
+    void doUnbanCustomer(String customerNumber);
 }

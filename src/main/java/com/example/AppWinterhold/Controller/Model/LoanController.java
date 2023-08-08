@@ -17,11 +17,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import static com.example.AppWinterhold.Utility.Dropdown.*;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+
+import static com.example.AppWinterhold.Utility.Dropdown.dropdownBook;
+import static com.example.AppWinterhold.Utility.Dropdown.dropdownCustomer;
 
 @Controller
 @RequestMapping("/loan")
@@ -57,7 +59,7 @@ public class LoanController {
                 val.setLoanStatus("Returned");
             } else {
                 Long dif = ChronoUnit.DAYS.between(LocalDate.now(), val.getDueDate());
-                val.setDayLeft(dif >= 0 ? dif.toString() : "Late");
+                val.setDayLeft(dif > 0 ? dif.toString() : "Late");
                 val.setLoanStatus("On Loan");
             }
         }
@@ -89,6 +91,9 @@ public class LoanController {
 
                 val.setDayLeft(val.getReturnDate().isBefore(val.getDueDate()) ? "On Time" : "Late");
                 val.setLoanStatus("Returned");
+            } else if (val.getDueDate().equals(LocalDate.now())) {
+                val.setDayLeft("Last day");
+                val.setLoanStatus("On Loan");
             } else {
 
                 Long dif = ChronoUnit.DAYS.between(LocalDate.now(), val.getDueDate());
@@ -174,9 +179,11 @@ public class LoanController {
         if (data.getReturnDate() == null) {
 
             book.setIsBorrowed(false);
-            customer.setLoanCount(customerService.loanCountSetter(data.getCustomerNumber(), "Return"));
             data.setReturnDate(LocalDate.now());
             data.setDenda(loanService.getCountDenda(data.getDueDate()));
+            if(!(data.getDenda() > 0)){
+                customer.setLoanCount(customerService.loanCountSetter(data.getCustomerNumber(), "Return"));
+            }
 
             bookService.update(book);
             loanService.extendLoan(data);
@@ -291,6 +298,7 @@ public class LoanController {
     public String extend(Model model, @RequestParam Long id) {
 
         Loan data = loanService.getLoanById(id);
+
         if (data.getExtend() < 4) {
 
             Integer counter = data.getExtend();

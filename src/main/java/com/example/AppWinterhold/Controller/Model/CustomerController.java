@@ -163,6 +163,18 @@ public class CustomerController {
         }
     }
 
+    @GetMapping("/unban")
+    public String unban(Model model, @RequestParam String customerNumber) {
+            int flag = 1;
+            customerService.doUnbanCustomer(customerNumber);
+
+            model.addAttribute("validationHeader", "Success unban : "+customerNumber );
+            model.addAttribute("validationReason", "Please, be kind!");
+            model.addAttribute("flag", flag);
+
+            return "Customer/valid";
+    }
+
     @GetMapping("/banned-customer")
     public String bannedlist(Model model, @RequestParam(defaultValue = "1") Integer page) {
 
