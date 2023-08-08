@@ -20,5 +20,9 @@ public class actionConst {
     final public static String PAY = " Acquittance";
     final public static String EXTEND = " Extend";
     final public static String BAN = " BAN";
+    final public static String EMPTY_STRING = "";
+
+//    STATUS
+
 
 }

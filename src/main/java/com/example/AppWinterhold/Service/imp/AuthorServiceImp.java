@@ -11,16 +11,16 @@ import com.example.AppWinterhold.Entity.Author;
 import com.example.AppWinterhold.Service.abs.AuthorService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import liquibase.pro.packaged.B;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 import java.util.Arrays;
 import java.util.List;
@@ -34,13 +34,12 @@ public class AuthorServiceImp implements AuthorService {
     private static final Logger LOGGER = LoggerFactory.getLogger(AuthorServiceImp.class);
 
     final private LogServiceImpl logService;
+    ObjectMapper objectMapper = new ObjectMapper();
     private AuthorRepository authorRepository;
     private BaseController baseController;
 
-    ObjectMapper objectMapper = new ObjectMapper();
-
     @Autowired
-    public AuthorServiceImp(AuthorRepository authorRepository,BaseController baseController, LogServiceImpl logService) {
+    public AuthorServiceImp(AuthorRepository authorRepository, BaseController baseController, LogServiceImpl logService) {
         this.authorRepository = authorRepository;
         this.baseController = baseController;
         this.logService = logService;
@@ -54,8 +53,8 @@ public class AuthorServiceImp implements AuthorService {
 //        RestTemplate restTemplate = new RestTemplate();
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
-        HttpEntity<String> http = new HttpEntity<String>("Params",httpHeaders);
-        Pageable paging = PageRequest.of(page-1,row, Sort.by("id").descending());
+        HttpEntity<String> http = new HttpEntity<String>("Params", httpHeaders);
+        Pageable paging = PageRequest.of(page - 1, row, Sort.by("id").descending());
 
 //        ResponseEntity< String > result = restTemplate.exchange("http://localhost:7081/winterhold/api/author/getAuthor", HttpMethod.GET, http,
 //                String.class);
@@ -69,8 +68,9 @@ public class AuthorServiceImp implements AuthorService {
 //        }
 
 
-        return authorRepository.getListAuthorBySearch(name,paging);
+        return authorRepository.getListAuthorBySearch(name, paging);
     }
+
     @Override
     public List<AuthorIndexDto> getListAuthorBySearchV2(AuthorIndexDtoV2 authorIndexDtoV2) throws JsonProcessingException {
 //        Integer row = 10;
@@ -80,9 +80,9 @@ public class AuthorServiceImp implements AuthorService {
 //        String data = objectMapper.writeValueAsString(authorIndexDtoV2);
 //        httpHeaders.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
 //        HttpEntity<String> http = new HttpEntity<String>(data,httpHeaders);
-        Pageable paging = PageRequest.of(authorIndexDtoV2.getPage()-1,authorIndexDtoV2.getDataCount(), Sort.by("id").descending());
+        Pageable paging = PageRequest.of(authorIndexDtoV2.getPage() - 1, authorIndexDtoV2.getDataCount(), Sort.by("id").descending());
 
-        return authorRepository.getListAuthorBySearch(authorIndexDtoV2.getFullname(),paging);
+        return authorRepository.getListAuthorBySearch(authorIndexDtoV2.getFullname(), paging);
     }
 
     @Override
@@ -93,9 +93,10 @@ public class AuthorServiceImp implements AuthorService {
 
     @Override
     public Long getCountPage(String name) {
+
         Integer row = 10;
-        Double totalData =(double) authorRepository.getCountPage(name);
-        Long totaPage =(long)  Math.ceil(totalData/row);
+        Double totalData = (double) authorRepository.getCountPage(name);
+        Long totaPage = (long) Math.ceil(totalData / row);
 
         return totaPage;
     }
@@ -103,17 +104,16 @@ public class AuthorServiceImp implements AuthorService {
     @Override
     public void insert(AuthorInsertDto dto) {
         Author en = new Author();
-        try{
-            InsertAccountMapper(en,dto);
+        try {
+            InsertAccountMapper(en, dto);
             authorRepository.save(en);
-            logService.saveLogs(AUTHOR,SUCCESS, INSERT);
-        }
-        catch(Exception ex){
-            logService.saveLogs(AUTHOR,FAILED, INSERT);
+            logService.saveLogs(AUTHOR, SUCCESS, INSERT);
+        } catch (Exception ex) {
+            logService.saveLogs(AUTHOR, FAILED, INSERT);
         }
     }
 
-    public void InsertAccountMapper(Author author, AuthorInsertDto authorInsertDto){
+    public void InsertAccountMapper(Author author, AuthorInsertDto authorInsertDto) {
         String createdBy = baseController.getCurrentLogin();
         author.setId(authorInsertDto.getId());
         author.setTitle(authorInsertDto.getTitle());
@@ -123,13 +123,13 @@ public class AuthorServiceImp implements AuthorService {
         author.setDeceasedDate(authorInsertDto.getDeceasedDate());
         author.setEducation(authorInsertDto.getEducation());
         author.setSummary(authorInsertDto.getSummary());
-        author.setCreatedBy(createdBy == null || createdBy.equalsIgnoreCase("")
-                ? "Unknown":createdBy);
+        author.setCreatedBy(createdBy == null || createdBy.equalsIgnoreCase(EMPTY_STRING)
+                ? EMPTY_STRING : createdBy);
         author.setModifiedBy("");
 
     }
 
-    public void UpdateAccountMapper(Author author, AuthorUpdateDto authorInsertDto){
+    public void UpdateAccountMapper(Author author, AuthorUpdateDto authorInsertDto) {
         AuthorIndexDto authIndex = authorRepository.getAuthorById(authorInsertDto.getId());
         String modifiedBy = baseController.getCurrentLogin();
         author.setId(authorInsertDto.getId());
@@ -165,13 +165,15 @@ public class AuthorServiceImp implements AuthorService {
 
     @Override
     public Boolean delete(Long id) {
+
         var data = authorRepository.findById(id);
-        if(data==null){
-            logService.saveLogs(AUTHOR,FAILED, DELETE);
+        if (data == null) {
+            logService.saveLogs(AUTHOR, FAILED, DELETE);
             return false;
         }
+
         authorRepository.deleteById(id);
-        logService.saveLogs(AUTHOR,SUCCESS, DELETE);
+        logService.saveLogs(AUTHOR, SUCCESS, DELETE);
         return true;
     }
 
@@ -182,15 +184,17 @@ public class AuthorServiceImp implements AuthorService {
 
     @Override
     public void update(AuthorUpdateDto dto) {
+
         Author en = new Author();
-        try{
-            UpdateAccountMapper(en,dto);
+        try {
+
+            UpdateAccountMapper(en, dto);
             authorRepository.save(en);
-            logService.saveLogs(AUTHOR,SUCCESS, UPDATE);
-        }
-        catch(Exception ex){
-            LOGGER.info(FAILED +" "+ UPDATE);
-            logService.saveLogs(AUTHOR,FAILED, UPDATE);
+            logService.saveLogs(AUTHOR, SUCCESS, UPDATE);
+        } catch (Exception ex) {
+
+            LOGGER.info(FAILED + " " + UPDATE);
+            logService.saveLogs(AUTHOR, FAILED, UPDATE);
         }
     }
 }

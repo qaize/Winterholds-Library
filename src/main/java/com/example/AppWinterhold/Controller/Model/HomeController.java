@@ -15,20 +15,12 @@ public class HomeController {
 
     @Autowired
     AccountServiceImp account;
-    String topicName = "newtopic";
-    @Autowired
-    private KafkaTemplate<String, String> kafkaTemplate;
-//
-//    public void sendMessage(String msg) {
-//        kafkaTemplate.send(topicName, msg);
-//    }
 
     @GetMapping("/index")
     public String index(Model model) {
 
-//        sendMessage("Home");
-
         model.addAttribute("userLogin", account.getCurrentUserLogin());
+
         return "Home/index";
     }
 }

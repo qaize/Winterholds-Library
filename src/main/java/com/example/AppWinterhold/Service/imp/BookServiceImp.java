@@ -10,6 +10,7 @@ import com.example.AppWinterhold.Service.abs.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import static  com.example.AppWinterhold.Const.actionConst.*;
 
 import java.util.List;
 import java.util.Random;
@@ -33,7 +34,9 @@ public class BookServiceImp implements BookService {
 
     @Override
     public void insert(BookInsertDto dto) {
+
         String code = generateBookCodeByCategory(dto.getCategoryName());
+
         Book en = new Book(code, dto.getTitle(), dto.getCategoryName(),
                 dto.getAuthorId().longValue(), dto.getIsBorrowed(), dto.getSummary(),
                 dto.getReleaseDate(), dto.getTotalPage());
@@ -43,11 +46,10 @@ public class BookServiceImp implements BookService {
 
     @Override
     public ResponseCrudRestDto getAll() {
+
         List<BookIndexDto> data = bookRepository.getAll();
         ResponseCrudRestDto response = new ResponseCrudRestDto();
-
         try {
-
             response.setMessage("OK");
             response.setStatus(HttpStatus.OK);
             response.setObject(data);
@@ -57,7 +59,6 @@ public class BookServiceImp implements BookService {
             response.setObject(null);
 
         }
-
 
         return response;
     }
@@ -88,7 +89,7 @@ public class BookServiceImp implements BookService {
         ResponseCrudRestDto response = new ResponseCrudRestDto();
         try {
 
-            response.setMessage("SUCCESS");
+            response.setMessage(SUCCESS);
             response.setStatus(HttpStatus.OK);
             response.setObject(data);
         } catch (Exception e) {
@@ -115,11 +116,11 @@ public class BookServiceImp implements BookService {
 
     @Override
     public void update(BookUpdateDto dto) {
+
         Book en = new Book(dto.getCode(), dto.getTitle(), dto.getCategoryName(),
                 dto.getAuthorId().longValue(), dto.getIsBorrowed(), dto.getSummary(),
                 dto.getReleaseDate(), dto.getTotalPage());
         bookRepository.save(en);
-
     }
 
     @Override
@@ -133,10 +134,12 @@ public class BookServiceImp implements BookService {
         int randomed = 1000;
         Random randomer = new Random();
         int generatedValue = randomer.nextInt(randomed);
-        String generated = categoryName.substring(0, 2).toUpperCase() + generatedValue;
+        String generated = "";
         boolean checker = true;
+
 //       IF THIS BOOKS CODE WAS USED
         while (checker) {
+            generated = categoryName.substring(0, 2).toUpperCase() + generatedValue;
             if (bookRepository.getCountBooksByCode(generated) > 0) {
                 generatedValue++;
             } else {

@@ -149,7 +149,9 @@ public class CustomerServiceImp implements CustomerService {
         int genratedValue = randomer.nextInt(bound);
         String genrator = "";
         Boolean membershipChecker = true;
+//        CHECK CUSTOMER IS ALREADY ON TABLE
         while (membershipChecker) {
+            genrator = "CUS" + genratedValue;
             if (!CustomerMemberChecker(genrator)) {
                 genratedValue++;
             } else {

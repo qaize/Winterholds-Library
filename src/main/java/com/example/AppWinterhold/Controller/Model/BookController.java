@@ -30,35 +30,43 @@ public class BookController {
     public String insert(Model model, @RequestParam(required = true) String categoryName) {
 
         BookInsertDto dto = new BookInsertDto();
-        model.addAttribute("categoryName", categoryName);
         var dropdownauthor = Dropdown.dropdownAuthor(authorService.getAllAuthor());
-        model.addAttribute("dropdownAuthor", dropdownauthor);
         dto.setIsBorrowed(false);
         dto.setCategoryName(categoryName);
+
+        model.addAttribute("categoryName", categoryName);
+        model.addAttribute("dropdownAuthor", dropdownauthor);
         model.addAttribute("dto", dto);
+
         return "Book/insert";
     }
 
     @PostMapping("/insert")
     public String insert(@Valid @ModelAttribute("dto") BookInsertDto dto, BindingResult bindingResult, Model model) {
+
         if (bindingResult.hasErrors()) {
-            model.addAttribute("dto", dto);
             Boolean borrowed = false;
             var dropdownauthor = Dropdown.dropdownAuthor(authorService.getAllAuthor());
             dto.setIsBorrowed(borrowed);
+
+            model.addAttribute("dto", dto);
             model.addAttribute("dropdownAuthor", dropdownauthor);
+
             return "Book/insert";
         } else {
-//            dto.setCode();
+
             bookService.insert(dto);
+
             return "redirect:/category/detail?categoryName=" + dto.getCategoryName();
         }
     }
 
     @GetMapping("/update")
-    public String update(Model model, @RequestParam(required = true) String bookCode) {
+    public String update(Model model, @RequestParam String bookCode) {
+
         BookUpdateDto dto = bookService.getBooksById(bookCode);
         var dropdownauthor = Dropdown.dropdownAuthor(authorService.getAllAuthor());
+
         model.addAttribute("dropdownAuthor", dropdownauthor);
         model.addAttribute("dto", dto);
 
@@ -69,37 +77,51 @@ public class BookController {
 
     @PostMapping("/update")
     public String update(@Valid @ModelAttribute("dto") BookUpdateDto dto, BindingResult bindingResult, Model model) {
+
         if (bindingResult.hasErrors()) {
-            model.addAttribute("dto", dto);
+
             var dropdownauthor = Dropdown.dropdownAuthor(authorService.getAllAuthor());
+
+            model.addAttribute("dto", dto);
             model.addAttribute("dropdownAuthor", dropdownauthor);
+
             return "Book/update";
         } else {
+
             bookService.update(dto);
+
             return "redirect:/category/detail?categoryName=" + dto.getCategoryName();
         }
-
     }
 
     @GetMapping("/delete")
     public String delete(@RequestParam(required = true) String bookCode) {
+
         var data = bookService.getBooksById(bookCode);
         Boolean result = bookService.delete(bookCode);
+
         if (!result) {
             return "Category/delete";
         }
+
         return "redirect:/category/detail?categoryName=" + data.getCategoryName();
     }
 
     @GetMapping("/borrow")
     public String borrow(Model model, @RequestParam(required = true) String bookCode, @RequestParam(required = true) String categoryName) {
+
         BookUpdateDto data = bookService.getBooksBycodeUpdate(bookCode);
+
         if (loanServiceImp.checkLoanBooks(bookCode) > 0) {
+
             model.addAttribute("categoryName", categoryName);
+
             return "Category/valid";
         } else {
+
             data.setIsBorrowed(!data.getIsBorrowed());
             bookService.update(data);
+
             return "redirect:/category/detail?categoryName=" + categoryName;
         }
     }

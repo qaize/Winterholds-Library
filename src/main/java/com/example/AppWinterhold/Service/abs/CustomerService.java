@@ -10,36 +10,21 @@ import java.util.List;
 public interface CustomerService {
     List<CustomerIndexDto> getListCustomerBySearch(Integer page, String number, String name);
 
-    Long getCountPage(String number, String name);
-
-    void insert(CustomerInsertDto dto);
-
-    List<CustomerIndexDto> getAll();
-
-    List<CustomerIndexDto> getAvaliableCustomer();
-
-    CustomerIndexDto getCustomerByMember(String customerNumber);
-
-    CustomerUpdateDto getCustomerByMemberInsert(String number);
-
-    Boolean delete(String number);
-
-    void update(CustomerUpdateDto dto);
-
-    List<CustomerIndexDto> getAvaliableCustomerEdit(String customerNumber);
-
-    Customer getCustomerByEntity(String customerNumber);
-
-    void updateWithEntity(Customer customer);
-
-    Integer loanCountSetter(String customerNumber, String action);
-
-    String customerNumberGenerator();
-
-    Boolean CustomerMemberChecker(String s);
-
-    boolean doBanCustomer(String customerNumber);
-    List<Customer> getBannedCustomerlist(Integer page);
-
     Long getCountBannedList();
+    Boolean delete(String number);
+    List<CustomerIndexDto> getAll();
+    String customerNumberGenerator();
+    void update(CustomerUpdateDto dto);
+    void insert(CustomerInsertDto dto);
+    Boolean CustomerMemberChecker(String s);
+    void updateWithEntity(Customer customer);
+    boolean doBanCustomer(String customerNumber);
+    List<CustomerIndexDto> getAvaliableCustomer();
+    Long getCountPage(String number, String name);
+    List<Customer> getBannedCustomerlist(Integer page);
+    Customer getCustomerByEntity(String customerNumber);
+    CustomerIndexDto getCustomerByMember(String customerNumber);
+    CustomerUpdateDto getCustomerByMemberInsert(String number);
+    Integer loanCountSetter(String customerNumber, String action);
+    List<CustomerIndexDto> getAvaliableCustomerEdit(String customerNumber);
 }

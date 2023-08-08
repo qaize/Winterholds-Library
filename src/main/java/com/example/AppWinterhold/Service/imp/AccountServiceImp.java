@@ -21,6 +21,7 @@ import java.util.Optional;
 public class AccountServiceImp implements AccountService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AccountServiceImp.class);
+
     @Autowired
     private AccountRepository accountRepository;
 
@@ -29,8 +30,10 @@ public class AccountServiceImp implements AccountService {
 
     @Override
     public void insert(AccountInsertDto dto) {
+
         String hash = passwordEncoder.encode(dto.getPassword());
         Account en = new Account(dto.getUsername(), hash, false, 0, dto.getName());
+
         accountRepository.save(en);
     }
 
@@ -51,11 +54,7 @@ public class AccountServiceImp implements AccountService {
 
     @Override
     public boolean passwordChecker(String password, String conPassword) {
-        if (password.equals(conPassword)) {
-            return true;
-        } else {
-            return false;
-        }
+        return password.equals(conPassword)? true : false;
     }
 
     @Override
@@ -71,6 +70,7 @@ public class AccountServiceImp implements AccountService {
 
     @Override
     public void update(AccountUpdateDto dto) {
+
         String hash = passwordEncoder.encode(dto.getPassword());
         Account en = new Account(dto.getUsername(), hash, false, 0, "sementara");
         accountRepository.save(en);
@@ -81,14 +81,13 @@ public class AccountServiceImp implements AccountService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userlogin = "Default";
 
-//        LOGGER.info(authentication.getName());
-
         Optional<Account> ac = accountRepository.findById(authentication.getName().toString());
 
         if (ac.get() != null) {
             userlogin = ac.get().getUserLogin() != null ? ac.get().getUserLogin() : authentication.getName();
         }
-//        LOGGER.info(userlogin);
+
+        LOGGER.info(userlogin);
         return userlogin;
     }
 

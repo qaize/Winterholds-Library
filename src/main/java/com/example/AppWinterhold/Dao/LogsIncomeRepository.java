@@ -10,22 +10,19 @@ import java.util.List;
 public interface LogsIncomeRepository extends JpaRepository<LogsIncome,String> {
 
    @Query("""
-           SELECT li
-           FROM LogsIncome as li
+           SELECT 
+                li
+           FROM 
+                LogsIncome as li
            """)
     List<LogsIncome> getPageOnPaymentHistory(Pageable paging);
 
-
    @Query("""
-           SELECT count(uuid)
-           FROM LogsIncome as li
+           SELECT 
+                count(uuid)
+           FROM 
+                LogsIncome as li
            """)
     Long getCountTotalPaymentHistory();
 
-//    @Query("""
-//            SELECT TOP 1 li
-//            FROM LogsIncome as li
-//            ORDER BY transactionDate DESC
-//            """)
-//    LogsIncome findLatestData();
 }

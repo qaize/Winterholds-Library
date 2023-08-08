@@ -17,7 +17,10 @@ public class CustomAuthencticationSuccessHandler implements AuthenticationSucces
     private AccountService accountService;
 
     @Override
-    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
+    public void onAuthenticationSuccess(HttpServletRequest request,
+                                        HttpServletResponse response,
+                                        Authentication authentication) throws IOException, ServletException {
+
         var username = request.getParameter("username");
         Account data = accountService.getAccount(username);
         data.setCountWrong(0);

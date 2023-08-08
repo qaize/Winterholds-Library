@@ -10,39 +10,22 @@ import java.time.LocalDate;
 import java.util.List;
 
 public interface LoanService {
-    List<LoanIndexDto> getListLoanBySearch(Integer page, String title, String name);
-
-    Long getCountPage(String title, String name);
-
-    Long getCountDenda(LocalDate dueDate);
-
-    void insert(LoanInsertDto dto);
-
-    Loan getLoanById(Long id);
-
-    List<LoanIndexDto> getAll();
 
     void delete(Long id);
-
-    void update(LoanUpdateDto dto);
-
-//    List<LoanInsertDto> getAllByInsert();
-
-    Long checkLoanBooks(String code);
-
-    List<LoanIndexDto> getOnDenda(Integer page);
-
     void goPayOff(Long id);
-
-    void extendLoan(Loan data);
-
     Long getCountPageDenda();
-
-    List<LogsIncome> getLoanPaymentHistory(Integer page);
-
-    Long getCountPaymentHistory();
-
-    List<LoanIndexDto> getListLoanHistoryBySearch(Integer page);
-
     Long getCountHistoryPage();
+    Loan getLoanById(Long id);
+    void extendLoan(Loan data);
+    List<LoanIndexDto> getAll();
+    Long getCountPaymentHistory();
+    void update(LoanUpdateDto dto);
+    void insert(LoanInsertDto dto);
+    Long checkLoanBooks(String code);
+    Long getCountDenda(LocalDate dueDate);
+    Long getCountPage(String title, String name);
+    List<LoanIndexDto> getOnDenda(Integer page);
+    List<LogsIncome> getLoanPaymentHistory(Integer page);
+    List<LoanIndexDto> getListLoanHistoryBySearch(Integer page);
+    List<LoanIndexDto> getListLoanBySearch(Integer page, String title, String name);
 }

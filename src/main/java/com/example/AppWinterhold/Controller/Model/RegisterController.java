@@ -21,26 +21,36 @@ public class RegisterController extends BaseController {
 
     @GetMapping("/registerForm")
     public String signup(Model model) {
+
         AccountInsertDto Accountdto = new AccountInsertDto();
         model.addAttribute("dto", Accountdto);
+
         return "Register/registerForm";
     }
 
     @PostMapping("/registerForm")
     public String signup(@Valid @ModelAttribute("dto") AccountInsertDto dto, BindingResult bindingResult, Model model) {
+
         if (bindingResult.hasErrors()) {
+
             model.addAttribute("dto", dto);
+
             return "Register/registerForm";
         } else {
+
             accountService.insert(dto);
+
             return "redirect:/login/loginForm";
         }
     }
 
     @GetMapping("/popup")
     public String popup(Model model) {
+
         String token = getToken();
+
         model.addAttribute("token", token);
+
         return "Register/profile";
     }
 
