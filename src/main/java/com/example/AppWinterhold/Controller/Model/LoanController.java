@@ -181,7 +181,7 @@ public class LoanController {
             book.setIsBorrowed(false);
             data.setReturnDate(LocalDate.now());
             data.setDenda(loanService.getCountDenda(data.getDueDate()));
-            if(!(data.getDenda() > 0)){
+            if (!(data.getDenda() > 0)) {
                 customer.setLoanCount(customerService.loanCountSetter(data.getCustomerNumber(), "Return"));
             }
 
@@ -272,16 +272,21 @@ public class LoanController {
 
     @GetMapping("/denda")
     public String denda(Model model, @RequestParam(defaultValue = "1") Integer page) {
-
+        int flag = 0;
         List<LoanIndexDto> loanDto = loanService.getOnDenda(page);
         Long totalPage = loanService.getCountPageDenda();
         if (totalPage == 0) {
             page = 0;
         }
 
-        model.addAttribute("currentPage", page);
+        if(loanDto.isEmpty()){
+            flag = 1;
+            model.addAttribute("empty","Seems there is mosquito flying around");
+        }
+        model.addAttribute("flag",flag);
         model.addAttribute("dataDenda", loanDto);
         model.addAttribute("totalPage", totalPage);
+        model.addAttribute("currentPage", page);
 
         return "loan/denda";
     }
@@ -299,20 +304,29 @@ public class LoanController {
 
         Loan data = loanService.getLoanById(id);
 
-        if (data.getExtend() < 4) {
 
-            Integer counter = data.getExtend();
-            data.setExtend(counter + 1);
-            data.setDueDate(data.getDueDate().plusDays(2));
-            loanService.extendLoan(data);
-
-            return "redirect:/loan/index";
-        } else {
-
+        if (LocalDate.now().isAfter(data.getDueDate())) {
             model.addAttribute("validationHeader", "Unable to Extend");
-            model.addAttribute("validationReason", "User was reached maximum extendable");
+            model.addAttribute("validationReason", "User was late, please return the book and loan again");
 
             return "loan/valid";
+        } else {
+
+            if (data.getExtend() < 4) {
+
+                Integer counter = data.getExtend();
+                data.setExtend(counter + 1);
+                data.setDueDate(data.getDueDate().plusDays(2));
+                loanService.extendLoan(data);
+
+                return "redirect:/loan/index";
+            } else {
+
+                model.addAttribute("validationHeader", "Unable to Extend");
+                model.addAttribute("validationReason", "User was reached maximum extendable");
+
+                return "loan/valid";
+            }
         }
 
     }
