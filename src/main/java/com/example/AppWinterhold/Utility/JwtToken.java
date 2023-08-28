@@ -2,6 +2,7 @@ package com.example.AppWinterhold.Utility;
 
 import io.jsonwebtoken.*;
 import lombok.Getter;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -11,6 +12,12 @@ import java.time.LocalDateTime;
 
 @Service
 public class JwtToken {
+
+    @Value("${Jwt.Issuer}")
+    private String issuer;
+
+    @Value("${server.port}")
+    private String port;
 
     @Getter
     private String audience = "AppQaize";
@@ -33,7 +40,7 @@ public class JwtToken {
         JwtBuilder jwtBuilder = Jwts.builder();
         jwtBuilder = jwtBuilder.setSubject(subject)
                 .claim("username",username)
-                .setIssuer("http://localhost:7081")
+                .setIssuer(issuer.concat(port))
                 .setAudience(audience)
                 .setExpiration(Date.valueOf(LocalDate.now().plusDays(1)))
                 .signWith(SignatureAlgorithm.HS256,secret_key);

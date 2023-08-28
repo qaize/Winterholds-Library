@@ -1,73 +1,59 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
-<head th:replace="~{layout::head}">
+<head th:replace="~{layout::headLayout}">
 </head>
-<body>
-<nav th:replace="~{layout::navigation}"></nav>
+<body class="main-body">
+<nav th:replace="~{layout::navLayout}"></nav>
+<header th:replace="~{layout::header(${categoryName})}"></header>
 <main>
-    <div class="filter">
-        <a class="btn detail-btn" th:href="@{/category/index}"> Back to Category </a>
-    </div>
-    <form method="get" th:attr="action=@{/category/detail(categoryName=${categoryName})}">
-        <fieldset>
-            <legend>Search by:</legend>
-            <div>
-                <input hidden type="text" name="categoryName" placeholder="categoryName"
-                       th:attr="value=${categoryName}">
-            </div>
-            <div>
-                <span>Book Title : </span>
-                <input type="text" name="title" placeholder="title" th:attr="value=${name}">
-            </div>
-            <div>
-                <span>Author Name :</span>
-                <input type="text" name="author" placeholder="author" th:attr="value=${author}">
-            </div>
-            <div class="divSearch">
-                <button class="btn search-button" type="submit">Search</button>
-            </div>
-        </fieldset>
+    <div class="grid-container">
 
-    </form>
-    <div class="filter">
-        <h4>list of <span th:text="${categoryName}"></span> books</h4>
-    </div>
-    <div>
-        <a class="btn add-button" th:href="@{/book/insert(categoryName=${categoryName})}"> Add books of <span
-                th:text="${categoryName}"></span> </a>
-    </div>
-    <div class="divTable">
-        <table class="table table-hover">
-            <thead>
-            <tr>
-                <th>Action</th>
-                <th>Book Title</th>
-                <th>Author Name</th>
-                <th>Status</th>
-                <th>Release Date</th>
-                <th>Total Page</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="data : ${listBooks}" th:object="${data}">
-                <td>
-                    <div class="button-wrapper">
-                        <a class="btn back-warning" th:href="@{/book/update(bookCode=*{code})}">Edit</a>
-                        <a class="btn delete-btn" th:href="@{/book/delete(bookCode=*{code})}">Delete</a>
-                    </div>
-                </td>
-                <td th:text="*{title}"></td>
-                <td th:text="*{authorName}"></td>
-                <td><a class="customerLink" th:text="*{isBorrowedStr}"
-                       th:href="@{/book/borrow(bookCode=*{code},categoryName=${categoryName})}"></a></td>
-                <td th:text="*{releaseDate}"></td>
-                <td th:text="*{totalPage}"></td>
-            </tr>
-            </tbody>
-        </table>
+        <form method="get" class="filter" th:attr="action=@{/category/detail(categoryName=${categoryName})}">
+            <input type="hidden" name="categoryName" placeholder="categoryName" th:attr="value=${categoryName}">
+            <input type="text" name="title" placeholder="title" th:attr="value=${title}">
+            <input type="text" name="author" placeholder="author" th:attr="value=${author}">
+            <button class="btn blue-button" type="submit">Search</button>
+        </form>
 
-    </div>
+        <div>
+            <a class="btn create-button" th:href="@{/book/insert(categoryName=${categoryName})}"> Add books of <span
+                    th:text="${categoryName}"></span> </a>
+        </div>
+        <div class="divTable">
+            <table>
+                <thead>
+                <tr>
+                    <th>Action</th>
+                    <th>Book Title</th>
+                    <th>Author Name</th>
+                    <th>Status</th>
+                    <th>Release Date</th>
+                    <th>Total Page</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="data : ${listBooks}" th:object="${data}">
+                    <td>
+                        <div class="button-wrapper">
+                            <a class="btn update-button" th:href="@{/book/update(bookCode=*{code})}">Edit</a>
+                            <a class="btn warning-button" th:href="@{/book/delete(bookCode=*{code})}">Delete</a>
+                        </div>
+                    </td>
+                    <td th:text="*{title}"></td>
+                    <td th:text="*{authorName}"></td>
+                    <td><a class="customerLink" th:text="*{isBorrowedStr}"
+                           th:href="@{/book/borrow(bookCode=*{code},categoryName=${categoryName})}"></a></td>
+                    <td th:text="*{releaseDate}"></td>
+                    <td th:text="*{totalPage}"></td>
+                </tr>
+                </tbody>
+            </table>
+            <div class="filter">
+                <a class="btn warning-button" th:href="@{/category/index}"> Back to Category </a>
+            </div>
 
+        </div>
+    </div>
 
 </main>
 

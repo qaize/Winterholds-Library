@@ -1,40 +1,22 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
-<head th:replace="~{layout::head}">
+<head th:replace="~{login-layout::head}">
 </head>
 <body class="authentication-body">
-<main>
-    <div class="formLogin">
+<div class="authentication-wrapper">
+    <main>
         <form method="post" th:attr="action=@{/loginProcess}">
-            <div class="divLogin">
+            <h1>Sign in</h1>
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+            <div th:if="${param.error != null}" th:text="${param.error}" class="field-validation-error"></div>
+            <input type="text" name="username" placeholder="Username" autocomplete="off" required>
+            <input type="password" name="password" placeholder="Password" required>
+            <button type="submit">Sign in</button>
 
-                <div>
-                    <h1>Sign in</h1>
-                </div>
-
-                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
-                <div th:if="${param.error != null}" th:text="${param.error}" class="field-validation-error"></div>
-
-                <div style="text-align : left">
-                    <label> Username </label>
-                    <input type="text" name="username" placeholder="Username" autocomplete="off" required>
-                </div>
-                <div style="text-align : left">
-                    <label> Password</label>
-                    <input type="password" name="password" placeholder="Password" required>
-                </div>
-                <div>
-                    <button class="btn search-button" type="submit">Sign in</button>
-                </div>
-            </div>
         </form>
-        <div style="text-align:center;margin-bottom : 20px">
-            <p>Click Here to <span><a th:href="@{/register/registerForm}">Register!</a></span></p>
-        </div>
+        <a class="blue-button" th:href="@{/register/registerForm}">Register</a>
 
-
-    </div>
-</main>
-
+    </main>
+</div>
 </body>
 </html>

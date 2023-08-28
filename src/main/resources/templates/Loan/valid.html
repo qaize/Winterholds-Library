@@ -1,17 +1,20 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
-<head th:replace="~{layout::head}" >
-</head>
-<body>
-<nav th:replace="~{layout::navigation}"></nav>
+<head th:replace="~{layout::headLayout}">
+<body class="main-body">
+<nav th:replace="~{layout::navLayout}"></nav>
+<header th:replace="~{layout::header('FAILED')}"></header>
 <main>
-  <div>
-    <h1 th:text="${validationHeader}">Unable To Return</h1>
-    <h3 th:text="${validationReason}">Data Already Returned!</h3>
-  </div>
-  <div>
-    <a class="btn back-warning" th:href="@{/loan/index}">Back to Loan Index</a>
-  </div>
+    <div class="grid-container">
+        <div>
+            <h1 th:text="${validationHeader}">Unable To Return</h1>
+            <h3 th:text="${validationReason}">Data Already Returned!</h3>
+        </div>
+        <div>
+            <a class="btn warning-button" th:href="@{/loan/index}">Back to Loan Index</a>
+        </div>
+
+    </div>
 </main>
 
 </body>

@@ -1,72 +1,71 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="en">
-<head th:replace="~{layout::head}" >
-</head>
-<body>
-<nav th:replace="~{layout::navigation}"></nav>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head th:replace="~{layout::headLayout}"><!-- layout itu dari layout.html,
+                            headLayout dari nama fragment yang ada di layout.html  -->
+<body class="main-body">
+<nav th:replace="~{layout::navLayout}"></nav>
+<header th:replace="~{layout::header('Insert new Customer')}"></header>
 <main>
+    <div>
 
-    <form method="post" th:attr="action=@{/customer/update}" enctype="multipart/form-data" th:object="${dto}">
-                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
-        <!--        <div th:if="${param.error != null}" th:text="${param.error}"></div>-->
-        <table class="insertTable">
-            <tbody>
-            <tr>
-                <td><label>membershipNumber  :</label></td>
-                <td><input type="text" th:field="*{membershipNumber}" readonly>
-                    <div class="field-validation-error" th:errors="*{membershipNumber}"> </div>
-                </td>
-            </tr>
-            <tr>
-                <td><label>firstName :</label></td>
-                <td><input type="text" th:field="*{firstName}">
-                    <div class="field-validation-error" th:errors="*{firstName}"> </div>
-                </td>
-            </tr>
-            <tr>
-                <td><label>lastName :</label></td>
-                <td><input type="text" th:field="*{lastName}">
-                    <div class="field-validation-error" th:errors="*{lastName}"> </div>
-                </td>
-            </tr>
-            <tr>
-                <td><label>birthDate :</label></td>
-                <td><input type="date" th:field="*{birthDate}">
-                    <div class="field-validation-error" th:errors="*{firstName}"> </div>
-                </td>
-            </tr>
+        <form method="post" class="upsert-form" th:attr="action=@{/customer/update}" enctype="multipart/form-data"
+              th:object="${dto}">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+            <!--        <div th:if="${param.error != null}" th:text="${param.error}"></div>-->
+            <input type="hidden" th:field="*{membershipNumber}">
+            <table>
+                <tbody>
+                <tr>
+                    <td><label>First Name :</label></td>
+                    <td><input type="text" th:field="*{firstName}">
+                        <div class="field-validation-error" th:errors="*{firstName}"></div>
+                    </td>
+                </tr>
+                <tr>
+                    <td><label>Last Name :</label></td>
+                    <td><input type="text" th:field="*{lastName}">
+                        <div class="field-validation-error" th:errors="*{lastName}"></div>
+                    </td>
+                </tr>
+                <tr>
+                    <td><label>Birth Date :</label></td>
+                    <td><input type="date" th:field="*{birthDate}">
+                        <div class="field-validation-error" th:errors="*{firstName}"></div>
+                    </td>
+                </tr>
 
 
-            <tr>
-                <td><label>gender :</label></td>
-                <td><select th:field="*{gender}">
-                    <option th:each="data : ${dropdownGender}" th:value="${data.val}" th:text="${data.text}"></option>
-                </select>
-                    <div class="field-validation-error" th:errors="*{gender}"> </div>
-                </td>
-            </tr>
-            <tr>
-                <td><label>phone :</label></td>
-                <td><input type="text" th:field="*{phone}">
-                    <div class="field-validation-error" th:errors="*{phone}"> </div>
-                </td>
-            <tr>
-                <td><label>address :</label></td>
-                <td><textarea th:field="*{address}"></textarea>
-                    <div class="field-validation-error" th:errors="*{address}"> </div>
-                </td>
-            </tr>
-            <tr>
-                <td><input type="hidden" th:field="*{membershipExpireDate}">
-                    <div class="field-validation-error" th:errors="*{membershipExpireDate}"> </div>
-                </td>
-            </tr>
-            </tbody>
-        </table>
-        <button class="blue-button" type="submit"> Submit</button>
-        <a class="btn back-warning" th:href="@{/customer/index}">Close</a>
-    </form>
-
+                <tr>
+                    <td><label>Gender :</label></td>
+                    <td><select th:field="*{gender}">
+                        <option th:each="data : ${dropdownGender}" th:value="${data.val}"
+                                th:text="${data.text}"></option>
+                    </select>
+                        <div class="field-validation-error" th:errors="*{gender}"></div>
+                    </td>
+                </tr>
+                <tr>
+                    <td><label>phone :</label></td>
+                    <td><input type="text" th:field="*{phone}">
+                        <div class="field-validation-error" th:errors="*{phone}"></div>
+                    </td>
+                <tr>
+                    <td><label>address :</label></td>
+                    <td><textarea th:field="*{address}"></textarea>
+                        <div class="field-validation-error" th:errors="*{address}"></div>
+                    </td>
+                </tr>
+                <tr>
+                    <td><input type="hidden" th:field="*{membershipExpireDate}">
+                        <div class="field-validation-error" th:errors="*{membershipExpireDate}"></div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <button class="btn blue-button" type="submit"> Submit</button>
+            <a class="btn warning-button" th:href="@{/customer/index}">Close</a>
+        </form>
+    </div>
 </main>
 
 </body>

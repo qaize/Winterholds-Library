@@ -21,7 +21,7 @@ public class RESTSecurityConfiguration {
 
 
     @Autowired
-    private JWTSecurityConfiguration jwtSecurityConfiguration;
+    public JWTSecurityConfiguration jwtSecurityConfiguration;
 
     @Bean
     @Order(1)
@@ -30,7 +30,7 @@ public class RESTSecurityConfiguration {
         http.antMatcher("/api/**").csrf().disable()
                 .authorizeRequests()
                 .antMatchers("/api/**").permitAll()
-                .anyRequest().authenticated()
+                .anyRequest().authenticated().and().exceptionHandling()
                 .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and().cors()
                 .and().addFilterBefore(jwtSecurityConfiguration, UsernamePasswordAuthenticationFilter.class);

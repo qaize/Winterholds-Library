@@ -51,7 +51,7 @@
 //    }
 //
 //
-//    //Konfig Consumer
+////    Konfig Consumer
 //    @Bean
 //    public ConsumerFactory<String, String> consumerFactory() {
 //

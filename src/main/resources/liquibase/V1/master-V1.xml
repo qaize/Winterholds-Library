@@ -156,5 +156,13 @@
         <comment>ALTER TABLE LOGS CONTRAINT STATUS TOO LONG</comment>
     </changeSet>
 
+    <changeSet id="DDL01-222-20230823-0001"
+               author="iwan">
+        <sqlFile dbms="mssql" relativeToChangelogFile="false"
+                 splitStatements="true" stripComments="true"
+                 path="liquibase/V1/sql/alter_table_book_20230823.sql"/>
+        <comment>ALTER TABLE BOOKS ADD QUANTITY</comment>
+    </changeSet>
+
 
 </databaseChangeLog>

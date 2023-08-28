@@ -1,10 +1,12 @@
 package com.example.AppWinterhold.Service.imp;
 
 import com.example.AppWinterhold.Dao.CustomerRepository;
+import com.example.AppWinterhold.Dao.LoanRepository;
 import com.example.AppWinterhold.Dto.Customer.CustomerIndexDto;
 import com.example.AppWinterhold.Dto.Customer.CustomerInsertDto;
 import com.example.AppWinterhold.Dto.Customer.CustomerUpdateDto;
 import com.example.AppWinterhold.Entity.Customer;
+import com.example.AppWinterhold.Entity.Loan;
 import com.example.AppWinterhold.Service.abs.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -27,6 +29,9 @@ public class CustomerServiceImp implements CustomerService {
 
     @Autowired
     private LogServiceImpl logService;
+
+    @Autowired
+    private LoanRepository loanRepository;
 
     @Override
     public List<CustomerIndexDto> getListCustomerBySearch(Integer page, String number, String name) {
@@ -72,15 +77,19 @@ public class CustomerServiceImp implements CustomerService {
 
     private Customer mapCustomerUpdate(CustomerUpdateDto dto) {
         Optional<Customer> dataCus = customerRepository.findById(dto.getMembershipNumber());
-        dataCus.get().setFirstName(dto.getFirstName());
-        dataCus.get().setLastName(dto.getLastName());
-        dataCus.get().setGender(dto.getGender());
-        dataCus.get().setPhone(dto.getPhone());
-        dataCus.get().setAddress(dto.getAddress());
-        if (!dto.getMembershipExpireDate().equals(dataCus.get().getMembershipExpireDate()) || dataCus.get().getMembershipExpireDate() != null) {
+
+        Customer customer = new Customer();
+        if (dataCus.isPresent()) {
+
+            dataCus.get().setFirstName(dto.getFirstName());
+            dataCus.get().setLastName(dto.getLastName());
+            dataCus.get().setGender(dto.getGender());
+            dataCus.get().setPhone(dto.getPhone());
+            dataCus.get().setAddress(dto.getAddress());
             dataCus.get().setMembershipExpireDate(dto.getMembershipExpireDate());
+            customer = dataCus.get();
         }
-        return dataCus.get();
+        return customer;
     }
 
     @Override
@@ -125,9 +134,13 @@ public class CustomerServiceImp implements CustomerService {
 
         try {
             Optional<Customer> data = customerRepository.findById(customerNumber);
-            data.get().setBanned(0);
-            customerRepository.save(data.get());
-            logService.saveLogs(CUSTOMER, SUCCESS, BAN);
+            Customer customer = new Customer();
+            if (data.isPresent()) {
+                customer = data.get();
+                customer.setBanned(0);
+                customerRepository.save(data.get());
+                logService.saveLogs(CUSTOMER, SUCCESS, BAN);
+            }
         } catch (Exception e) {
             logService.saveLogs(CUSTOMER, e.getMessage(), BAN);
 
@@ -137,7 +150,13 @@ public class CustomerServiceImp implements CustomerService {
 
     @Override
     public Customer getCustomerByEntity(String customerNumber) {
-        return customerRepository.findById(customerNumber).get();
+
+        Optional<Customer> data = customerRepository.findById(customerNumber);
+        Customer customer = new Customer();
+        if (data.isPresent()) {
+            customer = data.get();
+        }
+        return customer;
     }
 
     @Override
@@ -165,7 +184,7 @@ public class CustomerServiceImp implements CustomerService {
         Random randomer = new Random();
         int genratedValue = randomer.nextInt(bound);
         String genrator = "";
-        Boolean membershipChecker = true;
+        boolean membershipChecker = true;
 //        CHECK CUSTOMER IS ALREADY ON TABLE
         while (membershipChecker) {
             genrator = "CUS" + genratedValue;
@@ -182,10 +201,7 @@ public class CustomerServiceImp implements CustomerService {
     @Override
     public Boolean CustomerMemberChecker(String s) {
         Long result = customerRepository.checkCustomerById(s);
-        if (result > 0) {
-            return false;
-        }
-        return true;
+        return result > 0;
     }
 
     @Override
@@ -193,12 +209,21 @@ public class CustomerServiceImp implements CustomerService {
         boolean ban = true;
         try {
             Optional<Customer> data = customerRepository.findById(customerNumber);
-            data.get().setBanned(1);
-            if (data.get().getLoanCount() > 0) {
-                ban = false;
-            } else {
-                customerRepository.save(data.get());
-                logService.saveLogs(CUSTOMER, SUCCESS, BAN);
+            Long member = Long.valueOf(data.get().getMembershipNumber());
+//            Check On Loan Customer
+            Optional<Loan> dataLoan = loanRepository.findById(member);
+
+            Customer customer = new Customer();
+
+            if (data.isPresent() && dataLoan.isEmpty()) {
+                customer = data.get();
+                customer.setBanned(1);
+                if (customer.getLoanCount() > 0) {
+                    ban = false;
+                } else {
+                    customerRepository.save(customer);
+                    logService.saveLogs(CUSTOMER, SUCCESS, BAN);
+                }
             }
         } catch (Exception e) {
             logService.saveLogs(CUSTOMER, e.getMessage(), BAN);
@@ -219,8 +244,8 @@ public class CustomerServiceImp implements CustomerService {
     public Long getCountBannedList() {
         int dataCount = 10;
         Double data = customerRepository.getCountBannedCustomer();
-        Long totalPage = (long) Math.ceil(data / dataCount);
-        return totalPage;
+
+        return (long) Math.ceil(data / dataCount);
     }
 
 

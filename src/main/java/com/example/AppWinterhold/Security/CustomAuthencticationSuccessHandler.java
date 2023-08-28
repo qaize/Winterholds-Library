@@ -10,6 +10,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Optional;
 
 public class CustomAuthencticationSuccessHandler implements AuthenticationSuccessHandler {
 
@@ -22,9 +23,9 @@ public class CustomAuthencticationSuccessHandler implements AuthenticationSucces
                                         Authentication authentication) throws IOException, ServletException {
 
         var username = request.getParameter("username");
-        Account data = accountService.getAccount(username);
-        data.setCountWrong(0);
-        accountService.setCountWrong(data);
+        Optional<Account> data = accountService.getAccount(username);
+        data.get().setCountWrong(0);
+        accountService.setCountWrong(data.get());
 
         String link = "/home/index";
         response.sendRedirect(request.getContextPath() + link);

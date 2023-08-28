@@ -1,65 +1,51 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
-<head th:replace="~{layout::head}" >
+<head th:replace="~{layout::head}">
 </head>
-<body>
-<nav th:replace="~{layout::navigation}"></nav>
+<body class="main-body" th:object="${authorDto}">
+<nav th:replace="~{layout::navLayout}"></nav>
+<header th:replace="~{layout::header(*{fullname})}"></header>
 <main>
-  <div class="divContainer">
-    <a  class="btn detail-btn" th:href="@{/author/index}"> Back to Author Index </a>
-  </div>
-  <fieldset class="formSpacer">
-    <legend>Author Detail : </legend>
-  <div th:object="${authorDto}">
-    <div>
-      <span>Name          : <span th:text="*{fullname}"></span></span>
+    <div class="grid-container category-index">
+
+        <div class="filter" >
+            <label>Name : </label>
+            <h1 th:text="*{fullname}"></h1>
+            <label>Birth Date : </label>
+            <h1 th:text="*{birthDate}"></h1>
+            <label>Deceased Date : </label>
+            <h1 th:text="*{deceasedDate}"></h1>
+            <label>Education : </label>
+            <h1 th:text="*{education}"></h1>
+            <label>Summary : </label>
+            <h1 th:text="*{summary}"></h1>
+        </div>
+        <div class="filter">
+            <a class="btn warning-button" th:href="@{/author/index}">Back</a>
+        </div>
+        <table>
+            <thead>
+            <tr>
+                <th>Book Title</th>
+                <th>Category Name</th>
+                <th>isBorrowed</th>
+                <th>Release Date</th>
+                <th>Total Page</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="data : ${listBooks}" th:object="${data}">
+
+                <td th:text="*{title}"></td>
+                <td th:text="*{categoryName}"></td>
+                <td th:text="*{isBorrowedStr}"></td>
+                <td th:text="*{releaseDate}"></td>
+                <td th:text="*{totalPage}"></td>
+            </tr>
+            </tbody>
+        </table>
 
     </div>
-    <div>
-      <span>Birth Date    : <span th:text="*{birthDate}"></span></span>
-    </div>
-    <div>
-
-      <span>Deceased Date : <span th:text="*{deceasedDate}"></span></span>
-    </div>
-    <div>
-
-      <span>Education     : <span th:text="*{education}"></span></span>
-    </div>
-    <div>
-
-
-    <span>Summary       : <span th:text="*{summary}"></span></span>
-    </div>
-  </div>
-  </fieldset>
-
-  <div class="divTable">
-    <table>
-      <thead>
-      <tr>
-        <th>Book Title</th>
-        <th>Category Name</th>
-        <th>isBorrowed</th>
-        <th>Release Date</th>
-        <th>Total Page</th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr th:each="data : ${listBooks}" th:object="${data}">
-
-        <td th:text="*{title}"></td>
-        <td th:text="*{categoryName}"></td>
-        <td th:text="*{isBorrowedStr}"></td>
-        <td th:text="*{releaseDate}"></td>
-        <td th:text="*{totalPage}"></td>
-      </tr>
-      </tbody>
-    </table>
-
-  </div>
-
-
 </main>
 
 </body>

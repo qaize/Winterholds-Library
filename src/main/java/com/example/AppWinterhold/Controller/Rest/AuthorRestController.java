@@ -4,13 +4,19 @@ import com.example.AppWinterhold.Dto.Author.AuthorIndexDto;
 import com.example.AppWinterhold.Dto.Author.AuthorIndexDtoV2;
 import com.example.AppWinterhold.Dto.Author.AuthorInsertDto;
 import com.example.AppWinterhold.Dto.Author.AuthorUpdateDto;
+import com.example.AppWinterhold.Dto.BaseResponseDTO;
 import com.example.AppWinterhold.Dto.Rest.InsertFailedDto;
+import com.example.AppWinterhold.Dto.Rest.Request.Author.AuthorRequestDTO;
 import com.example.AppWinterhold.Dto.Rest.ResponseCrudRestDto;
 import com.example.AppWinterhold.Dto.Rest.ValidatorRestDto;
 import com.example.AppWinterhold.Service.abs.AuthorService;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -44,6 +50,46 @@ public class AuthorRestController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Runtime Error on the server");
         }
+    }
+
+    @PostMapping(value = "/getTupple")
+    public ResponseEntity<Object> getTuple(@RequestBody AuthorRequestDTO authorRequestDTO) {
+        return authorService.getAllAuthorTuple(authorRequestDTO);
+    }
+
+    @PostMapping(value = "/authorByTuple")
+    public ResponseEntity<Object> getTupleALl(@RequestBody AuthorRequestDTO authorRequestDTO){
+        return authorService.geAllAuthorByTupple(authorRequestDTO);
+    }
+
+    @GetMapping(value = "/getAuthorWithPage")
+    @Operation(summary = "Get Author by paging", description = "get author desc")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved"),
+            @ApiResponse(responseCode = "404", description = "Not found - The product was not found")
+    })
+    public ResponseEntity<Object> postAuthorPage() {
+        try {
+
+            Page<AuthorIndexDto> authorIndexDtos = authorService.getAllAuthorWithPage();
+            List<AuthorIndexDto> list = authorIndexDtos.getContent();
+
+            BaseResponseDTO.MetaData data = new BaseResponseDTO.MetaData();
+            data.setSize(list.size());
+            data.setTotal(authorIndexDtos.getTotalElements());
+            data.setTotalPage(authorIndexDtos.getTotalPages());
+
+            BaseResponseDTO baseResponseDTO = new BaseResponseDTO();
+            baseResponseDTO.setData(list);
+            baseResponseDTO.setMetaData(data);
+
+
+            return ResponseEntity.status(HttpStatus.OK).body(baseResponseDTO);
+        } catch (Exception e) {
+
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+
     }
 
     @GetMapping

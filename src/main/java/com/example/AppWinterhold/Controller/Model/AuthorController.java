@@ -116,13 +116,15 @@ public class AuthorController {
     }
 
     @GetMapping("/delete")
-    public String delete(@RequestParam(required = true) Long id) {
+    public String delete(Model model, @RequestParam(required = true) Long id) {
 
         Boolean result = authorService.delete(id);
 
         if (!result) {
+            model.addAttribute("h2", "Some book registered to this author");
             return "Author/delete";
         }
         return "redirect:/author/index";
+
     }
 }

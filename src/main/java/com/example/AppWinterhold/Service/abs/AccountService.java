@@ -6,6 +6,7 @@ import com.example.AppWinterhold.Dto.Account.AccountUpdateDto;
 import com.example.AppWinterhold.Entity.Account;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface AccountService {
 
@@ -15,7 +16,7 @@ public interface AccountService {
     void setCountWrong(Account acc);
     void update(AccountUpdateDto dto);
     void insert(AccountInsertDto dto);
-    Account getAccount(String username);
+    Optional<Account> getAccount(String username);
     AccountIndexDto getAccountByUsername(String username);
     boolean passwordChecker(String password, String conPassword);
 

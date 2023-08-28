@@ -21,6 +21,7 @@ public class AppUserDetails implements UserDetails {
         this.username = account.getUsername();
         this.password = account.getPassword();
         this.authorities.add(new SimpleGrantedAuthority("Administrator"));
+
         this.islock = account.getIslocked();
     }
 

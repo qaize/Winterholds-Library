@@ -138,8 +138,7 @@ public class LoanServiceImp implements LoanService {
 
             Timestamp date = Timestamp.from(Instant.now());
             Loan data = loanRepository.findById(id).get();
-            Sort sort = Sort.by("transactionDate").descending();
-            List<LogsIncome> logList = logsIncomeRepository.findAll(sort);
+            List<LogsIncome> logList = logsIncomeRepository.findAll(Sort.by("transactionDate").descending());
             Customer customer = customerServiceImp.getCustomerByEntity(data.getCustomerNumber());
             if (logList.size() == 0) {
                 LogsIncome log = new LogsIncome(UUID.randomUUID().toString(), "PELUNASAN DENDA ID :" + data.getId() + "/" + data.getCustomerNumber(), authName, data.getDenda().doubleValue(), 0.0, date);

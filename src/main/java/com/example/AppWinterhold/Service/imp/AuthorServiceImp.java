@@ -7,6 +7,7 @@ import com.example.AppWinterhold.Dto.Author.AuthorIndexDtoV2;
 import com.example.AppWinterhold.Dto.Author.AuthorInsertDto;
 import com.example.AppWinterhold.Dto.Author.AuthorUpdateDto;
 import com.example.AppWinterhold.Dto.BaseResponseDTO;
+import com.example.AppWinterhold.Dto.Rest.Request.Author.AuthorRequestDTO;
 import com.example.AppWinterhold.Entity.Author;
 import com.example.AppWinterhold.Service.abs.AuthorService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -14,17 +15,20 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
+import javax.persistence.Tuple;
+import java.math.BigInteger;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static com.example.AppWinterhold.Const.actionConst.*;
 
@@ -33,10 +37,10 @@ public class AuthorServiceImp implements AuthorService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AuthorServiceImp.class);
 
-    final private LogServiceImpl logService;
+    private final LogServiceImpl logService;
+    private final AuthorRepository authorRepository;
+    private final BaseController baseController;
     ObjectMapper objectMapper = new ObjectMapper();
-    private AuthorRepository authorRepository;
-    private BaseController baseController;
 
     @Autowired
     public AuthorServiceImp(AuthorRepository authorRepository, BaseController baseController, LogServiceImpl logService) {
@@ -47,13 +51,13 @@ public class AuthorServiceImp implements AuthorService {
 
     @Override
     public List<AuthorIndexDto> getListAuthorBySearch(Integer page, String name) throws JsonProcessingException {
-        BaseResponseDTO responseDTO = new BaseResponseDTO();
+//        BaseResponseDTO responseDTO = new BaseResponseDTO();
 
-        Integer row = 10;
+        int row = 10;
 //        RestTemplate restTemplate = new RestTemplate();
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
-        HttpEntity<String> http = new HttpEntity<String>("Params", httpHeaders);
+//        HttpHeaders httpHeaders = new HttpHeaders();
+//        httpHeaders.setAccept(List.of(MediaType.APPLICATION_JSON));
+//        HttpEntity<String> http = new HttpEntity<String>("Params", httpHeaders);
         Pageable paging = PageRequest.of(page - 1, row, Sort.by("id").descending());
 
 //        ResponseEntity< String > result = restTemplate.exchange("http://localhost:7081/winterhold/api/author/getAuthor", HttpMethod.GET, http,
@@ -86,6 +90,31 @@ public class AuthorServiceImp implements AuthorService {
     }
 
     @Override
+    public ResponseEntity<Object> getAllAuthorTuple(AuthorRequestDTO authorRequestDTO) {
+        try {
+            Pageable paging = PageRequest.of(authorRequestDTO.getPage(), authorRequestDTO.getDataCount());
+            List<Tuple> pages = authorRepository.getAllByTupple(paging);
+            List<AuthorIndexDto> authorIndexDtos = pages.stream().map(auth -> new AuthorIndexDto(
+                    auth.get("id", BigInteger.class).longValue(),
+                    auth.get("title", String.class),
+                    auth.get("firstName", String.class),
+                    auth.get("lastName", String.class),
+                    LocalDate.parse(auth.get("birthDate", String.class)),
+                    auth.get("deceasedDate", String.class) != null ? LocalDate.parse(auth.get("deceasedDate", String.class)) : null,
+                    auth.get("education", String.class),
+                    auth.get("summary", String.class),
+                    auth.get("createdBy", String.class),
+                    auth.get("modifiedBy", String.class)
+            )).collect(Collectors.toList());
+
+            return ResponseEntity.status(HttpStatus.OK).body(authorIndexDtos);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
+
+    @Override
     public List<AuthorIndexDto> getAllAuthor() {
         return authorRepository.getAll();
     }
@@ -96,9 +125,9 @@ public class AuthorServiceImp implements AuthorService {
 
         Integer row = 10;
         Double totalData = (double) authorRepository.getCountPage(name);
-        Long totaPage = (long) Math.ceil(totalData / row);
+        Long totalPage = (long) Math.ceil(totalData / row);
 
-        return totaPage;
+        return totalPage;
     }
 
     @Override
@@ -141,40 +170,53 @@ public class AuthorServiceImp implements AuthorService {
         author.setEducation(authorInsertDto.getEducation());
         author.setSummary(authorInsertDto.getSummary());
         author.setCreatedBy(authIndex.getCreatedBy());
-        author.setModifiedBy(modifiedBy == baseController.getCurrentLogin() ? baseController.getCurrentLogin() : "Unknown");
+        author.setModifiedBy(modifiedBy.equals(baseController.getCurrentLogin()) ? baseController.getCurrentLogin() : "Unknown");
     }
 
     @Override
     public AuthorIndexDto getAuthorById(Long id) {
         Optional<Author> author = authorRepository.findById(id);
-        AuthorIndexDto ath = new AuthorIndexDto(
-                author.get().getId(),
-                author.get().getTitle(),
-                author.get().getFirstName(),
-                author.get().getLastName(),
-                author.get().getBirthDate(),
-                author.get().getDeceasedDate(),
-                author.get().getEducation(),
-                author.get().getSummary(),
-                author.get().getCreatedBy(),
-                author.get().getModifiedBy()
-        );
-
+        AuthorIndexDto ath = new AuthorIndexDto();
+        if (author.isPresent()) {
+            Author auth = author.get();
+            ath = new AuthorIndexDto(
+                    auth.getId(),
+                    auth.getTitle(),
+                    auth.getFirstName(),
+                    auth.getLastName(),
+                    auth.getBirthDate(),
+                    auth.getDeceasedDate(),
+                    auth.getEducation(),
+                    auth.getSummary(),
+                    auth.getCreatedBy(),
+                    auth.getModifiedBy()
+            );
+        }
         return ath;
     }
 
     @Override
     public Boolean delete(Long id) {
 
-        var data = authorRepository.findById(id);
-        if (data == null) {
-            logService.saveLogs(AUTHOR, FAILED, DELETE);
-            return false;
+        try {
+
+            var data = authorRepository.findById(id);
+            if (data.isPresent()) {
+                if (authorRepository.getCountBooks(id) > 0) {
+                    logService.saveLogs(AUTHOR, FAILED, DELETE);
+                    return false;
+                }
+
+                authorRepository.deleteById(id);
+                logService.saveLogs(AUTHOR, SUCCESS, DELETE);
+                LOGGER.info(SUCCESS + " ".concat(DELETE));
+                return true;
+            }
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage());
         }
 
-        authorRepository.deleteById(id);
-        logService.saveLogs(AUTHOR, SUCCESS, DELETE);
-        return true;
+        return false;
     }
 
     @Override
@@ -195,6 +237,44 @@ public class AuthorServiceImp implements AuthorService {
 
             LOGGER.info(FAILED + " " + UPDATE);
             logService.saveLogs(AUTHOR, FAILED, UPDATE);
+        }
+    }
+
+    @Override
+    public Page<AuthorIndexDto> getAllAuthorWithPage() {
+        Pageable page = PageRequest.of(1, 5);
+
+        return authorRepository.getAllAuthorWithPage(page);
+    }
+
+    @Override
+    public ResponseEntity<Object> geAllAuthorByTupple(AuthorRequestDTO authorRequestDTO) {
+
+        Pageable pages = PageRequest.of(authorRequestDTO.getPage(), authorRequestDTO.getDataCount());
+
+        try {
+            Page<Tuple> tuples = authorRepository.getPageAuthorByTuple(pages);
+
+            List<AuthorIndexDto> authorIndexDtos = tuples.getContent().stream().map(auth -> new AuthorIndexDto(
+                    auth.get("id", BigInteger.class).longValue(),
+                    auth.get("title", String.class),
+                    auth.get("firstName", String.class),
+                    auth.get("lastName", String.class),
+                    LocalDate.parse(auth.get("birthDate", String.class)),
+                    auth.get("deceasedDate", String.class) != null ? LocalDate.parse(auth.get("deceasedDate", String.class)) : null,
+                    auth.get("education", String.class),
+                    auth.get("summary", String.class),
+                    auth.get("createdBy", String.class),
+                    auth.get("modifiedBy", String.class)
+            )).collect(Collectors.toList());
+
+            BaseResponseDTO.MetaData metaData = new BaseResponseDTO.MetaData(tuples.getTotalElements(), tuples.getTotalPages(), tuples.getSize());
+            BaseResponseDTO baseResponseDTO = new BaseResponseDTO(authorIndexDtos, metaData);
+
+            return ResponseEntity.status(HttpStatus.OK).body(baseResponseDTO);
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
 }

@@ -14,19 +14,19 @@
 //
 //    private static final Logger LOGGER = LoggerFactory.getLogger(kafkaConsumer.class);
 //
-//    @KafkaListener(topics = "topiciwan", groupId = "group_id")
+//    @KafkaListener(topics = "newtopic", groupId = "group_id")
 //    public void listenGroupFoo(String message) {
-//        LOGGER.info(message);
+//        LOGGER.info("Incoming Message :"+ message);
 //    }
 //
-////
-////    @KafkaListener(topics = "topiciwan")
-////    public void listenWithHeaders(
-////            @Payload String message,
-////            @Header(KafkaHeaders.RECEIVED_PARTITION_ID) int partition) {
-////
-////        LOGGER.info(message);
-////        LOGGER.info(String.valueOf(partition));
-////
-////    }
+//
+//    @KafkaListener(topics = "newtopic")
+//    public void listenWithHeaders(
+//            @Payload String message,
+//            @Header(KafkaHeaders.RECEIVED_PARTITION_ID) int partition) {
+//
+//        LOGGER.info(message);
+//        LOGGER.info(String.valueOf(partition));
+//
+//    }
 //}

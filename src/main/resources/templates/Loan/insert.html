@@ -1,111 +1,116 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="en">
-<head th:replace="~{layout::head}">
-</head>
-<body>
-<nav th:replace="~{layout::navigation}"></nav>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head th:replace="~{layout::headLayout}"><!-- layout itu dari layout.html,
+                            headLayout dari nama fragment yang ada di layout.html  -->
+<body class="main-body">
+<nav th:replace="~{layout::navLayout}"></nav>
+<header th:replace="~{layout::header('Insert Loan')}"></header>
 <main>
-    <form th:if="${update}" method="post" th:attr="action=@{/loan/update}" enctype="multipart/form-data"
-          th:object="${dto}">
-        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
-        <!--        <div th:if="${param.error != null}" th:text="${param.error}"></div>-->
-        <table class="spacerTable">
-            <tbody>
-            <tr>
-                <td><label>Id :</label></td>
-                <td><input readonly type="text" th:field="*{id}">
-                    <div class="field-validation-error" th:errors="*{id}"></div>
-                </td>
-            </tr>
-            <tr>
-                <td><label>customerNumber :</label></td>
-                <td><select th:field="*{customerNumber}">
-                    <option th:value="null" th:hidden="hidden">-select The Customers-</option>
-                    <option th:each="data : ${dropdownCustomer}" th:value="${data.val}" th:text="${data.text}"/>
-                </select>
-                    <div class="field-validation-error" th:errors="*{customerNumber}"></div>
-                </td>
-            </tr>
-            <tr>
-                <td><label>bookCode :</label></td>
-                <td><select th:field="*{bookCode}">
-                    <option th:value="null">-select The Books-</option>
-                    <option th:each="data : ${dropdownBook}" th:value="${data.val}" th:text="${data.text}"/>
-                </select>
-                    <div class="field-validation-error" th:errors="*{bookCode}"></div>
-                </td>
-            </tr>
-            <tr>
-                <td><label>loanDate :</label></td>
-                <td><input type="date" th:field="*{loanDate}">
-                    <div class="field-validation-error" th:errors="*{loanDate}"></div>
-                </td>
-            </tr>
-            <tr>
-                <td><input type="hidden" th:field="*{dueDate}">
-                    <div class="field-validation-error" th:errors="*{dueDate}"></div>
-                </td>
-            </tr>
-            <tr>
-                <td><input type="hidden" th:field="*{returnDate}">
-                    <div class="field-validation-error" th:errors="*{returnDate}"></div>
-                </td>
-            </tr>
+    <div>
+        <form th:if="${update}" class="upsert-form" method="post" th:attr="action=@{/loan/update}"
+              enctype="multipart/form-data"
+              th:object="${dto}">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+            <!--        <div th:if="${param.error != null}" th:text="${param.error}"></div>-->
+            <table>
+                <tbody>
+                <tr>
+                    <td><label>Id :</label></td>
+                    <td><input readonly type="text" th:field="*{id}">
+                        <div class="field-validation-error" th:errors="*{id}"></div>
+                    </td>
+                </tr>
+                <tr>
+                    <td><label>customerNumber :</label></td>
+                    <td><select th:field="*{customerNumber}">
+                        <option th:value="null" th:hidden="hidden">-select The Customers-</option>
+                        <option th:each="data : ${dropdownCustomer}" th:value="${data.val}" th:text="${data.text}"/>
+                    </select>
+                        <div class="field-validation-error" th:errors="*{customerNumber}"></div>
+                    </td>
+                </tr>
+                <tr>
+                    <td><label>bookCode :</label></td>
+                    <td><select th:field="*{bookCode}">
+                        <option th:value="null">-select The Books-</option>
+                        <option th:each="data : ${dropdownBook}" th:value="${data.val}" th:text="${data.text}"/>
+                    </select>
+                        <div class="field-validation-error" th:errors="*{bookCode}"></div>
+                    </td>
+                </tr>
+                <tr>
+                    <td><label>loanDate :</label></td>
+                    <td><input type="date" th:field="*{loanDate}">
+                        <div class="field-validation-error" th:errors="*{loanDate}"></div>
+                    </td>
+                </tr>
+                <tr>
+                    <td><input type="hidden" th:field="*{dueDate}">
+                        <div class="field-validation-error" th:errors="*{dueDate}"></div>
+                    </td>
+                </tr>
+                <tr>
+                    <td><input type="hidden" th:field="*{returnDate}">
+                        <div class="field-validation-error" th:errors="*{returnDate}"></div>
+                    </td>
+                </tr>
 
-            <tr>
-                <td><label>note :</label></td>
-                <td><textarea th:field="*{note}"></textarea>
-                    <div class="field-validation-error" th:errors="*{note}"></div>
-                </td>
-            </tr>
-            </tbody>
-        </table>
-        <button class="btn detail-btn" type="submit"> Submit</button>
-        <a class="btn back-warning" th:href="@{/loan/index}">Close</a>
-    </form>
-    <form th:if="${insert}" method="post" th:attr="action=@{/loan/insert}" enctype="multipart/form-data"
-          th:object="${dto}">
-        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
-        <!--        <div th:if="${param.error != null}" th:text="${param.error}"></div>-->
-        <table class="spacerTable">
-            <tbody>
-            <tr>
-                <td><label>customerNumber :</label></td>
-                <td><select th:field="*{customerNumber}">
-                    <option th:value="null" th:hidden="hidden" th:selected="selected">-Select The Customers-</option>
-                    <option th:each="data : ${dropdownCustomer}" th:value="${data.val}" th:text="${data.text}"/>
-                </select>
-                    <div class="field-validation-error" th:errors="*{customerNumber}"></div>
-                </td>
-            </tr>
-            <tr>
-                <td><label>bookCode :</label></td>
-                <td><select th:field="*{bookCode}">
-                    <option th:value="null" th:hidden="hidden" th:selected="selected">-Select The Books-</option>
-                    <option th:each="data : ${dropdownBook}" th:value="${data.val}" th:text="${data.text}"/>
-                </select>
-                    <div class="field-validation-error" th:errors="*{bookCode}"></div>
-                </td>
-            </tr>
-            <tr>
-                <td><label>loanDate :</label></td>
-                <td><input type="date" th:field="*{loanDate}">
-                    <div class="field-validation-error" th:errors="*{loanDate}"></div>
-                </td>
-            </tr>
+                <tr>
+                    <td><label>note :</label></td>
+                    <td><textarea th:field="*{note}"></textarea>
+                        <div class="field-validation-error" th:errors="*{note}"></div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <button class="btn blue-button" type="submit"> Submit</button>
+            <a class="btn warning-button" th:href="@{/loan/index}">Close</a>
+        </form>
+        <form th:if="${insert}" class="upsert-form" method="post" th:attr="action=@{/loan/insert}"
+              enctype="multipart/form-data"
+              th:object="${dto}">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+            <!--        <div th:if="${param.error != null}" th:text="${param.error}"></div>-->
+            <table>
+                <tbody>
+                <tr>
+                    <td><label>customerNumber :</label></td>
+                    <td><select th:field="*{customerNumber}">
+                        <option th:value="null" th:hidden="hidden" th:selected="selected">-Select The Customers-
+                        </option>
+                        <option th:each="data : ${dropdownCustomer}" th:value="${data.val}" th:text="${data.text}"/>
+                    </select>
+                        <div class="field-validation-error" th:errors="*{customerNumber}"></div>
+                    </td>
+                </tr>
+                <tr>
+                    <td><label>bookCode :</label></td>
+                    <td><select th:field="*{bookCode}">
+                        <option th:value="null" th:hidden="hidden" th:selected="selected">-Select The Books-</option>
+                        <option th:each="data : ${dropdownBook}" th:value="${data.val}" th:text="${data.text}"/>
+                    </select>
+                        <div class="field-validation-error" th:errors="*{bookCode}"></div>
+                    </td>
+                </tr>
+                <tr>
+                    <td><label>loanDate :</label></td>
+                    <td><input type="date" th:field="*{loanDate}">
+                        <div class="field-validation-error" th:errors="*{loanDate}"></div>
+                    </td>
+                </tr>
 
-            <tr>
-                <td><label>note :</label></td>
-                <td><textarea th:field="*{note}"></textarea>
-                    <div class="field-validation-error" th:errors="*{note}"></div>
-                </td>
-            </tr>
-            </tbody>
-        </table>
-        <button class="btn detail-btn" type="submit"> Submit</button>
-        <a class="btn back-warning" th:href="@{/loan/index}">Close</a>
-    </form>
-
+                <tr>
+                    <td><label>note :</label></td>
+                    <td><textarea th:field="*{note}"></textarea>
+                        <div class="field-validation-error" th:errors="*{note}"></div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <button class="btn blue-button" type="submit"> Submit</button>
+            <a class="btn warning-button" th:href="@{/loan/index}">Close</a>
+        </form>
+    </div>
 </main>
 
 </body>

@@ -27,7 +27,7 @@ public class BookPlacingValidator implements ConstraintValidator<BookPlacing,Obj
     @Override
     public boolean isValid(Object o, ConstraintValidatorContext constraintValidatorContext) {
 
-        Integer floors = Integer.parseInt(new BeanWrapperImpl(o).getPropertyValue(floor).toString());
+        Integer floors = Integer.parseInt(new BeanWrapperImpl(o).getPropertyValue(floor)==null?"0":new BeanWrapperImpl(o).getPropertyValue(floor).toString());
         String bays = new BeanWrapperImpl(o).getPropertyValue(bay).toString();
         String isles = new BeanWrapperImpl(o).getPropertyValue(isle).toString();
 

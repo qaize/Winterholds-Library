@@ -1,63 +1,65 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
-<head th:replace="~{layout::head}">
-</head>
-<body>
-<nav th:replace="~{layout::navigation}"></nav>
+<head th:replace="~{layout::headLayout}">
+<body class="main-body">
+<nav th:replace="~{layout::navLayout}"></nav>
+<header th:replace="~{layout::header('Loan')}"></header>
 <main>
+    <div class="grid-container">
 
-    <div class="filter">
-        <a class="btn add-button" th:href="@{/loan/index}"> Back To History</a>
-    </div>
-    <div class="divTable">
-        <table class="table table-hover">
-            <thead>
-            <tr>
-                <th>Action</th>
-                <th>Customer Name</th>
-                <th>Book Title</th>
-                <th>Loan Date</th>
-                <th>Due Loan</th>
-                <th>Day Left</th>
-                <th>Status</th>
-                <th>Return Date</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="data : ${listLoan}" th:object="${data}">
-                <td class="action">
-                    <div class="button-wrapper">
-                        <a class="btn delete-btn" th:href="@{/loan/detail(id=*{id})}">Detail</a>
-                    </div>
-                </td>
-                <td th:text="*{customerName}"></td>
-                <td th:text="*{bookTitle}"></td>
-                <td th:text="*{loanDate}"></td>
-                <td th:text="*{dueDate}"></td>
-                <td th:text="*{dayLeft}"></td>
-                <td th:text="*{loanStatus}"></td>
-                <td th:text="*{returnDate}"></td>
-            </tr>
-            </tbody>
-            <tfoot>
-            <tr>
-                <td colspan="8">
-                    <div class="pagination">
-                        <div>
-                            <a th:if="${totalPage !=0}"
-                               th:each="loop:${#numbers.sequence(1, totalPage)}"
-                               th:href="@{/loan/history(page=${loop})}"
-                               th:text="${loop}"></a>
+
+        <div class="divTable">
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    <th>Action</th>
+                    <th>Customer Name</th>
+                    <th>Book Title</th>
+                    <th>Loan Date</th>
+                    <th>Due Loan</th>
+                    <th>Day Left</th>
+                    <th>Status</th>
+                    <th>Return Date</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="data : ${listLoan}" th:object="${data}">
+                    <td class="action">
+                        <div class="button-wrapper">
+                            <a class="btn delete-btn" th:href="@{/loan/detail(id=*{id})}">Detail</a>
                         </div>
-                    </div>
-                </td>
-            </tr>
-            </tfoot>
-        </table>
+                    </td>
+                    <td th:text="*{customerName}"></td>
+                    <td th:text="*{bookTitle}"></td>
+                    <td th:text="*{loanDate}"></td>
+                    <td th:text="*{dueDate}"></td>
+                    <td th:text="*{dayLeft}"></td>
+                    <td th:text="*{loanStatus}"></td>
+                    <td th:text="*{returnDate}"></td>
+                </tr>
+                </tbody>
+                <tfoot>
+                <tr>
+                    <td colspan="8">
+                        <div class="pagination">
+                            <div th:attr="data-currentPage=${currentPage}"
+                                 th:text="|page ${currentPage} of ${totalPage}|">
+                            </div>
+                            <div>
+                                <a th:if="${totalPage !=0}"
+                                   th:each="loop:${#numbers.sequence(1, totalPage)}"
+                                   th:href="@{/loan/history(page=${loop})}"
+                                   th:text="${loop}"></a>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                </tfoot>
+            </table>
+
+        </div>
 
     </div>
-
-
 </main>
 
 </body>

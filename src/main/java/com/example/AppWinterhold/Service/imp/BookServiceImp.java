@@ -118,7 +118,7 @@ public class BookServiceImp implements BookService {
     public void update(BookUpdateDto dto) {
 
         Book en = new Book(dto.getCode(), dto.getTitle(), dto.getCategoryName(),
-                dto.getAuthorId().longValue(), dto.getIsBorrowed(), dto.getSummary(),
+                dto.getAuthorId(), dto.getIsBorrowed(), dto.getSummary(),
                 dto.getReleaseDate(), dto.getTotalPage());
         bookRepository.save(en);
     }

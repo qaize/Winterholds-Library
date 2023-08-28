@@ -28,7 +28,7 @@ public class CategoryServiceImp implements CategoryService {
 
     @Override
     public List<CategoryIndexDto> getListCategoryBySearch(Integer page, String name) {
-        Integer row = 10;
+        int row = 10;
         Pageable paging = PageRequest.of(page - 1, row, Sort.by("id"));
         return categoryRepository.getListCategoryBySearch(name, paging);
     }
@@ -46,7 +46,7 @@ public class CategoryServiceImp implements CategoryService {
     public void insert(CategoryInsertDto dto) {
         try {
             Category en = new Category(dto.getName(), dto.getFloor(),
-                    dto.getIsle(), dto.getBay());
+                    dto.getIsle().toUpperCase(), dto.getBay());
             categoryRepository.save(en);
             logService.saveLogs(CATEGORY, SUCCESS, INSERT);
         } catch (Exception e) {

@@ -54,18 +54,17 @@ public class AccountServiceImp implements AccountService {
 
     @Override
     public boolean passwordChecker(String password, String conPassword) {
-        return password.equals(conPassword)? true : false;
+        return password.equals(conPassword);
     }
 
     @Override
-    public Account getAccount(String username) {
-        return accountRepository.findById(username).get();
+    public Optional<Account> getAccount(String username) {
+        return accountRepository.findById(username);
     }
 
     @Override
     public void setCountWrong(Account acc) {
-        Account en = acc;
-        accountRepository.save(en);
+        accountRepository.save(acc);
     }
 
     @Override
@@ -81,11 +80,9 @@ public class AccountServiceImp implements AccountService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userlogin = "Default";
 
-        Optional<Account> ac = accountRepository.findById(authentication.getName().toString());
+        Optional<Account> ac = accountRepository.findById(authentication.getName());
 
-        if (ac.get() != null) {
-            userlogin = ac.get().getUserLogin() != null ? ac.get().getUserLogin() : authentication.getName();
-        }
+        userlogin = ac.isPresent() ? ac.get().getUserLogin() : authentication.getName();
 
         LOGGER.info(userlogin);
         return userlogin;

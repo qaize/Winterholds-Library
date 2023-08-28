@@ -150,6 +150,8 @@ public class CustomerController {
     @GetMapping("/ban")
     public String ban(Model model, @RequestParam String customerNumber) {
 
+
+
         if (customerService.doBanCustomer(customerNumber)) {
 
             return "redirect:/customer/index";
