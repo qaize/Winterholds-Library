@@ -22,10 +22,11 @@ public class BookIndexDto {
     private LocalDate releaseDate;/*N*/
 
     private Integer totalPage; /*N*/
+    private Integer quantity; /*N*/
 
     public BookIndexDto(String code, String title, String categoryName, String authorName,
                         Boolean isBorrowed, String summary, LocalDate releaseDate,
-                        Integer totalPage) {
+                        Integer totalPage, Integer quantity) {
         this.code = code;
         this.title = title;
         this.categoryName = categoryName;
@@ -35,5 +36,6 @@ public class BookIndexDto {
         this.releaseDate = releaseDate;
         this.totalPage = totalPage;
         this.isBorrowedStr = isBorrowed ? "Not Available" : "Available";
+        this.quantity = quantity;
     }
 }

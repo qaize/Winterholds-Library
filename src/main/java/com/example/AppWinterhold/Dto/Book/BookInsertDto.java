@@ -10,6 +10,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.Column;
 import javax.persistence.Id;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -50,4 +51,7 @@ public class BookInsertDto {
     private LocalDate releaseDate;/*N*/
 
     private Integer totalPage; /*N*/
+
+    @Min(value = 1,message = "Minimal 1 book")
+    private Integer quantity;
 }

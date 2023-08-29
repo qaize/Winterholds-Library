@@ -39,7 +39,7 @@ public class BookServiceImp implements BookService {
 
         Book en = new Book(code, dto.getTitle(), dto.getCategoryName(),
                 dto.getAuthorId().longValue(), dto.getIsBorrowed(), dto.getSummary(),
-                dto.getReleaseDate(), dto.getTotalPage());
+                dto.getReleaseDate(), dto.getTotalPage(),dto.getQuantity());
 
         bookRepository.save(en);
     }
@@ -119,7 +119,7 @@ public class BookServiceImp implements BookService {
 
         Book en = new Book(dto.getCode(), dto.getTitle(), dto.getCategoryName(),
                 dto.getAuthorId(), dto.getIsBorrowed(), dto.getSummary(),
-                dto.getReleaseDate(), dto.getTotalPage());
+                dto.getReleaseDate(), dto.getTotalPage(),dto.getQuantity());
         bookRepository.save(en);
     }
 

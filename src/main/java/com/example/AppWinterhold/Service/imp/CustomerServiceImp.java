@@ -5,6 +5,7 @@ import com.example.AppWinterhold.Dao.LoanRepository;
 import com.example.AppWinterhold.Dto.Customer.CustomerIndexDto;
 import com.example.AppWinterhold.Dto.Customer.CustomerInsertDto;
 import com.example.AppWinterhold.Dto.Customer.CustomerUpdateDto;
+import com.example.AppWinterhold.Dto.Loan.LoanInsertDto;
 import com.example.AppWinterhold.Entity.Customer;
 import com.example.AppWinterhold.Entity.Loan;
 import com.example.AppWinterhold.Service.abs.CustomerService;
@@ -165,9 +166,10 @@ public class CustomerServiceImp implements CustomerService {
     }
 
     @Override
-    public Integer loanCountSetter(String customerNumber, String aReturn) {
+    public Integer loanCountSetter(String customer, String aReturn) {
 
-        Integer data = customerRepository.getLoanCountCurrentCustomer(customerNumber);
+
+        Integer data = customerRepository.getLoanCountCurrentCustomer(customer);
         if (aReturn.equals("Return")) {
             if (data != 0) {
                 data = data - 1;

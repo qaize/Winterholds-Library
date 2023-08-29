@@ -48,11 +48,38 @@ public class LoanServiceImp implements LoanService {
     @Autowired
     private CustomerRepository customerRepository;
 
+    @Autowired
+    private BookServiceImp bookService;
+
+
     @Override
     public List<LoanIndexDto> getListLoanBySearch(Integer page, String title, String name) {
         Integer row = 5;
         Pageable paging = PageRequest.of(page - 1, row, Sort.by("id").descending());
         return loanRepository.getListLoanBySearch(title, name, paging);
+    }
+
+    @Override
+    public boolean returnBook(Long id) {
+        var data = getLoanById(id);
+        var book = bookService.getBooksById(data.getBookCode());
+        var customer = customerServiceImp.getCustomerByEntity(data.getCustomerNumber());
+
+        if (data.getReturnDate() == null) {
+            book.setQuantity(book.getQuantity() + 1);
+            data.setReturnDate(LocalDate.now());
+            data.setDenda(getCountDenda(data));
+            if (!(data.getDenda() > 0)) {
+                customer.setLoanCount(customerServiceImp.loanCountSetter(data.getCustomerNumber(), "Return"));
+            }
+
+            extendLoan(data);
+            bookService.update(book);
+            customerServiceImp.updateWithEntity(customer);
+            return true;
+        }
+
+        return false;
     }
 
     @Override
@@ -68,8 +95,8 @@ public class LoanServiceImp implements LoanService {
     public Long getCountDenda(Loan loan) {
 
         Long denda = 0L;
-        if (loan.getReturnDate() != null) {
-            denda = ChronoUnit.DAYS.between( loan.getReturnDate(),loan.getDueDate()) * 2000;
+        if (loan.getReturnDate() != null && loan.getDenda() != null) {
+            denda = ChronoUnit.DAYS.between( loan.getDueDate(),loan.getReturnDate()) * 2000;
         } else {
             denda = ChronoUnit.DAYS.between(loan.getDueDate(), LocalDate.now()) * 2000;
             if (denda < 0) {
@@ -81,8 +108,23 @@ public class LoanServiceImp implements LoanService {
 
     @Override
     public void insert(LoanInsertDto dto) {
-
         try {
+
+            var book = bookService.getBooksById(dto.getBookCode());
+            var customer = customerServiceImp.getCustomerByEntity(dto.getCustomerNumber());
+
+            if (book.getQuantity() > 0) {
+                book.setQuantity(book.getQuantity() - 1);
+            }
+
+            if (book.getQuantity() == 0) {
+                book.setIsBorrowed(true);
+            }
+
+            customer.setLoanCount(customerServiceImp.loanCountSetter(dto.getCustomerNumber(), "loan"));
+            customerServiceImp.updateWithEntity(customer);
+            bookService.update(book);
+
             Loan en;
             if (dto.getDenda() == null) {
                 en = new Loan(dto.getId(), dto.getCustomerNumber(), dto.getBookCode(), dto.getLoanDate(), dto.getLoanDate().plusDays(5), null, dto.getNote(), 0, null);
@@ -93,7 +135,7 @@ public class LoanServiceImp implements LoanService {
             }
             loanRepository.save(en);
         } catch (Exception e) {
-            logService.saveLogs(LOAN, e.getMessage(), INSERT);
+            logService.saveLogs(LOAN, FAILED, INSERT);
         }
     }
 

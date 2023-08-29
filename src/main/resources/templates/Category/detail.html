@@ -29,6 +29,7 @@
                     <th>Status</th>
                     <th>Release Date</th>
                     <th>Total Page</th>
+                    <th>Total Available Book</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -45,6 +46,7 @@
                            th:href="@{/book/borrow(bookCode=*{code},categoryName=${categoryName})}"></a></td>
                     <td th:text="*{releaseDate}"></td>
                     <td th:text="*{totalPage}"></td>
+                    <td th:text="*{quantity}"></td>
                 </tr>
                 </tbody>
             </table>

@@ -76,19 +76,15 @@
 
         <fieldset class="formSpacer">
             <legend> Denda</legend>
-            <div th:object="${loanDto}">
+            <div>
                 <div>
                     <p>
-                        Denda : <span th:text="*{denda}"></span>
+                        Denda : <span th:text="${historyDenda}"></span>
                     </p>
                 </div>
 
             </div>
         </fieldset>
-        <div class="filter">
-            <a class="btn" th:href="@{/loan/index}"> Back to Loan </a>
-        </div>
-
     </div>
 </main>
 

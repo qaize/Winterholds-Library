@@ -28,4 +28,6 @@ public interface LoanService {
     List<LogsIncome> getLoanPaymentHistory(Integer page);
     List<LoanIndexDto> getListLoanHistoryBySearch(Integer page);
     List<LoanIndexDto> getListLoanBySearch(Integer page, String title, String name);
+
+    boolean returnBook(Long id);
 }

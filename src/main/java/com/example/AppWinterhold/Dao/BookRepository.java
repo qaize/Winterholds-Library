@@ -16,7 +16,7 @@ public interface BookRepository extends JpaRepository<Book, String> {
             SELECT 
                 new com.example.AppWinterhold.Dto.Book.BookIndexDto
                 (   b.code,b.title,b.categoryName,CONCAT(a.title,'.',a.firstName,' ',a.lastName),b.isBorrowed,b.summary,
-                    b.releaseDate,b.totalPage )
+                    b.releaseDate,b.totalPage, b.quantity )
             FROM 
                 Book AS b
                             LEFT JOIN b.author AS a
@@ -31,7 +31,7 @@ public interface BookRepository extends JpaRepository<Book, String> {
             SELECT 
                 new com.example.AppWinterhold.Dto.Book.BookIndexDto
                 (   b.code,b.title,b.categoryName,CONCAT(a.title,'.',a.firstName,' ',a.lastName),b.isBorrowed,b.summary,
-                    b.releaseDate,b.totalPage )
+                    b.releaseDate,b.totalPage,b.quantity )
             FROM 
                 Book AS b
                             LEFT JOIN b.author AS a
@@ -48,7 +48,7 @@ public interface BookRepository extends JpaRepository<Book, String> {
             SELECT 
                 new com.example.AppWinterhold.Dto.Book.BookIndexDto
                 (   b.code,b.title,b.categoryName,CONCAT(a.title,'.',a.firstName,' ',a.lastName),b.isBorrowed,b.summary,
-                    b.releaseDate,b.totalPage  )
+                    b.releaseDate,b.totalPage,b.quantity  )
             FROM 
                 Book AS b
                             LEFT JOIN b.author AS a
@@ -60,7 +60,7 @@ public interface BookRepository extends JpaRepository<Book, String> {
             SELECT 
                 new com.example.AppWinterhold.Dto.Book.BookIndexDto
                 ( b.code,b.title,b.categoryName,CONCAT(a.title,'.',a.firstName,' ',a.lastName),b.isBorrowed,b.summary,
-                  b.releaseDate,b.totalPage )
+                  b.releaseDate,b.totalPage,b.quantity )
             FROM 
                 Book AS b
                             LEFT JOIN b.author AS a
@@ -73,7 +73,7 @@ public interface BookRepository extends JpaRepository<Book, String> {
             SELECT 
                 new com.example.AppWinterhold.Dto.Book.BookUpdateDto
                 (   b.code,b.title,b.categoryName,b.authorId,b.isBorrowed,b.summary,
-                    b.releaseDate,b.totalPage  )
+                    b.releaseDate,b.totalPage,b.quantity  )
             FROM 
                 Book AS b
             WHERE 
@@ -85,7 +85,7 @@ public interface BookRepository extends JpaRepository<Book, String> {
             SELECT 
                 new com.example.AppWinterhold.Dto.Book.BookIndexDto
                 (   b.code,b.title,b.categoryName,CONCAT(a.title,'.',a.firstName,' ',a.lastName),b.isBorrowed,b.summary,
-                    b.releaseDate,b.totalPage )
+                    b.releaseDate,b.totalPage,b.quantity )
             FROM 
                 Book AS b
                             LEFT JOIN b.author AS a    
@@ -98,7 +98,7 @@ public interface BookRepository extends JpaRepository<Book, String> {
             SELECT 
                 new com.example.AppWinterhold.Dto.Book.BookIndexDto
                 (   b.code,b.title,b.categoryName,CONCAT(a.title,'.',a.firstName,' ',a.lastName),b.isBorrowed,b.summary,
-                    b.releaseDate,b.totalPage   )
+                    b.releaseDate,b.totalPage,b.quantity   )
             FROM 
                 Book AS b
                             LEFT JOIN b.author AS a      
@@ -120,7 +120,7 @@ public interface BookRepository extends JpaRepository<Book, String> {
             SELECT 
                 new com.example.AppWinterhold.Dto.Book.BookUpdateDto
                 (   b.code,b.title,b.categoryName,b.authorId,b.isBorrowed,b.summary,
-                    b.releaseDate,b.totalPage )
+                    b.releaseDate,b.totalPage,b.quantity )
             FROM 
                 Book AS b
             WHERE 

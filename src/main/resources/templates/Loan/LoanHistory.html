@@ -3,7 +3,7 @@
 <head th:replace="~{layout::headLayout}">
 <body class="main-body">
 <nav th:replace="~{layout::navLayout}"></nav>
-<header th:replace="~{layout::header('Loan')}"></header>
+<header th:replace="~{layout::header('Loan History')}"></header>
 <main>
     <div class="grid-container">
 
@@ -26,7 +26,7 @@
                 <tr th:each="data : ${listLoan}" th:object="${data}">
                     <td class="action">
                         <div class="button-wrapper">
-                            <a class="btn delete-btn" th:href="@{/loan/detail(id=*{id})}">Detail</a>
+                            <a class="btn blue-button" th:href="@{/loan/detail(id=*{id})}">Detail</a>
                         </div>
                     </td>
                     <td th:text="*{customerName}"></td>

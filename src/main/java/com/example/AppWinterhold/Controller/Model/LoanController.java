@@ -153,16 +153,6 @@ public class LoanController {
             return "Loan/insert";
         } else {
 
-            var book = bookService.getBooksById(dto.getBookCode());
-            var customer = customerService.getCustomerByEntity(dto.getCustomerNumber());
-
-            if (!book.getIsBorrowed()) {
-                book.setIsBorrowed(!book.getIsBorrowed());
-                customer.setLoanCount(customerService.loanCountSetter(dto.getCustomerNumber(), "loan"));
-                bookService.update(book);
-                customerService.updateWithEntity(customer);
-            }
-
             loanService.insert(dto);
 
             return "redirect:/loan/index";
@@ -171,30 +161,7 @@ public class LoanController {
 
     @GetMapping("/return")
     public String ret(@RequestParam Long id) {
-
-        var data = loanService.getLoanById(id);
-        var book = bookService.getBooksById(data.getBookCode());
-        var customer = customerService.getCustomerByEntity(data.getCustomerNumber());
-
-        if (data.getReturnDate() == null) {
-
-            book.setIsBorrowed(false);
-            data.setReturnDate(LocalDate.now());
-            data.setDenda(loanService.getCountDenda(data));
-            if (!(data.getDenda() > 0)) {
-                customer.setLoanCount(customerService.loanCountSetter(data.getCustomerNumber(), "Return"));
-            }
-
-            bookService.update(book);
-            loanService.extendLoan(data);
-            customerService.updateWithEntity(customer);
-
-            return "redirect:/loan/index";
-
-        } else {
-
-            return "Loan/valid";
-        }
+        return loanService.returnBook(id) ? "redirect:/loan/index" : "Loan/valid";
     }
 
 
@@ -208,7 +175,7 @@ public class LoanController {
         var denda = loanService.getCountDenda(loanDto);
 
         model.addAttribute("books", books);
-        model.addAttribute("denda", denda);
+        model.addAttribute("historyDenda", denda);
         model.addAttribute("authorId", id);
         model.addAttribute("category", category);
         model.addAttribute("customer", customer);
@@ -281,11 +248,11 @@ public class LoanController {
             page = 0;
         }
 
-        if(loanDto.isEmpty()){
+        if (loanDto.isEmpty()) {
             flag = 1;
-            model.addAttribute("empty","Seems there is mosquito flying around");
+            model.addAttribute("empty", "Seems there is mosquito flying around");
         }
-        model.addAttribute("flag",flag);
+        model.addAttribute("flag", flag);
         model.addAttribute("dataDenda", loanDto);
         model.addAttribute("totalPage", totalPage);
         model.addAttribute("currentPage", page);
