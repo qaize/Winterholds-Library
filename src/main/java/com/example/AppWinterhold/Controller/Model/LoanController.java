@@ -180,7 +180,7 @@ public class LoanController {
 
             book.setIsBorrowed(false);
             data.setReturnDate(LocalDate.now());
-            data.setDenda(loanService.getCountDenda(data.getDueDate()));
+            data.setDenda(loanService.getCountDenda(data));
             if (!(data.getDenda() > 0)) {
                 customer.setLoanCount(customerService.loanCountSetter(data.getCustomerNumber(), "Return"));
             }
@@ -205,8 +205,10 @@ public class LoanController {
         var books = bookService.getBooksBycode(loanDto.getBookCode());
         var customer = customerService.getCustomerByMember(loanDto.getCustomerNumber());
         var category = categoryService.getCategoryByCategoryName(books.getCategoryName());
+        var denda = loanService.getCountDenda(loanDto);
 
         model.addAttribute("books", books);
+        model.addAttribute("denda", denda);
         model.addAttribute("authorId", id);
         model.addAttribute("category", category);
         model.addAttribute("customer", customer);

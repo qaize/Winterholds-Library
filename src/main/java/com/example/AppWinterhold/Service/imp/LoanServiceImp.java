@@ -65,14 +65,18 @@ public class LoanServiceImp implements LoanService {
     }
 
     @Override
-    public Long getCountDenda(LocalDate dueDate) {
+    public Long getCountDenda(Loan loan) {
 
-        Long between = ChronoUnit.DAYS.between(dueDate, LocalDate.now()) * 2000;
-        if(between<0){
-            between = 0L;
+        Long denda = 0L;
+        if (loan.getReturnDate() != null) {
+            denda = ChronoUnit.DAYS.between( loan.getReturnDate(),loan.getDueDate()) * 2000;
+        } else {
+            denda = ChronoUnit.DAYS.between(loan.getDueDate(), LocalDate.now()) * 2000;
+            if (denda < 0) {
+                denda = 0L;
+            }
         }
-
-        return between;
+        return denda;
     }
 
     @Override
@@ -161,7 +165,7 @@ public class LoanServiceImp implements LoanService {
                     logService.saveLogs(LOAN, SUCCESS, PAY);
                 }
                 data.setDenda(0L);
-                customer.setLoanCount(customerServiceImp.loanCountSetter(customer.getMembershipNumber(),"Return"));
+                customer.setLoanCount(customerServiceImp.loanCountSetter(customer.getMembershipNumber(), "Return"));
                 customerRepository.save(customer);
                 loanRepository.save(data);
             }
