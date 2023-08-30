@@ -31,11 +31,6 @@ public class BookPlacingValidator implements ConstraintValidator<BookPlacing,Obj
         String bays = new BeanWrapperImpl(o).getPropertyValue(bay).toString();
         String isles = new BeanWrapperImpl(o).getPropertyValue(isle).toString();
 
-
-        Long result = categoryServiceImp.categoryChecker(isles,floors,bays);
-        if(result>0){
-            return false;
-        }
-        return true;
+        return !(categoryServiceImp.categoryChecker(isles,floors,bays)>0);
     }
 }

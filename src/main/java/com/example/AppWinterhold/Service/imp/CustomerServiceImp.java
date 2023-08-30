@@ -56,11 +56,11 @@ public class CustomerServiceImp implements CustomerService {
             String generatedMember = customerNumberGenerator();
             LocalDateTime date = LocalDateTime.now();
             Customer en = new Customer(generatedMember, dto.getFirstName(), dto.getLastName(), dto.getBirthDate(),
-                    dto.getGender(), dto.getPhone(), dto.getAddress(), dto.getMembershipExpireDate(), date, 0, 0);
+                    dto.getGender(), dto.getPhone(), dto.getAddress(), dto.getMembershipExpireDate(), date, 0, 0,0);
             customerRepository.save(en);
             logService.saveLogs(CUSTOMER, SUCCESS, INSERT);
         } catch (Exception e) {
-            logService.saveLogs(CUSTOMER, e.getMessage(), INSERT);
+            logService.saveLogs(CUSTOMER,FAILED, INSERT);
         }
     }
 
@@ -120,7 +120,7 @@ public class CustomerServiceImp implements CustomerService {
 
             return false;
         }
-        customerRepository.deleteById(number);
+        customerRepository.softDeleteCustomer(number);
         return true;
     }
 
@@ -190,7 +190,7 @@ public class CustomerServiceImp implements CustomerService {
 //        CHECK CUSTOMER IS ALREADY ON TABLE
         while (membershipChecker) {
             genrator = "CUS" + genratedValue;
-            if (!CustomerMemberChecker(genrator)) {
+            if (CustomerMemberChecker(genrator)) {
                 genratedValue++;
             } else {
                 genrator = "CUS" + genratedValue;

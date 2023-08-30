@@ -2,6 +2,7 @@ package com.example.AppWinterhold.Dao;
 
 import com.example.AppWinterhold.Dto.Loan.LoanIndexDto;
 import com.example.AppWinterhold.Entity.Loan;
+import liquibase.pro.packaged.P;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -146,4 +147,15 @@ public interface LoanRepository extends JpaRepository<Loan, Long> {
                 l.returnDate IS NOT NULL
             """)
     Long getCountHistoryPage();
+
+    @Query("""
+            SELECT 
+                count(id)
+            FROM
+                Loan as l
+            where 
+                l.customerNumber = :customer AND l.bookCode = :book AND  l.returnDate IS NULL
+            """)
+    Long validateReplicateBookLoan(@Param("customer") String customer, @Param("book")String book);
+
 }

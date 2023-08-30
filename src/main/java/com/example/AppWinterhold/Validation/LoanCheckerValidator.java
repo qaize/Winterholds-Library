@@ -14,9 +14,12 @@ public class LoanCheckerValidator implements ConstraintValidator<LoanChecker, St
     @Override
     public boolean isValid(String s, ConstraintValidatorContext constraintValidatorContext) {
 
-        Integer result = customerRepository.getLoanCountCurrentCustomer(s);
-        if (result >= 3) {
-            return false;
+
+        if (!s.isBlank()) {
+            Integer result = customerRepository.getLoanCountCurrentCustomer(s);
+            if (result >= 3) {
+                return false;
+            }
         }
         return true;
     }

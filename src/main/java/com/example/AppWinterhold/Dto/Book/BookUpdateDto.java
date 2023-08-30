@@ -50,4 +50,8 @@ public class BookUpdateDto {
 
     @Min(value = 1,message = "Minimal 1 books")
     private Integer quantity;
+
+    private Integer inBorrow;
+
+
 }

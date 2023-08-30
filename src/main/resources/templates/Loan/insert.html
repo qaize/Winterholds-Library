@@ -59,6 +59,7 @@
                     <td><label>note :</label></td>
                     <td><textarea th:field="*{note}"></textarea>
                         <div class="field-validation-error" th:errors="*{note}"></div>
+
                     </td>
                 </tr>
                 </tbody>
@@ -74,7 +75,7 @@
             <table>
                 <tbody>
                 <tr>
-                    <td><label>customerNumber :</label></td>
+                    <td><label>Customer Number :</label></td>
                     <td><select th:field="*{customerNumber}">
                         <option th:value="null" th:hidden="hidden" th:selected="selected">-Select The Customers-
                         </option>
@@ -90,15 +91,9 @@
                         <option th:each="data : ${dropdownBook}" th:value="${data.val}" th:text="${data.text}"/>
                     </select>
                         <div class="field-validation-error" th:errors="*{bookCode}"></div>
+                        <div class="field-validation-error" th:errors="${dto}"></div>
                     </td>
                 </tr>
-                <tr>
-                    <td><label>loanDate :</label></td>
-                    <td><input type="date" th:field="*{loanDate}">
-                        <div class="field-validation-error" th:errors="*{loanDate}"></div>
-                    </td>
-                </tr>
-
                 <tr>
                     <td><label>note :</label></td>
                     <td><textarea th:field="*{note}"></textarea>

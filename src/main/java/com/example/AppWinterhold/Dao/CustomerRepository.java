@@ -22,7 +22,7 @@ public interface CustomerRepository extends JpaRepository<Customer, String> {
             WHERE 
                 c.membershipNumber LIKE %:number% 
                 AND (c.firstName LIKE %:name% OR c.lastName LIKE %:name%) 
-                AND c.banned = 0
+                AND c.banned = 0 AND c.deleted = 0
             """)
     List<CustomerIndexDto> getListCustomerBySearch(String number, String name, Pageable paging);
 
@@ -35,6 +35,7 @@ public interface CustomerRepository extends JpaRepository<Customer, String> {
             WHERE 
                 c.membershipNumber LIKE %:number% 
                 AND (c.firstName LIKE %:name% OR c.lastName LIKE %:name%) 
+                AND c.deleted = 0 
             """)
     Long getCountPage(String number, String name);
 
@@ -115,7 +116,7 @@ public interface CustomerRepository extends JpaRepository<Customer, String> {
             FROM 
                 Loan AS l
             WHERE 
-                l.customerNumber = :number
+                l.customerNumber = :number 
             """)
     Long getCountCustomer(String number);
 
@@ -166,4 +167,12 @@ public interface CustomerRepository extends JpaRepository<Customer, String> {
                 c.banned = 1
             """)
     Double getCountBannedCustomer();
+
+
+    @Query(nativeQuery = true,value = """
+            update Customer\s
+            set deleted = 1
+            where MembershipNumber = :number
+            """)
+    void softDeleteCustomer(String number);
 }

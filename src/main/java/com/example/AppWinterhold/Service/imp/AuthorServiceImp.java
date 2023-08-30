@@ -199,7 +199,6 @@ public class AuthorServiceImp implements AuthorService {
     public Boolean delete(Long id) {
 
         try {
-
             var data = authorRepository.findById(id);
             if (data.isPresent()) {
                 if (authorRepository.getCountBooks(id) > 0) {

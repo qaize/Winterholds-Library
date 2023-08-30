@@ -45,6 +45,7 @@ public class BookController {
     public String insert(@Valid @ModelAttribute("dto") BookInsertDto dto, BindingResult bindingResult, Model model) {
 
         if (bindingResult.hasErrors()) {
+
             Boolean borrowed = false;
             var dropdownauthor = Dropdown.dropdownAuthor(authorService.getAllAuthor());
             dto.setIsBorrowed(borrowed);
@@ -87,7 +88,11 @@ public class BookController {
 
             return "Book/update";
         } else {
-
+            BookUpdateDto data = bookService.getBooksById(dto.getCode());
+            dto.setInBorrow(data.getInBorrow());
+            if (data.getQuantity() > dto.getQuantity()) {
+                dto.setIsBorrowed(false);
+            }
             bookService.update(dto);
 
             return "redirect:/category/detail?categoryName=" + dto.getCategoryName();

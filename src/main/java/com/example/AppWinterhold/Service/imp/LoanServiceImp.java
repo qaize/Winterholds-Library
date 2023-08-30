@@ -61,14 +61,21 @@ public class LoanServiceImp implements LoanService {
 
     @Override
     public boolean returnBook(Long id) {
+
+
         var data = getLoanById(id);
         var book = bookService.getBooksById(data.getBookCode());
         var customer = customerServiceImp.getCustomerByEntity(data.getCustomerNumber());
 
         if (data.getReturnDate() == null) {
-            book.setQuantity(book.getQuantity() + 1);
+            book.setInBorrow(book.getInBorrow() - 1);
             data.setReturnDate(LocalDate.now());
             data.setDenda(getCountDenda(data));
+
+            if (book.getQuantity() > book.getInBorrow()) {
+                book.setIsBorrowed(false);
+            }
+
             if (!(data.getDenda() > 0)) {
                 customer.setLoanCount(customerServiceImp.loanCountSetter(data.getCustomerNumber(), "Return"));
             }
@@ -96,7 +103,7 @@ public class LoanServiceImp implements LoanService {
 
         Long denda = 0L;
         if (loan.getReturnDate() != null && loan.getDenda() != null) {
-            denda = ChronoUnit.DAYS.between( loan.getDueDate(),loan.getReturnDate()) * 2000;
+            denda = ChronoUnit.DAYS.between(loan.getDueDate(), loan.getReturnDate()) * 2000;
         } else {
             denda = ChronoUnit.DAYS.between(loan.getDueDate(), LocalDate.now()) * 2000;
             if (denda < 0) {
@@ -109,28 +116,28 @@ public class LoanServiceImp implements LoanService {
     @Override
     public void insert(LoanInsertDto dto) {
         try {
-
+// Update in borrow if insert loan
             var book = bookService.getBooksById(dto.getBookCode());
             var customer = customerServiceImp.getCustomerByEntity(dto.getCustomerNumber());
 
-            if (book.getQuantity() > 0) {
-                book.setQuantity(book.getQuantity() - 1);
+            if (book.getQuantity() > book.getInBorrow()) {
+                book.setInBorrow(book.getInBorrow() + 1);
             }
 
-            if (book.getQuantity() == 0) {
+            if (book.getQuantity() == book.getInBorrow()) {
                 book.setIsBorrowed(true);
             }
+
 
             customer.setLoanCount(customerServiceImp.loanCountSetter(dto.getCustomerNumber(), "loan"));
             customerServiceImp.updateWithEntity(customer);
             bookService.update(book);
-
             Loan en;
             if (dto.getDenda() == null) {
-                en = new Loan(dto.getId(), dto.getCustomerNumber(), dto.getBookCode(), dto.getLoanDate(), dto.getLoanDate().plusDays(5), null, dto.getNote(), 0, null);
+                en = new Loan(dto.getId(), dto.getCustomerNumber(), dto.getBookCode(), LocalDate.now(), LocalDate.now().plusDays(5), null, dto.getNote(), 0, null);
                 logService.saveLogs(LOAN, SUCCESS, INSERT);
             } else {
-                en = new Loan(dto.getId(), dto.getCustomerNumber(), dto.getBookCode(), dto.getLoanDate(), dto.getLoanDate().plusDays(5), null, dto.getNote(), 0, dto.getDenda());
+                en = new Loan(dto.getId(), dto.getCustomerNumber(), dto.getBookCode(), LocalDate.now(), LocalDate.now().plusDays(5), null, dto.getNote(), 0, dto.getDenda());
                 logService.saveLogs(LOAN, SUCCESS, INSERT);
             }
             loanRepository.save(en);

@@ -23,23 +23,26 @@
                     <td><label>floor </label></td>
                     <td><input type="text" th:field="*{floor}">
                         <div class="field-validation-error" th:errors="*{floor}"></div>
+                        <div class="field-validation-error" th:errors="${dto}"></div>
                     </td>
                 </tr>
                 <tr>
                     <td><label>isle </label></td>
                     <td><input type="text" th:field="*{isle}">
                         <div class="field-validation-error" th:errors="*{isle}"></div>
+                        <div class="field-validation-error" th:errors="${dto}"></div>
                     </td>
                 </tr>
                 <tr>
                     <td><label>bay </label></td>
                     <td><input type="text" th:field="*{bay}">
                         <div class="field-validation-error" th:errors="*{bay}"></div>
+                        <div class="field-validation-error" th:errors="${dto}"></div>
                     </td>
                 </tr>
-
                 </tbody>
             </table>
+
             <button class="btn blue-button" type="submit"> submit</button>
             <a class="btn warning-button" th:href="@{/category/index}">Close</a>
         </form>

@@ -35,8 +35,9 @@ public class Dropdown {
 
         for (BookIndexDto value : drop
         ) {
+            Integer stock = value.getQuantity() - value.getInBorrow();
             data.add(new DropdownDto(value.getCode().toString(),
-                    value.getTitle().concat("        (").concat(value.getQuantity().toString()).concat(" left )")));
+                    value.getTitle().concat(" (").concat(stock.toString()).concat(" left )")));
         }
         return data;
     }

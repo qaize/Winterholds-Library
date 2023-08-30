@@ -10,10 +10,12 @@ import com.example.AppWinterhold.Service.abs.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import static  com.example.AppWinterhold.Const.actionConst.*;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
+
+import static com.example.AppWinterhold.Const.actionConst.SUCCESS;
 
 @Service
 public class BookServiceImp implements BookService {
@@ -39,7 +41,7 @@ public class BookServiceImp implements BookService {
 
         Book en = new Book(code, dto.getTitle(), dto.getCategoryName(),
                 dto.getAuthorId().longValue(), dto.getIsBorrowed(), dto.getSummary(),
-                dto.getReleaseDate(), dto.getTotalPage(),dto.getQuantity());
+                dto.getReleaseDate(), dto.getTotalPage(), dto.getQuantity(), 0);
 
         bookRepository.save(en);
     }
@@ -117,9 +119,11 @@ public class BookServiceImp implements BookService {
     @Override
     public void update(BookUpdateDto dto) {
 
+
+
         Book en = new Book(dto.getCode(), dto.getTitle(), dto.getCategoryName(),
                 dto.getAuthorId(), dto.getIsBorrowed(), dto.getSummary(),
-                dto.getReleaseDate(), dto.getTotalPage(),dto.getQuantity());
+                dto.getReleaseDate(), dto.getTotalPage(), dto.getQuantity(), dto.getInBorrow());
         bookRepository.save(en);
     }
 
