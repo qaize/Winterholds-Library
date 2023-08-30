@@ -25,7 +25,7 @@ public class CustomerRestController {
     private CustomerService customerService;
 
     @GetMapping("/getCustomers")
-    public ResponseEntity<Object> getAuthor() {
+    public ResponseEntity<Object> getCustomer() {
         try {
             var list = customerService.getAll();
             return ResponseEntity.status(HttpStatus.OK).body(list);

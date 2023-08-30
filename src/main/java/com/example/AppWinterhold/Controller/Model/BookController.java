@@ -93,6 +93,10 @@ public class BookController {
             if (data.getQuantity() > dto.getQuantity()) {
                 dto.setIsBorrowed(false);
             }
+
+            if(data.getQuantity() == 0){
+                dto.setIsBorrowed(true);
+            }
             bookService.update(dto);
 
             return "redirect:/category/detail?categoryName=" + dto.getCategoryName();
