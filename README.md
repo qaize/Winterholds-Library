@@ -3,8 +3,10 @@ Is Library Sistem Application
 
 Made by MVC Springboot framework
 
-My server : Micrososft SQL Server 
-Database : https://drive.google.com/drive/folders/1d3WLq6s5BcIpzGUZcl1c7lCEpQQgqT88?usp=sharing
+
+
+# My Database (BAK)
+    https://drive.google.com/drive/folders/1d3WLq6s5BcIpzGUZcl1c7lCEpQQgqT88?usp=sharing
 
 
 # Rules for Customer :
