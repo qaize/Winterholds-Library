@@ -1,9 +1,5 @@
 # Winterholds
-Is Library Sistem Application
-
-Made by MVC Springboot framework
-
-
+Library Sistem Application based MVC Springboot framework
 
 # My Database (BAK)
     https://drive.google.com/drive/folders/1d3WLq6s5BcIpzGUZcl1c7lCEpQQgqT88?usp=sharing
