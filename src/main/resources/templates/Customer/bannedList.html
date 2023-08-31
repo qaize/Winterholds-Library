@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head th:replace="~{layout::head}">
+</head>
+<body class="main-body" th:object="${authorDto}">
+<nav th:replace="~{layout::navLayout}"></nav>
+<header th:replace="~{layout::header('Banned Member')}"></header>
+
+<div class="grid-container category-index">
+    <table>
+        <thead>
+        <tr>
+            <th></th>
+            <th>Membership Number</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="data : ${bannedList}" th:object="${data}">
+            <td class="action">
+                <div class="button-wrapper">
+                    <a class="btn warning-button" th:href="@{/customer/unban(customerNumber = *{membershipNumber})}">Unban</a>
+                </div>
+            </td>
+            <td th:text="*{membershipNumber}"></td>
+        </tr>
+        </tbody>
+        <tfoot>
+        <tr>
+            <td colspan="6">
+                <div class="pagination">
+                    <div th:attr="data-currentPage=${currentPage}"
+                         th:text="|page ${currentPage} of ${totalPage}|"></div>
+                    <div>
+                    <div>
+                        <a th:if="${totalPage !=0}"
+                           th:each="loop:${#numbers.sequence(1, totalPage)}"
+                           th:href="@{/customer/index(page=${loop},number=${number},name=${name})}"
+                           th:text="${loop}"></a>
+                    </div>
+                </div>
+            </td>
+        </tr>
+        </tfoot>
+    </table>
+    <div class="filter">
+        <a class="btn warning-button" th:href="@{/customer/index}">Back</a>
+    </div>
+
+</div>
+
+
+</main>
+
+</body>
+</html>

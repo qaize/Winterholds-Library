@@ -1,8 +1,6 @@
 package com.example.AppWinterhold.Dto.Loan;
 
-import javax.persistence.Column;
 import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
 
 import lombok.*;
 
@@ -27,9 +25,10 @@ public class LoanIndexDto {
     private String note;/*500 n*/
 
     private String dayLeft;
-    private String lateLoan;
+    private String loanStatus;
+    private Long denda;
 
-    public LoanIndexDto(Long id, String customerName, String bookTitle, LocalDate loanDate, LocalDate dueDate, LocalDate returnDate, String note) {
+    public LoanIndexDto(Long id, String customerName, String bookTitle, LocalDate loanDate, LocalDate dueDate, LocalDate returnDate, String note, Long denda) {
         this.id = id;
         this.customerName = customerName;
         this.bookTitle = bookTitle;
@@ -37,6 +36,7 @@ public class LoanIndexDto {
         this.dueDate = dueDate;
         this.returnDate = returnDate;
         this.note = note;
+        this.denda = denda;
 
     }
 }

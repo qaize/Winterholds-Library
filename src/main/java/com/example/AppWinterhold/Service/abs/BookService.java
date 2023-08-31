@@ -8,29 +8,18 @@ import com.example.AppWinterhold.Dto.Rest.ResponseCrudRestDto;
 import java.util.List;
 
 public interface BookService {
+    Boolean delete(String code);
+    ResponseCrudRestDto getAll();
+    void insert(BookInsertDto dto);
+    void update(BookUpdateDto dto);
+    List<BookIndexDto> getAvailableBook();
+    BookUpdateDto getBooksById(String bookCode);
+    BookIndexDto getBooksBycode(String bookCode);
+    List<BookIndexDto> getlistBooksByAuthorId(Long id);
+    ResponseCrudRestDto getBooksBycode2(String bookCode);
+    BookUpdateDto getBooksBycodeUpdate(String bookCode);
+    String generateBookCodeByCategory(String categoryName);
     List<BookIndexDto> getlistBooksByCategoryName(String categoryName);
     List<BookIndexDto> getlistBooksByCategoryName(String categoryName,String title,String author);
-
-    void insert(BookInsertDto dto);
-
-    ResponseCrudRestDto getAll();
-//    List<BookIndexDto> getAll();
-
-    List<BookIndexDto> getlistBooksByAuthorId(Long id);
-
-    BookInsertDto getBooksById(String bookCode);
-
-    List<BookIndexDto> getAvailableBook();
-
-    BookIndexDto getBooksBycode(String bookCode);
-
-    ResponseCrudRestDto getBooksBycode2(String bookCode);
-
-    Boolean delete(String code);
-
-    void update(BookUpdateDto dto);
-
-    BookUpdateDto getBooksBycodeUpdate(String bookCode);
-
 
 }

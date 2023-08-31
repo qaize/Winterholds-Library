@@ -34,6 +34,12 @@ public class Book {
     @Column(name = "TotalPage")
     private Integer totalPage; /*N*/
 
+    @Column(name = "quantity")
+    private Integer quantity;
+
+    @Column(name = "inBorrow")
+    private Integer inBorrow;
+
     @ManyToOne
     @JoinColumn(name = "AuthorId",insertable = false,updatable = false)
     private Author author;
@@ -44,7 +50,8 @@ public class Book {
 
 
 
-    public Book(String code, String title, String categoryName, Long authorId, Boolean isBorrowed, String summary, LocalDate releaseDate, Integer totalPage) {
+    public Book(String code, String title, String categoryName, Long authorId, Boolean isBorrowed, String summary,
+                LocalDate releaseDate, Integer totalPage, Integer quantity, Integer inBorrow) {
         this.code = code;
         this.title = title;
         this.categoryName = categoryName;
@@ -53,5 +60,7 @@ public class Book {
         this.summary = summary;
         this.releaseDate = releaseDate;
         this.totalPage = totalPage;
+        this.quantity = quantity;
+        this.inBorrow = inBorrow;
     }
 }

@@ -31,8 +31,8 @@ public class SecurityConfiguration {
     @Order(2)
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
         http.authorizeRequests()
-                .antMatchers("/resources/**","/login/**","/register/**","/home/**").permitAll()
-                .antMatchers("/book/**","/category/**","/author/**","/loan/**").hasAnyAuthority("Administrator")
+                .antMatchers("/resources/**","/login/**","/register/**","/home/**","/book/**","/category/**","/author/**").permitAll()
+                .antMatchers("/loan/**").hasAnyAuthority("Administrator")
                 .anyRequest().authenticated()
                 .and().formLogin()
                 .loginPage("/login/loginForm")

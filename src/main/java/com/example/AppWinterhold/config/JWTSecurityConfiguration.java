@@ -32,6 +32,7 @@ public class JWTSecurityConfiguration extends OncePerRequestFilter {
         String username = null;
         String token = null;
 
+
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if(authorizationHeader != null){
@@ -41,6 +42,7 @@ public class JWTSecurityConfiguration extends OncePerRequestFilter {
 
         if(username != null && authentication == null){
             UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+
             if(jwtToken.validateToken(token, userDetails)){
                 UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
                         userDetails, null,userDetails.getAuthorities());

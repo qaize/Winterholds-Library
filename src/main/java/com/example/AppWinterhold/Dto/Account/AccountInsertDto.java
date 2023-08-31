@@ -13,6 +13,10 @@ import javax.validation.constraints.Size;
 @PasswordConfirm(mainPassword = "password",confirmPassword = "conpassword",message = "Password not Match!")
 public class AccountInsertDto {
 
+    @NotNull(message = "You should insert some value")
+    @NotBlank(message = "Fill this form")
+    private String name;
+
     @UsernameCheck(message = "This Username Already used!")
     @NotBlank(message = "Username cannot blank")
     @NotNull(message = "Username Cannot Null")

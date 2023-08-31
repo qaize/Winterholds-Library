@@ -1,76 +1,71 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
-<head th:replace="~{layout::head}" >
-</head>
-<body >
-<nav th:replace="~{layout::navigation}"></nav>
+<head th:replace="~{layout::headLayout}"><!-- layout itu dari layout.html,
+                            headLayout dari nama fragment yang ada di layout.html  -->
+<body class="main-body">
+<nav th:replace="~{layout::navLayout}"></nav>
+<header th:replace="~{layout::header('Author')}"></header>
 <main>
-    <form method="get"  th:attr="action=@{/author/index}">
-            <fieldset>
-                <legend>Search by:</legend>
-                <div>
-                    <span>Author Name :</span>
-                    <input type="text" name="name" placeholder="name" th:attr="value=${name}">
-                </div>
-                <div class="divSearch">
-                <button class=" btn search-button" type="submit">Search</button>
-                </div>
-            </fieldset>
-     </form>
+    <div class="grid-container">
+        <form method="get" class="filter" th:attr="action=@{/author/index}">
+            <span>Author Name :</span>
+            <input type="text" name="name" placeholder="name" th:attr="value=${name}">
+            <button class=" btn blue-button" type="submit">Search</button>
+        </form>
 
+        <a class="btn create-button" th:href="@{/author/insert}"> Add Author </a>
 
-    <div class="filter">
-        <a  class="btn add-button" th:href="@{/author/insert}"> Add Author </a>
-    </div>
-    <div class="divTable">
-        <table >
-            <thead>
-            <tr>
-                <th></th>
-                <th>Full Name</th>
-                <th>Age</th>
-                <th>Status</th>
-                <th>education</th>
-                <th>Created By</th>
-                <th>Last Modified By</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="data : ${listAuthor}" th:object="${data}">
-                <td class="action">
-                    <div class="button-wrapper">
-                        <a class="btn detail-btn" th:href="@{/author/detail(id=*{id})}">Books</a>
-                        <a class="btn back-warning" th:href="@{/author/update(id=*{id})}">Edit</a>
-                        <a class="btn delete-btn" th:href="@{/author/delete(id=*{id})}">Delete</a>
-                    </div>
-                </td>
-                <td th:text="*{fullname}"></td>
-                <td th:text="*{age}"></td>
-                <td th:text="*{deceasedDateStr}"></td>
-                <td th:text="*{education}"></td>
-                <td th:text="*{createdBy}"></td>
-                <td th:text="*{modifiedBy}"></td>
-            </tr>
-            </tbody>
-            <tfoot>
-            <tr>
-                <td colspan="9">
-                    <div class="pagination">
-                        <div>
-                            <a th:if="${totalPage !=0}"
-                               th:each="loop:${#numbers.sequence(1, totalPage)}"
-                               th:href="@{/author/index(page=${loop},name=${name})}"
-                               th:text="${loop}"></a>
+        <div class="divTable">
+            <table>
+                <thead>
+                <tr>
+                    <th scope="col">Action</th>
+                    <th scope="col">Full Name</th>
+                    <th scope="col">Age</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">education</th>
+                    <th scope="col">Created By</th>
+                    <th scope="col">Last Modified By</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="data : ${listAuthor}" th:object="${data}">
+                    <td class="action">
+                        <div class="button-wrapper">
+                            <a class="btn blue-button" th:href="@{/author/detail(id=*{id})}">Books</a>
+                            <a class="btn update-button" th:href="@{/author/update(id=*{id})}">Edit</a>
+                            <a class="btn warning-button" th:href="@{/author/delete(id=*{id})}">Delete</a>
                         </div>
-                    </div>
-                </td>
-            </tr>
-            </tfoot>
-        </table>
+                    </td>
+                    <td th:text="*{fullname}"></td>
+                    <td th:text="*{age}"></td>
+                    <td th:text="*{deceasedDateStr}"></td>
+                    <td th:text="*{education}"></td>
+                    <td th:text="*{createdBy}"></td>
+                    <td th:text="*{modifiedBy}"></td>
+                </tr>
+                </tbody>
+                <tfoot>
+                <tr>
+                    <td colspan="9">
+                        <div class="pagination">
+                            <div th:attr="data-currentPage=${currentPage}"
+                                 th:text="|page ${currentPage} of ${totalPage}|"></div>
+                            <div>
+                                <a th:if="${totalPage !=0}"
+                                   th:each="loop:${#numbers.sequence(1, totalPage)}"
+                                   th:href="@{/author/index(page=${loop},name=${name})}"
+                                   th:text="${loop}"></a>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                </tfoot>
+            </table>
+
+        </div>
 
     </div>
-
-
 </main>
 
 </body>

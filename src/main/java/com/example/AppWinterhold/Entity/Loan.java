@@ -28,6 +28,8 @@ public class Loan {
     private String note;/*500 n*/
     @Column(name = "Extend")
     private Integer extend;/*500 n*/
+    @Column(name = "Denda")
+    private Long denda;/*500 n*/
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "CustomerNumber",insertable = false,updatable = false)
@@ -36,7 +38,7 @@ public class Loan {
     @JoinColumn(name = "BookCode",insertable = false,updatable = false)
     private Book book;
 
-    public Loan(Long id, String customerNumber, String bookCode, LocalDate loanDate, LocalDate dueDate, LocalDate returnDate, String note, Integer extend) {
+    public Loan(Long id, String customerNumber, String bookCode, LocalDate loanDate, LocalDate dueDate, LocalDate returnDate, String note, Integer extend,Long denda) {
         this.id = id;
         this.customerNumber = customerNumber;
         this.bookCode = bookCode;
@@ -45,5 +47,6 @@ public class Loan {
         this.returnDate = returnDate;
         this.note = note;
         this.extend = extend;
+        this.denda = denda;
     }
 }

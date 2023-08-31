@@ -22,10 +22,15 @@ public class BookIndexDto {
     private LocalDate releaseDate;/*N*/
 
     private Integer totalPage; /*N*/
+    private Integer quantity; /*N*/
+
+    private Integer inBorrow;
+
+    private String dividedBooks;
 
     public BookIndexDto(String code, String title, String categoryName, String authorName,
                         Boolean isBorrowed, String summary, LocalDate releaseDate,
-                        Integer totalPage) {
+                        Integer totalPage, Integer quantity,Integer inBorrow) {
         this.code = code;
         this.title = title;
         this.categoryName = categoryName;
@@ -34,6 +39,9 @@ public class BookIndexDto {
         this.summary = summary;
         this.releaseDate = releaseDate;
         this.totalPage = totalPage;
-        this.isBorrowedStr = isBorrowed ? "Borrowed" : "Available";
+        this.isBorrowedStr = isBorrowed ? "Not Available" : "Available";
+        this.quantity = quantity;
+        this.inBorrow = inBorrow;
+        this.dividedBooks = inBorrow.toString().concat(" of ").concat(quantity.toString());
     }
 }

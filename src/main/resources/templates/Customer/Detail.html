@@ -1,33 +1,28 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
-<head th:replace="~{layout::head}" >
+<head th:replace="~{layout::headLayout}">
 </head>
-<body>
-<nav th:replace="~{layout::navigation}"></nav>
+<body class="main-body" th:object="${memberDto}">
+<nav th:replace="~{layout::navLayout}"></nav>
+<header th:replace="~{layout::header(*{fullname})}"></header>
 <main>
-
-    <fieldset th:object="${memberDto}" class="formSpacer">
-        <legend>Customer Detail : </legend>
-        <div>
-            <span>Fullname      : <span th:text="*{fullname}"></span></span>
+    <div class="grid-container">
+        <div class="filter">
+            <label>Name : </label>
+            <h1 th:text="*{fullname}"></h1>
+            <label>Birth Date : </label>
+            <h1 th:text="*{birthDate}"></h1>
+            <label>Gender : </label>
+            <h1 th:text="*{gender}"></h1>
+            <label>Phone : </label>
+            <h1 th:text="*{phone}"></h1>
+            <label>Address : </label>
+            <h1 th:text="*{address}"></h1>
         </div>
-        <div>
-            <span>Birth Date    : <span th:text="*{birthDate}"></span></span>
+        <div class="filter">
+            <a class="btn warning-button" th:href="@{/customer/index}"> Back to Customer Index </a>
         </div>
-        <div>
-            <span>gender        : <span th:text="*{gender}"></span></span>
-        </div>
-        <div>
-            <span>phone         : <span th:text="*{phone}"></span></span>
-        </div>
-        <div>
-            <span>Address       : <span th:text="*{address}"></span></span>
-        </div>
-    </fieldset>
-    <div class="divContainer">
-        <a  class="btn detail-btn" th:href="@{/customer/index}"> Back to Customer Index </a>
     </div>
-
 </main>
 
 </body>

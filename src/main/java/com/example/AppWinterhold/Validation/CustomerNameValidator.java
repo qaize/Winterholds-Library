@@ -15,7 +15,7 @@ public class CustomerNameValidator implements ConstraintValidator<CustomerName,S
     @Override
     public boolean isValid(String s, ConstraintValidatorContext constraintValidatorContext) {
 
-        Long result = customerRepository.getCountCustomer(s);
+        Long result = customerRepository.checkCustomerById(s);
         if(result>0){
             return false;
         }

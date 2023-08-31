@@ -29,6 +29,7 @@ public class CategoryUpdateDto {
 
     @NotBlank(message = "Isle Cannot blank")
     @NotNull(message = "Isle cannot null")
+    @Size(max = 2,message = "Isle must not more than 2 digits")
     private String isle;/*10 NN*/
 
     @NotBlank(message = "Bay Cannot blank")

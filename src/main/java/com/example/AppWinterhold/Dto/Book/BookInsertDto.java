@@ -10,6 +10,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.Column;
 import javax.persistence.Id;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -20,11 +21,11 @@ import java.time.LocalDate;
 @Getter @Setter
 public class BookInsertDto {
 
-    @BookCode(message = "Code Already Used,Please Insert Diffrent Code")
-    @NotBlank(message = "Please Insert Book Code ")
-    @Size(max = 20, message = "Max 20 charachter")
-    @NotNull(message = "this Field cannot be null")
-    private String code;/*20 NN*/
+//    @BookCode(message = "Code Already Used,Please Insert Diffrent Code")
+//    @NotBlank(message = "Please Insert Book Code ")
+//    @Size(max = 20, message = "Max 20 charachter")
+//    @NotNull(message = "this Field cannot be null")
+//    private String code;/*20 NN*/
 
     @Size(max = 100, message = "Max 100 charachter")
     @NotNull(message = "this Field cannot be null")
@@ -50,4 +51,7 @@ public class BookInsertDto {
     private LocalDate releaseDate;/*N*/
 
     private Integer totalPage; /*N*/
+
+    @Min(value = 1,message = "Minimal 1 book")
+    private Integer quantity;
 }

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head th:replace="~{layout::headLayout}">
+<body class="main-body">
+<nav th:replace="~{layout::navLayout}"></nav>
+<header th:replace="~{layout::header('Payment History')}"></header>
+<main>
+    <div class="grid-container">
+        <div>
+
+            <table>
+                <thead>
+                <tr>
+                    <th>Date Transaction</th>
+                    <th>Source</th>
+                    <th>Created By</th>
+                    <th>Nominal</th>
+                    <th>Total Terakhir</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="data : ${logs}" th:object="${data}">
+                    <td th:text="*{transactionDate}"></td>
+                    <td th:text="*{source}"></td>
+                    <td th:text="*{createdBy}"></td>
+                    <td th:text="*{nominal}"></td>
+                    <td th:text="*{total}"></td>
+                </tr>
+                </tbody>
+                <tfoot>
+                <tr>
+                    <td colspan="6">
+                        <div class="pagination">
+                            <div th:attr="data-currentPage=${currentPage}"
+                                 th:text="|page ${currentPage} of ${totalPage}|">
+                            </div>
+                            <div>
+                                <a th:if="${totalPage !=0}"
+                                   th:each="loop:${#numbers.sequence(1, totalPage)}"
+                                   th:href="@{/loan/paymentHistory(page=${loop})}"
+                                   th:text="${loop}"></a>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                </tfoot>
+            </table>
+        </div>
+
+        <div class="filter">
+            <a class="btn warning-button" th:href="@{/loan/index}">Back</a>
+        </div>
+    </div>
+
+
+</main>
+
+</body>
+</html>

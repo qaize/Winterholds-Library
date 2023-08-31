@@ -12,12 +12,18 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.Random;
+
+import static com.example.AppWinterhold.Const.actionConst.SUCCESS;
 
 @Service
 public class BookServiceImp implements BookService {
 
     @Autowired
     private BookRepository bookRepository;
+
+
     @Override
     public List<BookIndexDto> getlistBooksByCategoryName(String categoryName) {
         return bookRepository.getlistBooksByCategoryName(categoryName);
@@ -25,36 +31,37 @@ public class BookServiceImp implements BookService {
 
     @Override
     public List<BookIndexDto> getlistBooksByCategoryName(String categoryName, String title, String author) {
-        return bookRepository.getlistBooksByCategoryName(categoryName,title,author);
+        return bookRepository.getlistBooksByCategoryName(categoryName, title, author);
     }
+
 
     @Override
     public void insert(BookInsertDto dto) {
-        Book en = new Book(dto.getCode(),dto.getTitle(),dto.getCategoryName(),
-                dto.getAuthorId().longValue(),dto.getIsBorrowed(),dto.getSummary(),
-                dto.getReleaseDate(),dto.getTotalPage());
+
+        String code = generateBookCodeByCategory(dto.getCategoryName());
+
+        Book en = new Book(code, dto.getTitle(), dto.getCategoryName(),
+                dto.getAuthorId().longValue(), dto.getIsBorrowed(), dto.getSummary(),
+                dto.getReleaseDate(), dto.getTotalPage(), dto.getQuantity(), 0);
 
         bookRepository.save(en);
     }
 
     @Override
     public ResponseCrudRestDto getAll() {
+
         List<BookIndexDto> data = bookRepository.getAll();
         ResponseCrudRestDto response = new ResponseCrudRestDto();
-
-        try{
-
+        try {
             response.setMessage("OK");
             response.setStatus(HttpStatus.OK);
             response.setObject(data);
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             response.setMessage("INTERNAL ERROR ");
             response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR);
             response.setObject(null);
 
         }
-
 
         return response;
     }
@@ -65,7 +72,7 @@ public class BookServiceImp implements BookService {
     }
 
     @Override
-    public BookInsertDto getBooksById(String bookCode) {
+    public BookUpdateDto getBooksById(String bookCode) {
         return bookRepository.getBooksById(bookCode);
     }
 
@@ -78,17 +85,17 @@ public class BookServiceImp implements BookService {
     public BookIndexDto getBooksBycode(String bookCode) {
         return bookRepository.getBooksBycode(bookCode);
     }
+
     @Override
     public ResponseCrudRestDto getBooksBycode2(String bookCode) {
         BookIndexDto data = bookRepository.getBooksBycode(bookCode);
         ResponseCrudRestDto response = new ResponseCrudRestDto();
-        try{
+        try {
 
-            response.setMessage("SUCCESS");
+            response.setMessage(SUCCESS);
             response.setStatus(HttpStatus.OK);
             response.setObject(data);
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             response.setMessage("INTERNAL ERROR ");
             response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR);
             response.setObject(null);
@@ -101,9 +108,9 @@ public class BookServiceImp implements BookService {
     @Override
     public Boolean delete(String code) {
 
-        Long data = bookRepository.getCountBooks(code);
+        Long data = bookRepository.getCountBooksByCode(code);
 
-        if(data>0){
+        if (data > 0) {
             return false;
         }
         bookRepository.deleteById(code);
@@ -112,16 +119,40 @@ public class BookServiceImp implements BookService {
 
     @Override
     public void update(BookUpdateDto dto) {
-        Book en = new Book(dto.getCode(),dto.getTitle(),dto.getCategoryName(),
-                dto.getAuthorId().longValue(),dto.getIsBorrowed(),dto.getSummary(),
-                dto.getReleaseDate(),dto.getTotalPage());
-        bookRepository.save(en);
 
+
+
+        Book en = new Book(dto.getCode(), dto.getTitle(), dto.getCategoryName(),
+                dto.getAuthorId(), dto.getIsBorrowed(), dto.getSummary(),
+                dto.getReleaseDate(), dto.getTotalPage(), dto.getQuantity(), dto.getInBorrow());
+        bookRepository.save(en);
     }
 
     @Override
     public BookUpdateDto getBooksBycodeUpdate(String bookCode) {
         return bookRepository.getBooksBycodeUpdate(bookCode);
+    }
+
+    @Override
+    public String generateBookCodeByCategory(String categoryName) {
+
+        int randomed = 1000;
+        Random randomer = new Random();
+        int generatedValue = randomer.nextInt(randomed);
+        String generated = "";
+        boolean checker = true;
+
+//       IF THIS BOOKS CODE WAS USED
+        while (checker) {
+            generated = categoryName.substring(0, 2).toUpperCase() + generatedValue;
+            if (bookRepository.getCountBooksByCode(generated) > 0) {
+                generatedValue++;
+            } else {
+                generated = categoryName.substring(0, 2).toUpperCase() + generatedValue;
+                checker = false;
+            }
+        }
+        return generated;
     }
 
 }

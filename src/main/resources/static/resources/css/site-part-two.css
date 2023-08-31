@@ -1,0 +1,16 @@
+/*
+.button-clear-all-form{
+    font-size:20px;
+    color:red;
+    cursor: pointer;
+
+}
+*/
+
+.pagination [type="number"]{
+    width: 50px;
+}
+
+.pagination a.firstPage, .pagination a.lastPage{
+    width: 50px;
+}

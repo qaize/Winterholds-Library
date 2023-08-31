@@ -26,4 +26,7 @@ public class Account {
     @Column(name="wrongCount")
     private Integer countWrong;
 
+    @Column(name="name")
+    private String userLogin;
+
 }

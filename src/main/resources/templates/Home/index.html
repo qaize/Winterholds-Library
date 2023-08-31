@@ -1,24 +1,22 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
-<head th:replace="~{layout::head}" >
-</head>
-<body>
-<nav th:replace="~{layout::navigation}"></nav>
-<!--<header th:replace="~{layout::head}"></header>-->
+<head th:replace="~{layout::headLayout}">
+<body class="main-body">
+<nav th:replace="~{layout::navLayout}"></nav>
+<header th:replace="~{layout::header('Home')}"></header>
 <main>
-    <div class="banner">
+    <div class="grid-container category-index">
         <div class="home">
             <h1>Winterhold Library</h1>
             <p>Knowladge is the best weapon you have, please</p>
-               <p>find some fascinating books we have</p>
+            <p>find some fascinating books we have</p>
             <p>this app will help you do that, as long as you</p>
             <p> keep extend your membership!</p>
             <p>(Its totaly Free!)</p>
 
-
-<!--            <h3><a th:href="@{/register/popup}">popup</a></h3>-->
+            <!--            <h3><a th:href="@{/register/popup}">popup</a></h3>-->
         </div>
-        </div>
+    </div>
 </main>
 
 </body>

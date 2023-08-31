@@ -1,46 +1,46 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
-<head th:replace="~{layout::head}" >
+<head th:replace="~{login-layout::head}">
 </head>
-<body >
-  <main>
-<div class="formReg">
+<body class="authentication-body">
+<div class="authentication-wrapper">
+    <main>
 
-    <form method="post" th:attr="action=@{/register/registerForm}" enctype="multipart/form-data" th:object="${dto}">
-      <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
-      <div class="divLogin">
-      <div>
-      <h1>Sign Up</h1>
-      </div>
+        <form method="post" th:attr="action=@{/register/registerForm}" enctype="multipart/form-data" th:object="${dto}">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+            <div class="divLogin">
+                <div>
+                    <h1>Sign Up</h1>
+                </div>
 
-      <div style="text-align : left">
-        <label>Username </label>
-        <input type="text" th:field="*{username}" placeholder="Username">
-        <div class="field-validation-error" th:errors="*{username}"> </div>
-      </div>
-      <div style="text-align : left">
-        <label>Password </label>
-        <input type="password" th:field="*{password}" placeholder="Password">
-        <div class="field-validation-error" th:errors="*{password}"> </div>
-        <div class="field-validation-error" th:errors="${dto}"> </div>
-      </div>
-      <div style="text-align : left">
-        <label>Confirm Password </label>
-        <input type="password" th:field="*{conpassword}" placeholder="Re-password">
-        <div class="field-validation-error" th:errors="*{conpassword}"> </div>
-      </div>
-        <div>
-          <button class="btn search-button" type="submit"> Sign Up</button>
+                <div style="text-align : left">
+                    <input type="text" th:field="*{name}" placeholder="name">
+                    <div class="field-validation-error" th:errors="*{name}"></div>
+                </div>
+                <div style="text-align : left">
+                    <input type="text" th:field="*{username}" placeholder="Username">
+                    <div class="field-validation-error" th:errors="*{username}"></div>
+                </div>
+                <div style="text-align : left">
+                    <input type="password" th:field="*{password}" placeholder="Password">
+                    <div class="field-validation-error" th:errors="*{password}"></div>
+                    <div class="field-validation-error" th:errors="${dto}"></div>
+                </div>
+                <div style="text-align : left">
+                    <input type="password" th:field="*{conpassword}" placeholder="Re-password">
+                    <div class="field-validation-error" th:errors="*{conpassword}"></div>
+                </div>
+                <div>
+                    <button class="btn blue-button" type="submit"> Sign Up</button>
+                </div>
+            </div>
+
+        </form>
+        <div style="text-align:center;margin-bottom : 20px">
+            <p>Click here to <a th:href="@{/login/loginForm}">login</a></p>
         </div>
-      </div>
-
-    </form>
-    <div style="text-align:center;margin-bottom : 20px">
-    <p>Click here to <a  th:href="@{/login/loginForm}">login</a></p>
-    </div>
-
+    </main>
 </div>
-  </main>
 
 </body>
 </html>

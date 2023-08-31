@@ -1,81 +1,76 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
-<head th:replace="~{layout::head}" >
-</head>
-<body>
-<nav th:replace="~{layout::navigation}"></nav>
+<head th:replace="~{layout::headLayout}">
+<body class="main-body">
+<nav th:replace="~{layout::navLayout}"></nav>
+<header th:replace="~{layout::header('Loan')}"></header>
 <main>
+    <div class="grid-container">
+        <form method="get" class="filter" th:attr="action=@{/loan/index}">
 
-    <form method="get"  th:attr="action=@{/loan/index}">
-      <fieldset>
-        <legend>Search by:</legend>
-        <div>
-          <span>Book Title  :</span>
-          <input type="text" name="title" placeholder="title" th:attr="value=${title}">
+            <input type="text" name="title" placeholder="title" th:attr="value=${title}">
+
+            <input type="text" name="name" placeholder="name" th:attr="value=${name}">
+
+            <button class="btn blue-button" type="submit">Search</button>
+        </form>
+        <div class="filter">
+            <a class="btn blue-button" th:href="@{/loan/insert}"> Add New Loan </a>
         </div>
-        <div>
-          <span>Customer    :</span>
-          <input type="text" name="name" placeholder="name" th:attr="value=${name}">
+        <div class="divTable">
+            <table>
+                <thead>
+                <tr>
+                    <th></th>
+                    <th>Customer Name</th>
+                    <th>Book Title</th>
+                    <th>Loan Date</th>
+                    <th>Due Loan</th>
+                    <th>Day Left</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="data : ${listLoan}" th:object="${data}">
+                    <td class="action">
+                        <div class="button-wrapper">
+                            <a class="btn update-button" th:href="@{/loan/detail(id=*{id})}">Detail</a>
+                            <a class="btn blue-button"
+                               th:style="*{returnDate == null ? 'display : inline-block' : 'display : none'}"
+                               th:href="@{/loan/extend(id=*{id})}">extend</a>
+                            <a class="btn warning-button"
+                               th:style="*{returnDate == null ? 'display : inline-block' : 'display : none'}"
+                               th:href="@{/loan/return(id=*{id})}">Return</a>
+                        </div>
+                    </td>
+                    <td th:text="*{customerName}"></td>
+                    <td th:text="*{bookTitle}"></td>
+                    <td th:text="*{loanDate}"></td>
+                    <td th:text="*{dueDate}"></td>
+                    <td th:text="*{dayLeft}"></td>
+                </tr>
+                </tbody>
+                <tfoot>
+                <tr>
+                    <td colspan="6">
+                        <div class="pagination">
+                            <div th:attr="data-currentPage=${currentPage}"
+                                 th:text="|page ${currentPage} of ${totalPage}|">
+                            </div>
+                            <div>
+                                <a th:if="${totalPage !=0}"
+                                   th:each="loop:${#numbers.sequence(1, totalPage)}"
+                                   th:href="@{/loan/index(page=${loop}, title=${title}, name=${name})}"
+                                   th:text="${loop}"></a>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                </tfoot>
+            </table>
+
         </div>
-        <div class="divSearch">
-          <button class="btn search-button" type="submit">Search</button>
-        </div>
-      </fieldset>
-    </form>
-  <div class="filter">
-    <a  class="btn add-button" th:href="@{/loan/insert}"> Add New Loan </a>
-  </div>
-  <div class="divTable">
-    <table>
-      <thead>
-      <tr>
-        <th></th>
-        <th>Customer Name</th>
-        <th>Book Title</th>
-        <th>Loan Date</th>
-        <th>Due Loan</th>
-        <th>Day Left</th>
-        <th>Status</th>
-        <th>Return Date</th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr th:each="data : ${listLoan}" th:object="${data}">
-        <td class="action">
-          <div class="button-wrapper">
-            <a class="btn delete-btn" th:href="@{/loan/detail(id=*{id})}">Detail</a>
-            <a class="btn back-warning" th:style="*{returnDate == null ? 'display : inline-block' : 'display : none'}" th:href="@{/loan/update(id=*{id})}">Edit</a>
-            <a class="btn detail-btn" th:style="*{returnDate == null ? 'display : inline-block' : 'display : none'}" th:href="@{/loan/return(id=*{id})}">Return</a>
-          </div>
-        </td>
-        <td th:text="*{customerName}"></td>
-        <td th:text="*{bookTitle}"></td>
-        <td th:text="*{loanDate}"></td>
-        <td th:text="*{dueDate}"></td>
-        <td th:text="*{dayLeft}"></td>
-        <td th:text="*{lateLoan}"></td>
-        <td th:text="*{returnDate}"></td>
-      </tr>
-      </tbody>
-      <tfoot>
-      <tr>
-        <td colspan="8">
-          <div class="pagination">
-            <div>
-              <a th:if="${totalPage !=0}"
-                 th:each="loop:${#numbers.sequence(1, totalPage)}"
-                 th:href="@{/loan/index(page=${loop}, title=${title}, name=${name})}"
-                 th:text="${loop}"></a>
-            </div>
-          </div>
-        </td>
-      </tr>
-      </tfoot>
-    </table>
 
-  </div>
-
-
+    </div>
 </main>
 
 </body>

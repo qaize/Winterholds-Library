@@ -16,10 +16,12 @@ public class AppUserDetails implements UserDetails {
     private String password;
     private List<GrantedAuthority> authorities = new ArrayList<>();
     private Boolean islock;
-    public AppUserDetails(Account account){
+
+    public AppUserDetails(Account account) {
         this.username = account.getUsername();
         this.password = account.getPassword();
         this.authorities.add(new SimpleGrantedAuthority("Administrator"));
+
         this.islock = account.getIslocked();
     }
 

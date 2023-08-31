@@ -1,0 +1,1 @@
+ALTER TABLE logsIncome ALTER COLUMN transactionDate timestamp;
