@@ -177,10 +177,7 @@ public class LoanServiceImp implements LoanService {
     }
 
 
-    @Override
-    public Long checkLoanBooks(String code) {
-        return loanRepository.CheckBook(code);
-    }
+
 
     @Override
     public void goPayOff(Long id) {

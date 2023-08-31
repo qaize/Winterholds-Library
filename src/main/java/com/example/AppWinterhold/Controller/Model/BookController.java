@@ -90,13 +90,14 @@ public class BookController {
         } else {
             BookUpdateDto data = bookService.getBooksById(dto.getCode());
             dto.setInBorrow(data.getInBorrow());
-            if (data.getQuantity() > dto.getQuantity()) {
+
+            if (data.getInBorrow() < dto.getQuantity()){
                 dto.setIsBorrowed(false);
             }
-
-            if(data.getQuantity() == 0){
+            else{
                 dto.setIsBorrowed(true);
             }
+
             bookService.update(dto);
 
             return "redirect:/category/detail?categoryName=" + dto.getCategoryName();
@@ -116,22 +117,4 @@ public class BookController {
         return "redirect:/category/detail?categoryName=" + data.getCategoryName();
     }
 
-    @GetMapping("/borrow")
-    public String borrow(Model model, @RequestParam(required = true) String bookCode, @RequestParam(required = true) String categoryName) {
-
-        BookUpdateDto data = bookService.getBooksBycodeUpdate(bookCode);
-
-        if (loanServiceImp.checkLoanBooks(bookCode) > 0) {
-
-            model.addAttribute("categoryName", categoryName);
-
-            return "Category/valid";
-        } else {
-
-            data.setIsBorrowed(!data.getIsBorrowed());
-            bookService.update(data);
-
-            return "redirect:/category/detail?categoryName=" + categoryName;
-        }
-    }
 }

@@ -1,6 +1,7 @@
 package com.example.AppWinterhold.Dto.Book;
 
 import com.example.AppWinterhold.Validation.BookCode;
+import com.example.AppWinterhold.Validation.BookQuantityChecker;
 import com.example.AppWinterhold.Validation.TodayTime;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -17,6 +18,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter @Setter
+@BookQuantityChecker(book = "code",quantity = "quantity",message = "Forbiden, the books on loan")
 public class BookUpdateDto {
 
     @Size(max = 20, message = "Max 20 charachter")

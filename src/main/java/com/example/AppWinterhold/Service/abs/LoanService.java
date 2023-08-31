@@ -21,13 +21,11 @@ public interface LoanService {
     Long getCountPaymentHistory();
     void update(LoanUpdateDto dto);
     void insert(LoanInsertDto dto);
-    Long checkLoanBooks(String code);
     Long getCountDenda(Loan loan);
     Long getCountPage(String title, String name);
     List<LoanIndexDto> getOnDenda(Integer page);
     List<LogsIncome> getLoanPaymentHistory(Integer page);
     List<LoanIndexDto> getListLoanHistoryBySearch(Integer page);
     List<LoanIndexDto> getListLoanBySearch(Integer page, String title, String name);
-
     boolean returnBook(Long id);
 }

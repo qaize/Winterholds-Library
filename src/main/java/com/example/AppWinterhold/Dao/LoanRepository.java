@@ -71,19 +71,7 @@ public interface LoanRepository extends JpaRepository<Loan, Long> {
             """)
     Integer getExtendById(Long id);
 
-    @Query("""
-            SELECT 
-                COUNT(l.id)
-            FROM 
-                Loan AS l
-                        LEFT JOIN l.book AS b
-                        LEFT JOIN l.customer AS c
-            WHERE 
-                b.code = :code 
-                AND b.isBorrowed = 1 
-                AND l.returnDate IS NULL
-            """)
-    Long CheckBook(String code);
+
 
     @Query("""
             SELECT 

@@ -80,9 +80,11 @@
 </head>
 <body>
 <nav th:fragment="navLayout">
-    <div class="company-logo">
+    <div class="company-logo" >
         <img th:src="@{/favicon.ico}" alt="Unicorn">
+        <a th:href="@{/}">
         <h1>Knowladge is <span class="bold">Power</span></h1>
+        </a>
     </div>
 
     <a class="menu account" th:href="@{/author/index}">

@@ -10,6 +10,25 @@ html {
     background-color: #0e1122;
     font-weight: normal;
 }
+
+a {
+    text-decoration: none;
+    color : white;
+}
+a:visited {
+    text-decoration: none;
+    color  : white;
+}
+
+.home{
+text-align : center;
+padding : 15px;
+}
+
+.home h1 {
+    margin-bottom : 20px;
+}
+
 .main-body {
     min-height: 100%;
     min-width:1200px;
@@ -19,6 +38,7 @@ html {
     grid-template-rows: 70px 1fr 40px;
     grid-template-areas: "menu top" "menu content" "menu bottom";
 }
+
 .main-body > nav {
     background-color: #131931;
     grid-area: menu;
@@ -66,13 +86,23 @@ html {
     grid-column: 1 / 2;
     height: 30px;
 }
-.company-logo h1 {
+
+.company-logo a {
+    text-decoration: none;
+}
+.company-logo a:visited {
+    text-decoration: none;
+    color  : white;
+}
+
+.company-logo  h1 {
     grid-column: 2 / 3;
     text-transform: capitalize;
     font-size: 20px;
     font-weight:lighter;
     margin: 0;
     font-size: 16px;
+    color  : white;
 }
 .company-logo .bold {
     grid-column: 3 / 4;

@@ -42,8 +42,7 @@
                     </td>
                     <td th:text="*{title}"></td>
                     <td th:text="*{authorName}"></td>
-                    <td><a class="customerLink" th:text="*{isBorrowedStr}"
-                           th:href="@{/book/borrow(bookCode=*{code},categoryName=${categoryName})}"></a></td>
+                    <td th:text="*{isBorrowedStr}"></td>
                     <td th:text="*{releaseDate}"></td>
                     <td th:text="*{totalPage}"></td>
                     <td th:text="*{dividedBooks}"></td>
