@@ -42,7 +42,6 @@ public class BookRestController {
     public ResponseEntity<Object> get(@RequestParam(required = true) String code) {
         try {
             var list = bookService.getBooksBycode2(code);
-            System.out.println("SUCCESS 2");
             return ResponseEntity.status(HttpStatus.OK).body(list);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Runtime Error on the server");

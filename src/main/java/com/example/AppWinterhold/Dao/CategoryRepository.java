@@ -3,6 +3,7 @@ package com.example.AppWinterhold.Dao;
 import com.example.AppWinterhold.Dto.Category.CategoryIndexDto;
 import com.example.AppWinterhold.Dto.Category.CategoryInsertDto;
 import com.example.AppWinterhold.Entity.Category;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -24,7 +25,7 @@ public interface CategoryRepository extends JpaRepository<Category, String> {
             GROUP BY
                 c.name, c.floor, c.isle, c.bay
             """)
-    List<CategoryIndexDto> getListCategoryBySearch(String name, Pageable paging);
+    Page<CategoryIndexDto> getListCategoryBySearch(String name, Pageable paging);
 
     @Query("""
             SELECT 

@@ -24,5 +24,9 @@ public class actionConst {
 
 //    STATUS
 
+    final public static String SUCCESS_GET_DATA = "Success getting data : {}";
+    final public static String FAILED_GET_DATA = "Failed getting data : {}";
+    final public static String SUCCESS_DELETE_DATA = "Success delete data : {}";
+
 
 }

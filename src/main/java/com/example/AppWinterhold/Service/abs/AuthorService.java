@@ -18,7 +18,7 @@ public interface AuthorService {
     Long getCountPage(String name);
     void update(AuthorUpdateDto dto);
     void insert(AuthorInsertDto dto);
-    AuthorIndexDto getAuthorById(Long id);
+    AuthorIndexDto getAuthorById(Long id) throws JsonProcessingException;
     public List<AuthorIndexDto> getAllAuthor();
     AuthorInsertDto getAuthorByIdinsert(Long id);
     public List<AuthorIndexDto> getListAuthorBySearch(Integer page, String name) throws JsonProcessingException;

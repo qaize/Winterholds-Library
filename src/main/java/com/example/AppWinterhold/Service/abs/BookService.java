@@ -1,5 +1,6 @@
 package com.example.AppWinterhold.Service.abs;
 
+import com.example.AppWinterhold.Dto.BaseResponseDTO;
 import com.example.AppWinterhold.Dto.Book.BookIndexDto;
 import com.example.AppWinterhold.Dto.Book.BookInsertDto;
 import com.example.AppWinterhold.Dto.Book.BookUpdateDto;
@@ -9,14 +10,14 @@ import java.util.List;
 
 public interface BookService {
     Boolean delete(String code);
-    ResponseCrudRestDto getAll();
+    BaseResponseDTO<Object> getAll();
     void insert(BookInsertDto dto);
     void update(BookUpdateDto dto);
     List<BookIndexDto> getAvailableBook();
     BookUpdateDto getBooksById(String bookCode);
     BookIndexDto getBooksBycode(String bookCode);
     List<BookIndexDto> getlistBooksByAuthorId(Long id);
-    ResponseCrudRestDto getBooksBycode2(String bookCode);
+    BaseResponseDTO<Object> getBooksBycode2(String bookCode);
     BookUpdateDto getBooksBycodeUpdate(String bookCode);
     String generateBookCodeByCategory(String categoryName);
     List<BookIndexDto> getlistBooksByCategoryName(String categoryName);

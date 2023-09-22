@@ -1,5 +1,7 @@
 package com.example.AppWinterhold.Controller.Model;
 
+import com.example.AppWinterhold.Dto.BaseResponseDTO;
+import com.example.AppWinterhold.Dto.Category.CategoryIndexDto;
 import com.example.AppWinterhold.Dto.Category.CategoryInsertDto;
 import com.example.AppWinterhold.Dto.Category.CategoryUpdateDto;
 import com.example.AppWinterhold.Service.abs.BookService;
@@ -11,6 +13,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Controller
 @RequestMapping("/category")
@@ -29,9 +33,9 @@ public class CategoryController {
                         @RequestParam(defaultValue = "") String name,
                         @RequestParam(defaultValue = "1") Integer page) {
 
-        var listCategory = categoryService.getListCategoryBySearch(page, name);
-        Long totalPage = categoryService.getCountPage(name);
-
+        BaseResponseDTO<List<CategoryIndexDto>> data = categoryService.getListCategoryBySearch(page, name);
+        List<CategoryIndexDto> listCategory = data.getData();
+        int totalPage = data.getMetaData().getTotalPage();
         if (totalPage == 0) {
             page = 0;
         }

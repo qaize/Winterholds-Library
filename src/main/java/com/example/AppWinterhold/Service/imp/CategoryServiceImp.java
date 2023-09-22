@@ -1,17 +1,24 @@
 package com.example.AppWinterhold.Service.imp;
 
 import com.example.AppWinterhold.Dao.CategoryRepository;
+import com.example.AppWinterhold.Dto.BaseResponseDTO;
 import com.example.AppWinterhold.Dto.Category.CategoryIndexDto;
 import com.example.AppWinterhold.Dto.Category.CategoryInsertDto;
 import com.example.AppWinterhold.Dto.Category.CategoryUpdateDto;
 import com.example.AppWinterhold.Entity.Category;
 import com.example.AppWinterhold.Service.abs.CategoryService;
+import com.example.AppWinterhold.Utility.ResponseUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.example.AppWinterhold.Const.actionConst.*;
@@ -20,6 +27,8 @@ import static com.example.AppWinterhold.Const.actionConst.*;
 @Service
 public class CategoryServiceImp implements CategoryService {
 
+    private final static Logger LOGGER = LoggerFactory.getLogger(CategoryServiceImp.class);
+
     @Autowired
     private CategoryRepository categoryRepository;
 
@@ -27,11 +36,29 @@ public class CategoryServiceImp implements CategoryService {
     private LogServiceImpl logService;
 
     @Override
-    public List<CategoryIndexDto> getListCategoryBySearch(Integer page, String name) {
+    public BaseResponseDTO<List<CategoryIndexDto>> getListCategoryBySearch(Integer page, String name) {
         int row = 10;
-        Pageable paging = PageRequest.of(page - 1, row, Sort.by("id"));
-        return categoryRepository.getListCategoryBySearch(name, paging);
+        try {
+            Pageable paging = PageRequest.of(page - 1, row, Sort.by("id"));
+            Page<CategoryIndexDto> listCategory =  categoryRepository.getListCategoryBySearch(name, paging);
+            LOGGER.info(SUCCESS_GET_DATA);
+            return BaseResponseDTO.<List<CategoryIndexDto>>builder()
+                    .status("1")
+                    .httpStatus(HttpStatus.OK)
+                    .message("OK")
+                    .data(listCategory.getContent())
+                    .metaData(new BaseResponseDTO.MetaData(listCategory.getTotalElements(),listCategory.getTotalPages(), listCategory.getSize()))
+                    .build();
+        } catch (Exception e) {
+            LOGGER.error(FAILED_GET_DATA, e.getMessage());
+            return BaseResponseDTO.<List<CategoryIndexDto>>builder()
+                    .status("0")
+                    .httpStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .message(HttpStatus.INTERNAL_SERVER_ERROR.name())
+                    .data(new ArrayList<>()).build();
+        }
     }
+
 
     @Override
     public Long getCountPage(String name) {
