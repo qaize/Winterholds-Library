@@ -52,7 +52,7 @@ public class AuthorRestController {
         }
     }
 
-    @PostMapping(value = "/getTupple")
+    @PostMapping(value = "/all-author-tuple")
     public ResponseEntity<Object> getTuple(@RequestBody AuthorRequestDTO authorRequestDTO) {
         return authorService.getAllAuthorTuple(authorRequestDTO);
     }
@@ -80,11 +80,10 @@ public class AuthorRestController {
             data.setTotalPage(authorIndexDtos.getTotalPages());
 
             BaseResponseDTO baseResponseDTO = new BaseResponseDTO();
-            baseResponseDTO.setData(list);
-            baseResponseDTO.setMetaData(data);
 
 
-            return ResponseEntity.status(HttpStatus.OK).body(baseResponseDTO);
+
+            return ResponseEntity.status(HttpStatus.OK).body(baseResponseDTO.<List<AuthorIndexDto>>builder().data(list).metaData(data).build());
         } catch (Exception e) {
 
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
@@ -92,7 +91,7 @@ public class AuthorRestController {
 
     }
 
-    @GetMapping
+    @GetMapping(value = "/authorById")
     public ResponseEntity<Object> get(@RequestParam(required = true) Long id) {
         try {
             var list = authorService.getAuthorById(id);

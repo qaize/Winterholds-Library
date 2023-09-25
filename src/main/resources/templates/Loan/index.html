@@ -17,8 +17,10 @@
         <div class="filter">
             <a class="btn blue-button" th:href="@{/loan/insert}"> Add New Loan </a>
         </div>
+
         <div class="divTable">
-            <table>
+            <h1 th:style="${flag == 1 ? 'display : inline-block' : 'display : none'}" th:text="${empty}"></h1>
+            <table th:style="${flag == 0 ? 'display : table' : 'display : none'}">
                 <thead>
                 <tr>
                     <th></th>

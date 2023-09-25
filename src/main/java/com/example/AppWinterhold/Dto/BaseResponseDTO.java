@@ -2,21 +2,33 @@ package com.example.AppWinterhold.Dto;
 
 
 import com.example.AppWinterhold.Dto.Author.AuthorIndexDto;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.*;
+import org.springframework.http.HttpStatus;
 
 import java.util.List;
 
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
-public class BaseResponseDTO {
+public class BaseResponseDTO<T> {
 
-    private Object data;
+    private String status;
+    private String message;
+    private HttpStatus httpStatus;
+    @JsonInclude(value = JsonInclude.Include.NON_NULL)
+    private T data;
+    @JsonInclude(value = JsonInclude.Include.NON_NULL)
     private MetaData metaData;
+
+    @Builder
+    public BaseResponseDTO(String status,String message,HttpStatus httpStatus,T data, MetaData metaData) {
+        this.status = status;
+        this.message = message;
+        this.httpStatus = httpStatus;
+        this.data = data;
+        this.metaData = metaData;
+    }
 
     @Getter
     @Setter
@@ -26,8 +38,9 @@ public class BaseResponseDTO {
         private long Total;
         private Integer totalPage;
         private Integer size;
-
     }
+
+
 
 
 }

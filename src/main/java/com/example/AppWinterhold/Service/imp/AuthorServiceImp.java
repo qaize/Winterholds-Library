@@ -1,6 +1,7 @@
 package com.example.AppWinterhold.Service.imp;
 
 import com.example.AppWinterhold.Controller.Model.BaseController;
+import com.example.AppWinterhold.CustomException.CustomException;
 import com.example.AppWinterhold.Dao.AuthorRepository;
 import com.example.AppWinterhold.Dto.Author.AuthorIndexDto;
 import com.example.AppWinterhold.Dto.Author.AuthorIndexDtoV2;
@@ -10,6 +11,7 @@ import com.example.AppWinterhold.Dto.BaseResponseDTO;
 import com.example.AppWinterhold.Dto.Rest.Request.Author.AuthorRequestDTO;
 import com.example.AppWinterhold.Entity.Author;
 import com.example.AppWinterhold.Service.abs.AuthorService;
+import com.example.AppWinterhold.Utility.ResponseUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
@@ -40,72 +42,42 @@ public class AuthorServiceImp implements AuthorService {
     private final LogServiceImpl logService;
     private final AuthorRepository authorRepository;
     private final BaseController baseController;
-    ObjectMapper objectMapper = new ObjectMapper();
+
+
+    private ObjectMapper objectMapper = new ObjectMapper();
 
     @Autowired
-    public AuthorServiceImp(AuthorRepository authorRepository, BaseController baseController, LogServiceImpl logService) {
+    public AuthorServiceImp(AuthorRepository authorRepository, BaseController baseController, LogServiceImpl logService, ObjectMapper objectMapper) {
         this.authorRepository = authorRepository;
         this.baseController = baseController;
         this.logService = logService;
+        this.objectMapper = objectMapper;
     }
+
 
     @Override
     public List<AuthorIndexDto> getListAuthorBySearch(Integer page, String name) throws JsonProcessingException {
-//        BaseResponseDTO responseDTO = new BaseResponseDTO();
+
 
         int row = 10;
-//        RestTemplate restTemplate = new RestTemplate();
-//        HttpHeaders httpHeaders = new HttpHeaders();
-//        httpHeaders.setAccept(List.of(MediaType.APPLICATION_JSON));
-//        HttpEntity<String> http = new HttpEntity<String>("Params", httpHeaders);
         Pageable paging = PageRequest.of(page - 1, row, Sort.by("id").descending());
-
-//        ResponseEntity< String > result = restTemplate.exchange("http://localhost:7081/winterhold/api/author/getAuthor", HttpMethod.GET, http,
-//                String.class);
-//
-//        BaseResponseDTO res = objectMapper.readValue(result.getBody(),BaseResponseDTO.class);
-//
-//        for (AuthorIndexDto a:res.getData()
-//             ) {
-//        System.out.println(a.getFullname());
-//
-//        }
-
 
         return authorRepository.getListAuthorBySearch(name, paging);
     }
 
     @Override
     public List<AuthorIndexDto> getListAuthorBySearchV2(AuthorIndexDtoV2 authorIndexDtoV2) throws JsonProcessingException {
-//        Integer row = 10;
-//        RestTemplate restTemplate = new RestTemplate();
-//        HttpHeaders httpHeaders = new HttpHeaders();
-//        ObjectMapper objectMapper = new ObjectMapper();
-//        String data = objectMapper.writeValueAsString(authorIndexDtoV2);
-//        httpHeaders.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
-//        HttpEntity<String> http = new HttpEntity<String>(data,httpHeaders);
-        Pageable paging = PageRequest.of(authorIndexDtoV2.getPage() - 1, authorIndexDtoV2.getDataCount(), Sort.by("id").descending());
 
+        Pageable paging = PageRequest.of(authorIndexDtoV2.getPage() - 1, authorIndexDtoV2.getDataCount(), Sort.by("id").descending());
         return authorRepository.getListAuthorBySearch(authorIndexDtoV2.getFullname(), paging);
     }
 
     @Override
     public ResponseEntity<Object> getAllAuthorTuple(AuthorRequestDTO authorRequestDTO) {
         try {
-            Pageable paging = PageRequest.of(authorRequestDTO.getPage(), authorRequestDTO.getDataCount());
+            Pageable paging = PageRequest.of(authorRequestDTO.getPage()-1, authorRequestDTO.getDataCount());
             List<Tuple> pages = authorRepository.getAllByTupple(paging);
-            List<AuthorIndexDto> authorIndexDtos = pages.stream().map(auth -> new AuthorIndexDto(
-                    auth.get("id", BigInteger.class).longValue(),
-                    auth.get("title", String.class),
-                    auth.get("firstName", String.class),
-                    auth.get("lastName", String.class),
-                    LocalDate.parse(auth.get("birthDate", String.class)),
-                    auth.get("deceasedDate", String.class) != null ? LocalDate.parse(auth.get("deceasedDate", String.class)) : null,
-                    auth.get("education", String.class),
-                    auth.get("summary", String.class),
-                    auth.get("createdBy", String.class),
-                    auth.get("modifiedBy", String.class)
-            )).collect(Collectors.toList());
+            List<AuthorIndexDto> authorIndexDtos = mapTupleToAuthor(pages);
 
             return ResponseEntity.status(HttpStatus.OK).body(authorIndexDtos);
         } catch (Exception e) {
@@ -113,12 +85,10 @@ public class AuthorServiceImp implements AuthorService {
         }
     }
 
-
     @Override
     public List<AuthorIndexDto> getAllAuthor() {
         return authorRepository.getAll();
     }
-
 
     @Override
     public Long getCountPage(String name) {
@@ -134,7 +104,7 @@ public class AuthorServiceImp implements AuthorService {
     public void insert(AuthorInsertDto dto) {
         Author en = new Author();
         try {
-            InsertAccountMapper(en, dto);
+            mapInsert(en, dto);
             authorRepository.save(en);
             logService.saveLogs(AUTHOR, SUCCESS, INSERT);
         } catch (Exception ex) {
@@ -142,66 +112,50 @@ public class AuthorServiceImp implements AuthorService {
         }
     }
 
-    public void InsertAccountMapper(Author author, AuthorInsertDto authorInsertDto) {
-        String createdBy = baseController.getCurrentLogin();
-        author.setId(authorInsertDto.getId());
-        author.setTitle(authorInsertDto.getTitle());
-        author.setFirstName(authorInsertDto.getFirstName());
-        author.setLastName(authorInsertDto.getLastName());
-        author.setBirthDate(authorInsertDto.getBirthDate());
-        author.setDeceasedDate(authorInsertDto.getDeceasedDate());
-        author.setEducation(authorInsertDto.getEducation());
-        author.setSummary(authorInsertDto.getSummary());
-        author.setCreatedBy(createdBy == null || createdBy.equalsIgnoreCase(EMPTY_STRING)
-                ? EMPTY_STRING : createdBy);
-        author.setModifiedBy("");
+    @Override
+    public void update(AuthorUpdateDto dto) {
 
+        Author en = new Author();
+        try {
+            AuthorIndexDto authIndex = authorRepository.getAuthorById(dto.getId());
+
+            UpdateAccountMapper(en,authIndex, dto);
+            updateValidator(en);
+
+            authorRepository.save(en);
+            logService.saveLogs(AUTHOR, SUCCESS, UPDATE);
+
+        } catch(CustomException e){
+            LOGGER.info(e.getMessage());
+            logService.saveLogs(AUTHOR, ALREADY, UPDATE);
+        } catch (Exception ex) {
+
+            LOGGER.info(ex.getMessage());
+            logService.saveLogs(AUTHOR, FAILED, UPDATE);
+        }
     }
 
-    public void UpdateAccountMapper(Author author, AuthorUpdateDto authorInsertDto) {
-        AuthorIndexDto authIndex = authorRepository.getAuthorById(authorInsertDto.getId());
-        String modifiedBy = baseController.getCurrentLogin();
-        author.setId(authorInsertDto.getId());
-        author.setTitle(authorInsertDto.getTitle());
-        author.setFirstName(authorInsertDto.getFirstName());
-        author.setLastName(authorInsertDto.getLastName());
-        author.setBirthDate(authorInsertDto.getBirthDate());
-        author.setDeceasedDate(authorInsertDto.getDeceasedDate());
-        author.setEducation(authorInsertDto.getEducation());
-        author.setSummary(authorInsertDto.getSummary());
-        author.setCreatedBy(authIndex.getCreatedBy());
-        author.setModifiedBy(modifiedBy.equals(baseController.getCurrentLogin()) ? baseController.getCurrentLogin() : "Unknown");
-    }
 
     @Override
-    public AuthorIndexDto getAuthorById(Long id) {
+    public AuthorIndexDto getAuthorById(Long id) throws JsonProcessingException {
         Optional<Author> author = authorRepository.findById(id);
-        AuthorIndexDto ath = new AuthorIndexDto();
-        if (author.isPresent()) {
-            Author auth = author.get();
-            ath = new AuthorIndexDto(
-                    auth.getId(),
-                    auth.getTitle(),
-                    auth.getFirstName(),
-                    auth.getLastName(),
-                    auth.getBirthDate(),
-                    auth.getDeceasedDate(),
-                    auth.getEducation(),
-                    auth.getSummary(),
-                    auth.getCreatedBy(),
-                    auth.getModifiedBy()
-            );
-        }
-        return ath;
+        AuthorIndexDto dataAuthor = author.isPresent() ? mapAuthorIndexDto(author.get()) : null;
+
+        LOGGER.info(SUCCESS_GET_DATA, objectMapper.writeValueAsString(dataAuthor));
+        return dataAuthor;
     }
+
 
     @Override
     public Boolean delete(Long id) {
 
         try {
             var data = authorRepository.findById(id);
+            var totalBooks = authorRepository.getCountBooks(id);
+
             if (data.isPresent()) {
-                if (authorRepository.getCountBooks(id) > 0) {
+
+                if (totalBooks > 0) {
                     logService.saveLogs(AUTHOR, FAILED, DELETE);
                     return false;
                 }
@@ -223,21 +177,7 @@ public class AuthorServiceImp implements AuthorService {
         return authorRepository.getAuthorByIdinsert(id);
     }
 
-    @Override
-    public void update(AuthorUpdateDto dto) {
 
-        Author en = new Author();
-        try {
-
-            UpdateAccountMapper(en, dto);
-            authorRepository.save(en);
-            logService.saveLogs(AUTHOR, SUCCESS, UPDATE);
-        } catch (Exception ex) {
-
-            LOGGER.info(FAILED + " " + UPDATE);
-            logService.saveLogs(AUTHOR, FAILED, UPDATE);
-        }
-    }
 
     @Override
     public Page<AuthorIndexDto> getAllAuthorWithPage() {
@@ -249,31 +189,99 @@ public class AuthorServiceImp implements AuthorService {
     @Override
     public ResponseEntity<Object> geAllAuthorByTupple(AuthorRequestDTO authorRequestDTO) {
 
-        Pageable pages = PageRequest.of(authorRequestDTO.getPage(), authorRequestDTO.getDataCount());
-
         try {
+            Pageable pages = PageRequest.of(authorRequestDTO.getPage(), authorRequestDTO.getDataCount());
             Page<Tuple> tuples = authorRepository.getPageAuthorByTuple(pages);
 
-            List<AuthorIndexDto> authorIndexDtos = tuples.getContent().stream().map(auth -> new AuthorIndexDto(
-                    auth.get("id", BigInteger.class).longValue(),
-                    auth.get("title", String.class),
-                    auth.get("firstName", String.class),
-                    auth.get("lastName", String.class),
-                    LocalDate.parse(auth.get("birthDate", String.class)),
-                    auth.get("deceasedDate", String.class) != null ? LocalDate.parse(auth.get("deceasedDate", String.class)) : null,
-                    auth.get("education", String.class),
-                    auth.get("summary", String.class),
-                    auth.get("createdBy", String.class),
-                    auth.get("modifiedBy", String.class)
-            )).collect(Collectors.toList());
-
             BaseResponseDTO.MetaData metaData = new BaseResponseDTO.MetaData(tuples.getTotalElements(), tuples.getTotalPages(), tuples.getSize());
-            BaseResponseDTO baseResponseDTO = new BaseResponseDTO(authorIndexDtos, metaData);
-
-            return ResponseEntity.status(HttpStatus.OK).body(baseResponseDTO);
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(ResponseUtil.insertSuccessResponseWithMetaData(mapTupleToAuthor(tuples.getContent()), metaData));
 
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(ResponseUtil.insertFailResponse(e.getMessage()));
         }
     }
+
+    private AuthorIndexDto mapAuthorIndexDto(Author data) {
+        AuthorIndexDto authorIndexDto = new AuthorIndexDto(
+                data.getId(),
+                data.getTitle(),
+                data.getFirstName(),
+                data.getLastName(),
+                data.getBirthDate(),
+                data.getDeceasedDate(),
+                data.getEducation(),
+                data.getSummary(),
+                data.getCreatedBy(),
+                data.getModifiedBy()
+        );
+        return authorIndexDto;
+    }
+    public void mapInsert(Author author, AuthorInsertDto authorInsertDto) {
+        String createdBy = baseController.getCurrentLogin();
+        author.setId(authorInsertDto.getId());
+        author.setTitle(authorInsertDto.getTitle());
+        author.setFirstName(authorInsertDto.getFirstName());
+        author.setLastName(authorInsertDto.getLastName());
+        author.setBirthDate(authorInsertDto.getBirthDate());
+        author.setDeceasedDate(authorInsertDto.getDeceasedDate());
+        author.setEducation(authorInsertDto.getEducation());
+        author.setSummary(authorInsertDto.getSummary());
+        author.setCreatedBy(createdBy == null || createdBy.equalsIgnoreCase(EMPTY_STRING)
+                ? EMPTY_STRING : createdBy);
+        author.setModifiedBy("");
+
+    }
+    private List<AuthorIndexDto> mapTupleToAuthor(List<Tuple> data){
+        List<AuthorIndexDto> authorIndexDtos = data.stream().map(auth -> new AuthorIndexDto(
+                auth.get("id", BigInteger.class).longValue(),
+                auth.get("title", String.class),
+                auth.get("firstName", String.class),
+                auth.get("lastName", String.class),
+                LocalDate.parse(auth.get("birthDate", String.class)),
+                auth.get("deceasedDate", String.class) != null ? LocalDate.parse(auth.get("deceasedDate", String.class)) : null,
+                auth.get("education", String.class),
+                auth.get("summary", String.class),
+                auth.get("createdBy", String.class),
+                auth.get("modifiedBy", String.class)
+        )).collect(Collectors.toList());
+
+        return authorIndexDtos;
+    }
+
+    private void updateValidator(Author author) throws JsonProcessingException {
+
+        Optional<Author> validatedData = authorRepository.findById(author.getId());
+        author.setModifiedBy(validatedData.get().getModifiedBy());
+
+        String dataExisting = objectMapper.writeValueAsString(validatedData);
+        String dataUpdate = objectMapper.writeValueAsString(author);
+
+        if(dataExisting.equals(dataUpdate)){
+            throw new CustomException(VALIDATE_UPDATE);
+        }
+        author.setModifiedBy(baseController.getCurrentLogin());
+    }
+
+    private void UpdateAccountMapper(Author author,AuthorIndexDto authIndex,  AuthorUpdateDto authorInsertDto) {
+
+        author.setId(authorInsertDto.getId());
+        author.setTitle(authorInsertDto.getTitle());
+        author.setFirstName(authorInsertDto.getFirstName());
+        author.setLastName(authorInsertDto.getLastName());
+        author.setBirthDate(authorInsertDto.getBirthDate());
+        author.setDeceasedDate(authorInsertDto.getDeceasedDate());
+        author.setEducation(authorInsertDto.getEducation());
+        author.setSummary(authorInsertDto.getSummary());
+        author.setCreatedBy(authIndex.getCreatedBy());
+        author.setModifiedBy(baseController.getCurrentLogin() == null ? "":baseController.getCurrentLogin());
+    }
+
+
+
+
+
 }

@@ -76,7 +76,7 @@ public class AuthorController {
     }
 
     @GetMapping("/detail")
-    public String detail(Model model, @RequestParam(required = true) Long id) {
+    public String detail(Model model, @RequestParam(required = true) Long id) throws JsonProcessingException {
 
         var authorDto = authorService.getAuthorById(id);
         var listBooks = bookService.getlistBooksByAuthorId(id);

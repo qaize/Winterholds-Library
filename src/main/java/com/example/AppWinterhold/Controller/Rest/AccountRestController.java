@@ -56,9 +56,7 @@ public class AccountRestController {
             UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
                     dto.getUsername(),
                     dto.getPassword());
-            System.out.println("msk".concat(token.getAuthorities().toString()));
             authenticationManager.authenticate(token);
-            System.out.println("msk2".concat(token.getAuthorities().toString()));
         } catch (Exception e) {
             System.out.println(e);
         }
