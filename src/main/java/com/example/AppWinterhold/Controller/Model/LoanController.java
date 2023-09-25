@@ -4,6 +4,7 @@ import com.example.AppWinterhold.Dao.LoanRepository;
 import com.example.AppWinterhold.Dto.Loan.LoanIndexDto;
 import com.example.AppWinterhold.Dto.Loan.LoanInsertDto;
 import com.example.AppWinterhold.Dto.Loan.LoanUpdateDto;
+import com.example.AppWinterhold.Dto.Models.DataDTO;
 import com.example.AppWinterhold.Entity.Loan;
 import com.example.AppWinterhold.Entity.LogsIncome;
 import com.example.AppWinterhold.Service.abs.BookService;
@@ -24,6 +25,7 @@ import java.util.List;
 
 import static com.example.AppWinterhold.Utility.Dropdown.dropdownBook;
 import static com.example.AppWinterhold.Utility.Dropdown.dropdownCustomer;
+import static com.example.AppWinterhold.Const.actionConst.INDEX_EMPTY;
 
 @Controller
 @RequestMapping("/loan")
@@ -82,36 +84,15 @@ public class LoanController {
                         @RequestParam(defaultValue = "") String name,
                         @RequestParam(defaultValue = "1") Integer page) {
 
-        var listLoan = loanService.getListLoanBySearch(page, title, name);
-        Long totalPage = loanService.getCountPage(title, name);
-
-        for (LoanIndexDto val : listLoan) {
-
-            if (val.getReturnDate() != null) {
-
-                val.setDayLeft(val.getReturnDate().isBefore(val.getDueDate()) ? "On Time" : "Late");
-                val.setLoanStatus("Returned");
-            } else if (val.getDueDate().equals(LocalDate.now())) {
-                val.setDayLeft("Last day");
-                val.setLoanStatus("On Loan");
-            } else {
-
-                Long dif = ChronoUnit.DAYS.between(LocalDate.now(), val.getDueDate());
-                val.setDayLeft(dif > 0 ? dif.toString() : "Late");
-                val.setLoanStatus("On Loan");
-            }
-        }
-
-        if (totalPage == 0) {
-            page = 0;
-        }
+        DataDTO<List<LoanIndexDto>> index = loanService.getListLoanBySearch(page, title, name);
 
         model.addAttribute("name", name);
+        model.addAttribute("flag", index.getFlag());
+        model.addAttribute("empty",INDEX_EMPTY);
         model.addAttribute("title", title);
         model.addAttribute("currentPage", page);
-        model.addAttribute("listLoan", listLoan);
-        model.addAttribute("totalPage", totalPage);
-        model.addAttribute("userLogin", account.getCurrentUserLogin());
+        model.addAttribute("listLoan", index.getData());
+        model.addAttribute("totalPage", index.getTotalPage());
 
         return "Loan/index";
     }

@@ -6,6 +6,7 @@ import com.example.AppWinterhold.Dao.LogsIncomeRepository;
 import com.example.AppWinterhold.Dto.Loan.LoanIndexDto;
 import com.example.AppWinterhold.Dto.Loan.LoanInsertDto;
 import com.example.AppWinterhold.Dto.Loan.LoanUpdateDto;
+import com.example.AppWinterhold.Dto.Models.DataDTO;
 import com.example.AppWinterhold.Entity.Customer;
 import com.example.AppWinterhold.Entity.Loan;
 import com.example.AppWinterhold.Entity.LogsIncome;
@@ -53,10 +54,49 @@ public class LoanServiceImp implements LoanService {
 
 
     @Override
-    public List<LoanIndexDto> getListLoanBySearch(Integer page, String title, String name) {
+    public DataDTO<List<LoanIndexDto>> getListLoanBySearch(Integer page, String title, String name) {
         Integer row = 5;
+        int flag = 0;
+        String message = "";
+        Long totalPage = getCountPage(title, name);
+
         Pageable paging = PageRequest.of(page - 1, row, Sort.by("id").descending());
-        return loanRepository.getListLoanBySearch(title, name, paging);
+
+        List<LoanIndexDto> dataLoan =  mapIndexLoan(loanRepository.getListLoanBySearch(title, name, paging));
+
+        if(dataLoan.isEmpty()){
+            flag = 1;
+            message = INDEX_EMPTY;
+        }
+
+        return DataDTO.<List<LoanIndexDto>>builder()
+                .flag(flag)
+                .data(dataLoan)
+                .message(message)
+                .totalPage(totalPage)
+                .build();
+    }
+
+    private List<LoanIndexDto> mapIndexLoan( List<LoanIndexDto> data){
+        List<LoanIndexDto> dataLoan = data;
+        for (LoanIndexDto val : dataLoan) {
+
+            if (val.getReturnDate() != null) {
+
+                val.setDayLeft(val.getReturnDate().isBefore(val.getDueDate()) ? "On Time" : "Late");
+                val.setLoanStatus("Returned");
+            } else if (val.getDueDate().equals(LocalDate.now())) {
+                val.setDayLeft("Last day");
+                val.setLoanStatus("On Loan");
+            } else {
+
+                Long dif = ChronoUnit.DAYS.between(LocalDate.now(), val.getDueDate());
+                val.setDayLeft(dif > 0 ? dif.toString() : "Late");
+                val.setLoanStatus("On Loan");
+            }
+        }
+
+        return dataLoan;
     }
 
     @Override
@@ -116,7 +156,7 @@ public class LoanServiceImp implements LoanService {
     @Override
     public void insert(LoanInsertDto dto) {
         try {
-// Update in borrow if insert loan
+            // Update in borrow if insert loan
             var book = bookService.getBooksById(dto.getBookCode());
             var customer = customerServiceImp.getCustomerByEntity(dto.getCustomerNumber());
 
@@ -266,7 +306,7 @@ public class LoanServiceImp implements LoanService {
     @Override
     public List<LoanIndexDto> getListLoanHistoryBySearch(Integer page) {
         Integer row = 10;
-        Pageable paging = PageRequest.of(page - 1, row, Sort.by("id").descending());
+        Pageable paging = PageRequest.of(page - 1, row, Sort.by("returnDate").descending());
         return loanRepository.getListLoanHistoryBySearch(paging);
     }
 

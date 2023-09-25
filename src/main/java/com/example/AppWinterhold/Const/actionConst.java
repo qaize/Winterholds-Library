@@ -28,5 +28,8 @@ public class actionConst {
     final public static String FAILED_GET_DATA = "Failed getting data : {}";
     final public static String SUCCESS_DELETE_DATA = "Success delete data : {}";
 
+    //    Messages
+    final public static String INDEX_EMPTY = "Seems Quiet, Mosquito flying arround";
+
 
 }
