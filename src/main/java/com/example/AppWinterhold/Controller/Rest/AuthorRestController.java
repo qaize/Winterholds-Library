@@ -52,7 +52,7 @@ public class AuthorRestController {
         }
     }
 
-    @PostMapping(value = "/getTupple")
+    @PostMapping(value = "/all-author-tuple")
     public ResponseEntity<Object> getTuple(@RequestBody AuthorRequestDTO authorRequestDTO) {
         return authorService.getAllAuthorTuple(authorRequestDTO);
     }
