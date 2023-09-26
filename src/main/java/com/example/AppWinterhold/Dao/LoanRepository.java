@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 
 @Transactional
@@ -146,4 +147,13 @@ public interface LoanRepository extends JpaRepository<Loan, Long> {
             """)
     Long validateReplicateBookLoan(@Param("customer") String customer, @Param("book")String book);
 
+    @Query("""
+            select 
+                l
+            from 
+                Loan as l
+            where 
+                l.customerNumber = :member and l.returnDate is null
+            """)
+    List<Loan> validateCurrentUserOnLoan(String member);
 }

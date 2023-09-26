@@ -36,7 +36,7 @@
                 <tr th:each="data : ${listBooks}" th:object="${data}">
                     <td>
                         <div class="button-wrapper">
-                            <a class="btn update-button" th:href="@{/book/update(bookCode=*{code})}">Edit</a>
+                            <a class="btn blue-button" th:href="@{/book/update(bookCode=*{code})}">Edit</a>
                             <a class="btn warning-button" th:href="@{/book/delete(bookCode=*{code})}">Delete</a>
                         </div>
                     </td>

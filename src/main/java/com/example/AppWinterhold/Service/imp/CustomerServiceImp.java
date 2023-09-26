@@ -56,7 +56,7 @@ public class CustomerServiceImp implements CustomerService {
 
             return DataDTO.<List<CustomerIndexDto>>builder()
                     .flag(flag)
-                    .totalPage(Long.valueOf(customerData.getTotalPages()))
+                    .totalPage((long) customerData.getTotalPages())
                     .message(message)
                     .data(customerData.getContent())
                     .build();
@@ -221,13 +221,8 @@ public class CustomerServiceImp implements CustomerService {
         boolean ban = true;
         try {
             Optional<Customer> data = customerRepository.findById(customerNumber);
-            Long member = Long.valueOf(data.get().getMembershipNumber());
-//            Check On Loan Customer
-            Optional<Loan> dataLoan = loanRepository.findById(member);
-
             Customer customer = new Customer();
-
-            if (data.isPresent() && dataLoan.isEmpty()) {
+            if (data.isPresent()) {
                 customer = data.get();
                 customer.setBanned(1);
                 if (customer.getLoanCount() > 0) {
