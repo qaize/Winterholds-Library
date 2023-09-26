@@ -14,7 +14,8 @@
         </form>
         <a class="btn create-button" th:href="@{/category/insert}"> Add category </a>
         <div class="divTable">
-            <table>
+            <h1 th:style="${flag == 1 ? 'display : inline-block' : 'display : none'}" th:text="${message}"></h1>
+            <table th:style="${flag == 0 ? 'display : table' : 'display : none'}">
                 <thead>
                 <tr>
                     <th></th>

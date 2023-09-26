@@ -4,6 +4,7 @@ import com.example.AppWinterhold.Dto.BaseResponseDTO;
 import com.example.AppWinterhold.Dto.Category.CategoryIndexDto;
 import com.example.AppWinterhold.Dto.Category.CategoryInsertDto;
 import com.example.AppWinterhold.Dto.Category.CategoryUpdateDto;
+import com.example.AppWinterhold.Dto.Models.DataDTO;
 
 import java.util.List;
 
@@ -17,5 +18,5 @@ public interface CategoryService {
     Long categoryChecker(String isle,Integer floor, String bay);
     CategoryIndexDto getCategoryByCategoryName(String categoryName);
     CategoryInsertDto getCategoryByCategoryInsert(String categoryName);
-    BaseResponseDTO<List<CategoryIndexDto>> getListCategoryBySearch(Integer page, String name);
+    DataDTO<List<CategoryIndexDto>> getListCategoryBySearch(Integer page, String name);
 }

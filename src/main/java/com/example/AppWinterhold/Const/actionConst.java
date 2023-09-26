@@ -26,11 +26,15 @@ public class actionConst {
     //    STATUS
 
     final public static String SUCCESS_GET_DATA = "Success getting data : {}";
-    final public static String FAILED_GET_DATA = "Failed getting data : {}";
+    final public static String SUCCESS_INSERT_DATA = "Success insert data : {}";
+    final public static String SUCCESS_UPDATE_DATA = "Success update data : {}";
     final public static String SUCCESS_DELETE_DATA = "Success delete data : {}";
+    final public static String FAILED_INSERT_DATA = "Failed insert data : {}";
+    final public static String FAILED_UPDATE_DATA = "Failed update data : {}";
+    final public static String FAILED_GET_DATA = "Failed getting data : {}";
 
     //    Messages
-    final public static String INDEX_EMPTY = "Seems Quiet, Mosquito flying arround";
+    final public static String INDEX_EMPTY = "Data not found";
     final public static String VALIDATE_UPDATE = "Data was validated and there is no update on it.";
 
 

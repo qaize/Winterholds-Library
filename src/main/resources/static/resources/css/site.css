@@ -621,3 +621,8 @@ form.upsert-form td.combined-validation{
 	margin-bottom: 20px;
     margin-left: 0;
 }
+
+.divTable > h1 {
+    text-align : center;
+    padding : 15px;
+}

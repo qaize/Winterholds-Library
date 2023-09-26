@@ -5,11 +5,14 @@ import com.example.AppWinterhold.Dao.LoanRepository;
 import com.example.AppWinterhold.Dto.Customer.CustomerIndexDto;
 import com.example.AppWinterhold.Dto.Customer.CustomerInsertDto;
 import com.example.AppWinterhold.Dto.Customer.CustomerUpdateDto;
-import com.example.AppWinterhold.Dto.Loan.LoanInsertDto;
+import com.example.AppWinterhold.Dto.Models.DataDTO;
 import com.example.AppWinterhold.Entity.Customer;
 import com.example.AppWinterhold.Entity.Loan;
 import com.example.AppWinterhold.Service.abs.CustomerService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -25,6 +28,8 @@ import static com.example.AppWinterhold.Const.actionConst.*;
 @Service
 public class CustomerServiceImp implements CustomerService {
 
+    private final static Logger LOGGER = LoggerFactory.getLogger(CustomerServiceImp.class);
+
     @Autowired
     private CustomerRepository customerRepository;
 
@@ -35,10 +40,33 @@ public class CustomerServiceImp implements CustomerService {
     private LoanRepository loanRepository;
 
     @Override
-    public List<CustomerIndexDto> getListCustomerBySearch(Integer page, String number, String name) {
+    public DataDTO<List<CustomerIndexDto>> getListCustomerBySearch(Integer page, String number, String name) {
         Integer row = 10;
-        Pageable paging = PageRequest.of(page - 1, row, Sort.by("membershipNumber"));
-        return customerRepository.getListCustomerBySearch(number, name, paging);
+        int flag = 0;
+        String message = "";
+
+        try {
+            Pageable paging = PageRequest.of(page - 1, row, Sort.by("membershipNumber"));
+            Page<CustomerIndexDto> customerData = customerRepository.getListCustomerBySearch(number, name, paging);
+
+            if (customerData.isEmpty()) {
+                flag = 1;
+                message = INDEX_EMPTY;
+            }
+
+            return DataDTO.<List<CustomerIndexDto>>builder()
+                    .flag(flag)
+                    .totalPage(Long.valueOf(customerData.getTotalPages()))
+                    .message(message)
+                    .data(customerData.getContent())
+                    .build();
+
+        } catch (Exception e) {
+            return DataDTO.<List<CustomerIndexDto>>builder()
+                    .flag(flag)
+                    .message(message)
+                    .build();
+        }
     }
 
     @Override
@@ -52,46 +80,29 @@ public class CustomerServiceImp implements CustomerService {
     @Override
     public void insert(CustomerInsertDto dto) {
         try {
-
-            String generatedMember = customerNumberGenerator();
-            LocalDateTime date = LocalDateTime.now();
-            Customer en = new Customer(generatedMember, dto.getFirstName(), dto.getLastName(), dto.getBirthDate(),
-                    dto.getGender(), dto.getPhone(), dto.getAddress(), dto.getMembershipExpireDate(), date, 0, 0,0);
-            customerRepository.save(en);
+            Customer newCustomer = mapInsert(dto);
+            customerRepository.save(newCustomer);
+            LOGGER.info(SUCCESS_INSERT_DATA, newCustomer.getMembershipNumber());
             logService.saveLogs(CUSTOMER, SUCCESS, INSERT);
         } catch (Exception e) {
-            logService.saveLogs(CUSTOMER,FAILED, INSERT);
+            LOGGER.error(FAILED_INSERT_DATA, e.getMessage());
+            logService.saveLogs(CUSTOMER, FAILED, INSERT);
         }
     }
+
 
     @Override
     public void update(CustomerUpdateDto dto) {
         try {
-
-            Customer en = mapCustomerUpdate(dto);
-            customerRepository.save(en);
+            customerRepository.save(mapUpdate(dto));
+            LOGGER.info(SUCCESS_UPDATE_DATA, dto.getMembershipNumber());
             logService.saveLogs(CUSTOMER, SUCCESS, UPDATE);
         } catch (Exception e) {
-            logService.saveLogs(CUSTOMER, e.getMessage(), UPDATE);
+            LOGGER.error(FAILED_UPDATE_DATA, e.getMessage());
+            logService.saveLogs(CUSTOMER, FAILED, UPDATE);
         }
     }
 
-    private Customer mapCustomerUpdate(CustomerUpdateDto dto) {
-        Optional<Customer> dataCus = customerRepository.findById(dto.getMembershipNumber());
-
-        Customer customer = new Customer();
-        if (dataCus.isPresent()) {
-
-            dataCus.get().setFirstName(dto.getFirstName());
-            dataCus.get().setLastName(dto.getLastName());
-            dataCus.get().setGender(dto.getGender());
-            dataCus.get().setPhone(dto.getPhone());
-            dataCus.get().setAddress(dto.getAddress());
-            dataCus.get().setMembershipExpireDate(dto.getMembershipExpireDate());
-            customer = dataCus.get();
-        }
-        return customer;
-    }
 
     @Override
     public List<CustomerIndexDto> getAll() {
@@ -115,13 +126,12 @@ public class CustomerServiceImp implements CustomerService {
 
     @Override
     public Boolean delete(String number) {
-        Long data = customerRepository.getCountCustomer(number);
-        if (data > 0) {
-
+        try {
+            Long data = customerRepository.getCountCustomer(number);
+            return data > 0 ? doDelete(number) : false;
+        } catch (Exception e) {
             return false;
         }
-        customerRepository.softDeleteCustomer(number);
-        return true;
     }
 
 
@@ -250,5 +260,44 @@ public class CustomerServiceImp implements CustomerService {
         return (long) Math.ceil(data / dataCount);
     }
 
+
+    private Customer mapInsert(CustomerInsertDto dto) {
+
+        String generatedMember = customerNumberGenerator();
+        LocalDateTime date = LocalDateTime.now();
+        Customer customer = new Customer(
+                generatedMember,
+                dto.getFirstName(),
+                dto.getLastName(),
+                dto.getBirthDate(),
+                dto.getGender(),
+                dto.getPhone(),
+                dto.getAddress(),
+                dto.getMembershipExpireDate(),
+                date, 0, 0, 0);
+
+        return customer;
+    }
+
+    private Customer mapUpdate(CustomerUpdateDto dto) {
+        Optional<Customer> dataCus = customerRepository.findById(dto.getMembershipNumber());
+
+        Customer customer = new Customer();
+        if (dataCus.isPresent()) {
+            dataCus.get().setFirstName(dto.getFirstName());
+            dataCus.get().setLastName(dto.getLastName());
+            dataCus.get().setGender(dto.getGender());
+            dataCus.get().setPhone(dto.getPhone());
+            dataCus.get().setAddress(dto.getAddress());
+            dataCus.get().setMembershipExpireDate(dto.getMembershipExpireDate());
+            customer = dataCus.get();
+        }
+        return customer;
+    }
+
+    private Boolean doDelete(String member) {
+        customerRepository.softDeleteCustomer(member);
+        return true;
+    }
 
 }

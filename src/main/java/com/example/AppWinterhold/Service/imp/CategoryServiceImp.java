@@ -5,6 +5,7 @@ import com.example.AppWinterhold.Dto.BaseResponseDTO;
 import com.example.AppWinterhold.Dto.Category.CategoryIndexDto;
 import com.example.AppWinterhold.Dto.Category.CategoryInsertDto;
 import com.example.AppWinterhold.Dto.Category.CategoryUpdateDto;
+import com.example.AppWinterhold.Dto.Models.DataDTO;
 import com.example.AppWinterhold.Entity.Category;
 import com.example.AppWinterhold.Service.abs.CategoryService;
 import com.example.AppWinterhold.Utility.ResponseUtil;
@@ -36,25 +37,34 @@ public class CategoryServiceImp implements CategoryService {
     private LogServiceImpl logService;
 
     @Override
-    public BaseResponseDTO<List<CategoryIndexDto>> getListCategoryBySearch(Integer page, String name) {
+    public DataDTO<List<CategoryIndexDto>> getListCategoryBySearch(Integer page, String name) {
         int row = 10;
+        int flag = 0;
+        String message = "";
         try {
             Pageable paging = PageRequest.of(page - 1, row, Sort.by("id"));
             Page<CategoryIndexDto> listCategory =  categoryRepository.getListCategoryBySearch(name, paging);
-            LOGGER.info(SUCCESS_GET_DATA);
-            return BaseResponseDTO.<List<CategoryIndexDto>>builder()
-                    .status("1")
-                    .httpStatus(HttpStatus.OK)
-                    .message("OK")
+
+            if(listCategory.getContent().isEmpty()){
+                message = INDEX_EMPTY;
+                flag = 1;
+            }
+//            long totalPage = data.getTotalPage();
+//            if (totalPage == 0) {
+//                page = 0;
+//            }
+            
+            return DataDTO.<List<CategoryIndexDto>>builder()
+                    .message(message)
+                    .flag(flag)
                     .data(listCategory.getContent())
-                    .metaData(new BaseResponseDTO.MetaData(listCategory.getTotalElements(),listCategory.getTotalPages(), listCategory.getSize()))
+                    .totalPage(Long.valueOf(listCategory.getTotalPages()))
                     .build();
         } catch (Exception e) {
             LOGGER.error(FAILED_GET_DATA, e.getMessage());
-            return BaseResponseDTO.<List<CategoryIndexDto>>builder()
-                    .status("0")
-                    .httpStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+            return DataDTO.<List<CategoryIndexDto>>builder()
                     .message(HttpStatus.INTERNAL_SERVER_ERROR.name())
+                    .flag(flag)
                     .data(new ArrayList<>()).build();
         }
     }
@@ -94,9 +104,10 @@ public class CategoryServiceImp implements CategoryService {
     @Override
     public Boolean delete(String categoryName) {
         Long data = categoryRepository.getCountbooks(categoryName);
-        if (data > 0) {
-            return false;
-        }
+        return data > 0 ? doDelete(categoryName) : false;
+    }
+
+    private Boolean doDelete(String categoryName){
         categoryRepository.deleteById(categoryName);
         return true;
     }

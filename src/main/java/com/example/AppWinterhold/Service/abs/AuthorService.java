@@ -4,6 +4,7 @@ import com.example.AppWinterhold.Dto.Author.AuthorIndexDto;
 import com.example.AppWinterhold.Dto.Author.AuthorIndexDtoV2;
 import com.example.AppWinterhold.Dto.Author.AuthorInsertDto;
 import com.example.AppWinterhold.Dto.Author.AuthorUpdateDto;
+import com.example.AppWinterhold.Dto.Models.DataDTO;
 import com.example.AppWinterhold.Dto.Rest.Request.Author.AuthorRequestDTO;
 import com.example.AppWinterhold.Entity.Author;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -21,8 +22,8 @@ public interface AuthorService {
     AuthorIndexDto getAuthorById(Long id) throws JsonProcessingException;
     public List<AuthorIndexDto> getAllAuthor();
     AuthorInsertDto getAuthorByIdinsert(Long id);
-    public List<AuthorIndexDto> getListAuthorBySearch(Integer page, String name) throws JsonProcessingException;
-    public List<AuthorIndexDto> getListAuthorBySearchV2(AuthorIndexDtoV2 authorIndexDtoV2) throws JsonProcessingException;
+    DataDTO<List<AuthorIndexDto>> getListAuthorBySearch(Integer page, String name) throws JsonProcessingException;
+    List<AuthorIndexDto> getListAuthorBySearchV2(AuthorIndexDtoV2 authorIndexDtoV2) throws JsonProcessingException;
 
     ResponseEntity<Object> getAllAuthorTuple(AuthorRequestDTO authorRequestDTO);
 

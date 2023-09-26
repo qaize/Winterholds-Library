@@ -4,12 +4,13 @@ import com.example.AppWinterhold.Dto.Customer.CustomerIndexDto;
 import com.example.AppWinterhold.Dto.Customer.CustomerInsertDto;
 import com.example.AppWinterhold.Dto.Customer.CustomerUpdateDto;
 import com.example.AppWinterhold.Dto.Loan.LoanInsertDto;
+import com.example.AppWinterhold.Dto.Models.DataDTO;
 import com.example.AppWinterhold.Entity.Customer;
 
 import java.util.List;
 
 public interface CustomerService {
-    List<CustomerIndexDto> getListCustomerBySearch(Integer page, String number, String name);
+    DataDTO<List<CustomerIndexDto>> getListCustomerBySearch(Integer page, String number, String name);
 
     Long getCountBannedList();
     Boolean delete(String number);

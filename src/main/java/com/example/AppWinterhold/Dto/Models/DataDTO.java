@@ -1,5 +1,6 @@
 package com.example.AppWinterhold.Dto.Models;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 
 @NoArgsConstructor
@@ -8,9 +9,12 @@ import lombok.*;
 @Builder
 public class DataDTO<T> {
 
-    private T data;
+    @JsonInclude(value = JsonInclude.Include.NON_EMPTY)
     private int flag;
-    private Long totalPage;
+
+    @JsonInclude(value = JsonInclude.Include.NON_EMPTY)
     private String message;
 
+    private T data;
+    private Long totalPage;
 }

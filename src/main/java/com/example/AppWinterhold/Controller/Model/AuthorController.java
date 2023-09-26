@@ -1,7 +1,9 @@
 package com.example.AppWinterhold.Controller.Model;
 
+import com.example.AppWinterhold.Dto.Author.AuthorIndexDto;
 import com.example.AppWinterhold.Dto.Author.AuthorInsertDto;
 import com.example.AppWinterhold.Dto.Author.AuthorUpdateDto;
+import com.example.AppWinterhold.Dto.Models.DataDTO;
 import com.example.AppWinterhold.Service.abs.AuthorService;
 import com.example.AppWinterhold.Service.abs.BookService;
 import com.example.AppWinterhold.Service.imp.AccountServiceImp;
@@ -13,6 +15,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Controller
 @RequestMapping("/author")
@@ -32,17 +36,14 @@ public class AuthorController {
                         @RequestParam(defaultValue = "") String name,
                         @RequestParam(defaultValue = "1") Integer page) throws JsonProcessingException {
 
-        var listAuthor = authorService.getListAuthorBySearch(page, name);
-        Long totalPage = authorService.getCountPage(name);
-        if (totalPage == 0) {
-            page = 0;
-        }
+        DataDTO<List<AuthorIndexDto>> data = authorService.getListAuthorBySearch(page, name);
 
         model.addAttribute("name", name);
+        model.addAttribute("flag", data.getFlag());
+        model.addAttribute("message", data.getMessage());
         model.addAttribute("currentPage", page);
-        model.addAttribute("totalPage", totalPage);
-        model.addAttribute("listAuthor", listAuthor);
-        model.addAttribute("userLogin", accountServiceImp.getCurrentUserLogin());
+        model.addAttribute("totalPage", data.getTotalPage());
+        model.addAttribute("listAuthor", data.getData());
 
         return "Author/index";
     }

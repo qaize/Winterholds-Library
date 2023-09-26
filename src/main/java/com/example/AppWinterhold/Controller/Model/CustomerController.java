@@ -1,7 +1,9 @@
 package com.example.AppWinterhold.Controller.Model;
 
+import com.example.AppWinterhold.Dto.Customer.CustomerIndexDto;
 import com.example.AppWinterhold.Dto.Customer.CustomerInsertDto;
 import com.example.AppWinterhold.Dto.Customer.CustomerUpdateDto;
+import com.example.AppWinterhold.Dto.Models.DataDTO;
 import com.example.AppWinterhold.Entity.Customer;
 import com.example.AppWinterhold.Service.abs.CustomerService;
 import com.example.AppWinterhold.Service.imp.AccountServiceImp;
@@ -31,18 +33,15 @@ public class CustomerController {
                         @RequestParam(defaultValue = "") String number,
                         @RequestParam(defaultValue = "") String name,
                         @RequestParam(defaultValue = "1") Integer page) {
-
-        var listCustomer = customerService.getListCustomerBySearch(page, number, name);
-        Long totalPage = customerService.getCountPage(number, name);
-        if (totalPage == 0) {
-            page = 0;
-        }
+        DataDTO<List<CustomerIndexDto>> data = customerService.getListCustomerBySearch(page, number, name);
 
         model.addAttribute("name", name);
+        model.addAttribute("number", number);
+        model.addAttribute("flag", data.getFlag());
+        model.addAttribute("message", data.getMessage());
         model.addAttribute("currentPage", page);
-        model.addAttribute("totalPage", totalPage);
-        model.addAttribute("listCustomer", listCustomer);
-        model.addAttribute("userLogin", account.getCurrentUserLogin());
+        model.addAttribute("totalPage", data.getTotalPage());
+        model.addAttribute("listCustomer", data.getData());
 
         return "Customer/index";
     }
@@ -150,8 +149,6 @@ public class CustomerController {
     @GetMapping("/ban")
     public String ban(Model model, @RequestParam String customerNumber) {
 
-
-
         if (customerService.doBanCustomer(customerNumber)) {
 
             return "redirect:/customer/index";
@@ -187,7 +184,7 @@ public class CustomerController {
         }
 
         model.addAttribute("totalPage", totalPage);
-        model.addAttribute("page", page);
+        model.addAttribute("currentPage", page);
         model.addAttribute("bannedList", customers);
 
         return "Customer/bannedList";

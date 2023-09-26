@@ -8,6 +8,7 @@ import com.example.AppWinterhold.Dto.Author.AuthorIndexDtoV2;
 import com.example.AppWinterhold.Dto.Author.AuthorInsertDto;
 import com.example.AppWinterhold.Dto.Author.AuthorUpdateDto;
 import com.example.AppWinterhold.Dto.BaseResponseDTO;
+import com.example.AppWinterhold.Dto.Models.DataDTO;
 import com.example.AppWinterhold.Dto.Rest.Request.Author.AuthorRequestDTO;
 import com.example.AppWinterhold.Entity.Author;
 import com.example.AppWinterhold.Service.abs.AuthorService;
@@ -28,6 +29,7 @@ import org.springframework.stereotype.Service;
 import javax.persistence.Tuple;
 import java.math.BigInteger;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -56,26 +58,50 @@ public class AuthorServiceImp implements AuthorService {
 
 
     @Override
-    public List<AuthorIndexDto> getListAuthorBySearch(Integer page, String name) throws JsonProcessingException {
-
+    public DataDTO<List<AuthorIndexDto>> getListAuthorBySearch(Integer page, String name) throws JsonProcessingException {
 
         int row = 10;
-        Pageable paging = PageRequest.of(page - 1, row, Sort.by("id").descending());
+        int flag = 0;
+        String message = "";
+        try {
 
-        return authorRepository.getListAuthorBySearch(name, paging);
+            Pageable paging = PageRequest.of(page - 1, row, Sort.by("id").descending());
+            Page<AuthorIndexDto> authorData = authorRepository.getListAuthorBySearch(name, paging);
+
+            if(authorData.isEmpty()){
+                flag = 1;
+                message = INDEX_EMPTY;
+            }
+
+            return DataDTO.<List<AuthorIndexDto>>builder()
+                    .flag(flag)
+                    .totalPage(Long.valueOf(authorData.getTotalPages()))
+                    .message(message)
+                    .data(authorData.getContent())
+                    .build();
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage());
+            return DataDTO.<List<AuthorIndexDto>>builder()
+                    .flag(flag)
+                    .message(message)
+                    .build();
+        }
+
+
     }
 
     @Override
     public List<AuthorIndexDto> getListAuthorBySearchV2(AuthorIndexDtoV2 authorIndexDtoV2) throws JsonProcessingException {
 
         Pageable paging = PageRequest.of(authorIndexDtoV2.getPage() - 1, authorIndexDtoV2.getDataCount(), Sort.by("id").descending());
-        return authorRepository.getListAuthorBySearch(authorIndexDtoV2.getFullname(), paging);
+        Page<AuthorIndexDto> data = authorRepository.getListAuthorBySearch(authorIndexDtoV2.getFullname(), paging);
+        return data.getContent();
     }
 
     @Override
     public ResponseEntity<Object> getAllAuthorTuple(AuthorRequestDTO authorRequestDTO) {
         try {
-            Pageable paging = PageRequest.of(authorRequestDTO.getPage()-1, authorRequestDTO.getDataCount());
+            Pageable paging = PageRequest.of(authorRequestDTO.getPage() - 1, authorRequestDTO.getDataCount());
             List<Tuple> pages = authorRepository.getAllByTupple(paging);
             List<AuthorIndexDto> authorIndexDtos = mapTupleToAuthor(pages);
 
@@ -119,13 +145,13 @@ public class AuthorServiceImp implements AuthorService {
         try {
             AuthorIndexDto authIndex = authorRepository.getAuthorById(dto.getId());
 
-            UpdateAccountMapper(en,authIndex, dto);
+            UpdateAccountMapper(en, authIndex, dto);
             updateValidator(en);
 
             authorRepository.save(en);
             logService.saveLogs(AUTHOR, SUCCESS, UPDATE);
 
-        } catch(CustomException e){
+        } catch (CustomException e) {
             LOGGER.info(e.getMessage());
             logService.saveLogs(AUTHOR, ALREADY, UPDATE);
         } catch (Exception ex) {
@@ -178,7 +204,6 @@ public class AuthorServiceImp implements AuthorService {
     }
 
 
-
     @Override
     public Page<AuthorIndexDto> getAllAuthorWithPage() {
         Pageable page = PageRequest.of(1, 5);
@@ -220,6 +245,7 @@ public class AuthorServiceImp implements AuthorService {
         );
         return authorIndexDto;
     }
+
     public void mapInsert(Author author, AuthorInsertDto authorInsertDto) {
         String createdBy = baseController.getCurrentLogin();
         author.setId(authorInsertDto.getId());
@@ -235,7 +261,8 @@ public class AuthorServiceImp implements AuthorService {
         author.setModifiedBy("");
 
     }
-    private List<AuthorIndexDto> mapTupleToAuthor(List<Tuple> data){
+
+    private List<AuthorIndexDto> mapTupleToAuthor(List<Tuple> data) {
         List<AuthorIndexDto> authorIndexDtos = data.stream().map(auth -> new AuthorIndexDto(
                 auth.get("id", BigInteger.class).longValue(),
                 auth.get("title", String.class),
@@ -260,13 +287,13 @@ public class AuthorServiceImp implements AuthorService {
         String dataExisting = objectMapper.writeValueAsString(validatedData);
         String dataUpdate = objectMapper.writeValueAsString(author);
 
-        if(dataExisting.equals(dataUpdate)){
+        if (dataExisting.equals(dataUpdate)) {
             throw new CustomException(VALIDATE_UPDATE);
         }
         author.setModifiedBy(baseController.getCurrentLogin());
     }
 
-    private void UpdateAccountMapper(Author author,AuthorIndexDto authIndex,  AuthorUpdateDto authorInsertDto) {
+    private void UpdateAccountMapper(Author author, AuthorIndexDto authIndex, AuthorUpdateDto authorInsertDto) {
 
         author.setId(authorInsertDto.getId());
         author.setTitle(authorInsertDto.getTitle());
@@ -277,11 +304,8 @@ public class AuthorServiceImp implements AuthorService {
         author.setEducation(authorInsertDto.getEducation());
         author.setSummary(authorInsertDto.getSummary());
         author.setCreatedBy(authIndex.getCreatedBy());
-        author.setModifiedBy(baseController.getCurrentLogin() == null ? "":baseController.getCurrentLogin());
+        author.setModifiedBy(baseController.getCurrentLogin() == null ? "" : baseController.getCurrentLogin());
     }
-
-
-
 
 
 }

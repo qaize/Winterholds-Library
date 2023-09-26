@@ -17,7 +17,8 @@
             <a class="btn create-button" th:href="@{/customer/banned-customer}"> Banned Member </a>
         </div>
         <div class="divTable">
-            <table>
+            <h1 th:style="${flag == 1 ? 'display : inline-block' : 'display : none'}" th:text="${message}"></h1>
+            <table th:style="${flag == 0 ? 'display : table' : 'display : none'}">
                 <thead>
                 <tr>
                     <th></th>

@@ -24,7 +24,7 @@ public interface AuthorRepository extends JpaRepository<Author, Long> {
             WHERE 
                 CONCAT(a.firstName,' ',a.lastName) LIKE %:name%
             """)
-    List<AuthorIndexDto> getListAuthorBySearch(@Param("name") String name, Pageable paging);
+    Page<AuthorIndexDto> getListAuthorBySearch(@Param("name") String name, Pageable paging);
 
     @Query("""
             SELECT 

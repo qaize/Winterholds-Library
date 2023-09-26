@@ -73,7 +73,6 @@ public class LoanController {
         model.addAttribute("currentPage", page);
         model.addAttribute("listLoan", listLoan);
         model.addAttribute("totalPage", totalPage);
-        model.addAttribute("userLogin", account.getCurrentUserLogin());
 
         return "Loan/LoanHistory";
     }

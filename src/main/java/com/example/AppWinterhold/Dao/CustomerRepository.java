@@ -3,6 +3,7 @@ package com.example.AppWinterhold.Dao;
 import com.example.AppWinterhold.Dto.Customer.CustomerIndexDto;
 import com.example.AppWinterhold.Dto.Customer.CustomerUpdateDto;
 import com.example.AppWinterhold.Entity.Customer;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -24,7 +25,7 @@ public interface CustomerRepository extends JpaRepository<Customer, String> {
                 AND (c.firstName LIKE %:name% OR c.lastName LIKE %:name%) 
                 AND c.banned = 0 AND c.deleted = 0
             """)
-    List<CustomerIndexDto> getListCustomerBySearch(String number, String name, Pageable paging);
+    Page<CustomerIndexDto> getListCustomerBySearch(String number, String name, Pageable paging);
 
 
     @Query("""

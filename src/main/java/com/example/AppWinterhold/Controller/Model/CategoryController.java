@@ -4,6 +4,7 @@ import com.example.AppWinterhold.Dto.BaseResponseDTO;
 import com.example.AppWinterhold.Dto.Category.CategoryIndexDto;
 import com.example.AppWinterhold.Dto.Category.CategoryInsertDto;
 import com.example.AppWinterhold.Dto.Category.CategoryUpdateDto;
+import com.example.AppWinterhold.Dto.Models.DataDTO;
 import com.example.AppWinterhold.Service.abs.BookService;
 import com.example.AppWinterhold.Service.abs.CategoryService;
 import com.example.AppWinterhold.Service.imp.AccountServiceImp;
@@ -33,18 +34,14 @@ public class CategoryController {
                         @RequestParam(defaultValue = "") String name,
                         @RequestParam(defaultValue = "1") Integer page) {
 
-        BaseResponseDTO<List<CategoryIndexDto>> data = categoryService.getListCategoryBySearch(page, name);
-        List<CategoryIndexDto> listCategory = data.getData();
-        int totalPage = data.getMetaData().getTotalPage();
-        if (totalPage == 0) {
-            page = 0;
-        }
+        DataDTO<List<CategoryIndexDto>> data = categoryService.getListCategoryBySearch(page, name);
 
         model.addAttribute("name", name);
+        model.addAttribute("flag", data.getFlag());
+        model.addAttribute("message", data.getMessage());
+        model.addAttribute("totalPage", data.getTotalPage());
         model.addAttribute("currentPage", page);
-        model.addAttribute("totalPage", totalPage);
-        model.addAttribute("listCategory", listCategory);
-        model.addAttribute("userLogin", account.getCurrentUserLogin());
+        model.addAttribute("listCategory", data.getData());
 
         return "Category/index";
     }

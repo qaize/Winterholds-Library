@@ -107,6 +107,7 @@ public class BookServiceImp implements BookService {
     public Boolean delete(String code) {
         try {
             Long data = bookRepository.getCountBooksByCode(code);
+            LOGGER.info(SUCCESS_DELETE_DATA,code);
             return data > 0 ? doDelete(code) : false;
         } catch (Exception e) {
             LOGGER.error(e.getMessage());
