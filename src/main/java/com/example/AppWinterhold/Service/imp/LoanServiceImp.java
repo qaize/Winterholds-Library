@@ -146,10 +146,10 @@ public class LoanServiceImp implements LoanService {
             // Update book and customer property during create new loan
             BookUpdateDto updateBook = updateBookProperty(newData.getBookCode());
             Customer updateCustomer = updateCustomerProperty(newData.getCustomerNumber());
-            Loan insertLoan = mapInsert(newData);
+            Loan insertNewLoan = mapInsert(newData);
 
-            chainUpdateLoan(updateCustomer, updateBook, insertLoan);
-            LOGGER.info(SUCCESS_INSERT_DATA, insertLoan.getId());
+            chainUpdateLoan(updateCustomer, updateBook, insertNewLoan);
+            LOGGER.info(SUCCESS_INSERT_DATA, insertNewLoan.getId());
             logService.saveLogs(LOAN, SUCCESS, INSERT);
         } catch (Exception e) {
             LOGGER.error(e.getMessage());
@@ -192,44 +192,36 @@ public class LoanServiceImp implements LoanService {
     public void goPayOff(Long id) {
 
         try {
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            String authName = authentication.getName();
-
-            Timestamp date = Timestamp.from(Instant.now());
-            Loan data = loanRepository.findById(id).get();
-            List<LogsIncome> logList = logsIncomeRepository.findAll(Sort.by("transactionDate").descending());
-            Customer customer = customerServiceImp.getCustomerByEntity(data.getCustomerNumber());
-            if (logList.size() == 0) {
-                LogsIncome log = new LogsIncome(UUID.randomUUID().toString(), "PELUNASAN DENDA ID :" + data.getId() + "/" + data.getCustomerNumber(), authName, data.getDenda().doubleValue(), 0.0, date);
-                logsIncomeRepository.save(log);
-                logService.saveLogs(LOAN, SUCCESS, PAY);
-            } else {
-                LogsIncome income = logList.get(0);
-                Double total = income.getTotal();
-                //NOT YET USED SERVICE BUT MAYBE LATER WILL ADD SOME FEATURE ON IT
-                if (income.getSource().equals("PENGELUARAN")) {
-                    total = total - data.getDenda();
-                    LogsIncome log = new LogsIncome(UUID.randomUUID().toString(), "PENGELUARAN ID :" + data.getId() + "/" + data.getCustomerNumber(), authName, data.getDenda().doubleValue(), total, date);
-                    logsIncomeRepository.save(log);
-                    logService.saveLogs(LOAN, SUCCESS, PAY);
-
-                } else {
-                    total = total + data.getDenda();
-                    LogsIncome log = new LogsIncome(UUID.randomUUID().toString(), "PELUNASAN DENDA ID :" + data.getId() + "/" + data.getCustomerNumber(), authName, data.getDenda().doubleValue(), total, date);
-                    logsIncomeRepository.save(log);
-                    logService.saveLogs(LOAN, SUCCESS, PAY);
-                }
-                data.setDenda(0L);
-                customer.setLoanCount(customerServiceImp.loanCountSetter(customer.getMembershipNumber(), "Return"));
-                customerRepository.save(customer);
-                loanRepository.save(data);
-            }
-
+            recordPaymentHistory(id);
         } catch (Exception e) {
             logService.saveLogs(LOAN, e.getMessage(), PAY);
         }
-
     }
+
+    private void recordPaymentHistory(Long id) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentLogin = authentication.getName();
+
+        Timestamp date = Timestamp.from(Instant.now());
+        Loan loanDataToUpdate = loanRepository.findById(id).get();
+        LogsIncome previousLogs = logsIncomeRepository.findAll(Sort.by("transactionDate").descending()).get(0);
+        Customer updateCustomer = customerServiceImp.getCustomerByEntity(loanDataToUpdate.getCustomerNumber());
+
+        if (previousLogs == null) {
+            // First time logs
+            LogsIncome log = new LogsIncome(UUID.randomUUID().toString(), "PELUNASAN DENDA ID :" + loanDataToUpdate.getId() + "/" + loanDataToUpdate.getCustomerNumber(), currentLogin, loanDataToUpdate.getDenda().doubleValue(), loanDataToUpdate.getDenda().doubleValue(), date);
+            logsIncomeRepository.save(log);
+            logService.saveLogs(LOAN, SUCCESS, PAY);
+        } else {
+            LogsIncome incomingPaymentLogs = new LogsIncome(UUID.randomUUID().toString(), "PELUNASAN DENDA ID :" + loanDataToUpdate.getId() + "/" + loanDataToUpdate.getCustomerNumber(), currentLogin, loanDataToUpdate.getDenda().doubleValue(), addNewPayment(previousLogs.getTotal(),loanDataToUpdate.getDenda()), date);
+            loanDataToUpdate.setDenda(0L);
+            updateCustomer.setLoanCount(customerServiceImp.loanCountSetter(updateCustomer.getMembershipNumber(), "Return"));
+
+            // Update Customer and loan status then save it into log income table
+            chainUpdateLogsIncome(incomingPaymentLogs,updateCustomer,loanDataToUpdate);
+        }
+    }
+
 
     @Override
     public void extendLoan(Loan data) {
@@ -349,6 +341,18 @@ public class LoanServiceImp implements LoanService {
         }
 
         return updatedBook;
+    }
+
+
+    private Double addNewPayment(Double total, Long denda){
+        return total + denda;
+    }
+
+    private void chainUpdateLogsIncome(LogsIncome newLog, Customer updateCustomer, Loan updateLoan ){
+        logsIncomeRepository.save(newLog);
+        logService.saveLogs(LOAN, SUCCESS, PAY);
+        customerRepository.save(updateCustomer);
+        loanRepository.save(updateLoan);
     }
 
 }
