@@ -157,17 +157,7 @@ public interface CustomerRepository extends JpaRepository<Customer, String> {
             WHERE 
                 c.banned = 1
             """)
-    List<Customer> getBannedListCustomer(Pageable pagination);
-
-    @Query("""
-            SELECT 
-                count(c)
-            FROM 
-                Customer as c
-            WHERE 
-                c.banned = 1
-            """)
-    Double getCountBannedCustomer();
+    Page<Customer> getBannedListCustomer(Pageable pagination);
 
 
     @Query(nativeQuery = true,value = """

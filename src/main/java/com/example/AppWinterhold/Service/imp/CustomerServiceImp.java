@@ -7,7 +7,6 @@ import com.example.AppWinterhold.Dto.Customer.CustomerInsertDto;
 import com.example.AppWinterhold.Dto.Customer.CustomerUpdateDto;
 import com.example.AppWinterhold.Dto.Models.DataDTO;
 import com.example.AppWinterhold.Entity.Customer;
-import com.example.AppWinterhold.Entity.Loan;
 import com.example.AppWinterhold.Service.abs.CustomerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,6 +18,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
@@ -160,6 +160,24 @@ public class CustomerServiceImp implements CustomerService {
     }
 
     @Override
+    public Boolean doExtendMember(String number) {
+        try {
+
+            CustomerUpdateDto data = getCustomerByMemberInsert(number);
+
+            data.setMembershipExpireDate(data.getMembershipExpireDate().plusYears(2));
+            update(data);
+            LOGGER.info(SUCCESS_UPDATE_DATA, number);
+            logService.saveLogs(CUSTOMER, SUCCESS, EXTEND);
+            return true;
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage());
+            logService.saveLogs(CUSTOMER, FAILED, EXTEND);
+            return false;
+        }
+    }
+
+    @Override
     public Customer getCustomerByEntity(String customerNumber) {
 
         Optional<Customer> data = customerRepository.findById(customerNumber);
@@ -176,11 +194,10 @@ public class CustomerServiceImp implements CustomerService {
     }
 
     @Override
-    public Integer loanCountSetter(String customer, String aReturn) {
-
+    public Integer loanCountSetter(String customer, String flags) {
 
         Integer data = customerRepository.getLoanCountCurrentCustomer(customer);
-        if (aReturn.equals("Return")) {
+        if (flags.equals("Return")) {
             if (data != 0) {
                 data = data - 1;
             }
@@ -218,42 +235,51 @@ public class CustomerServiceImp implements CustomerService {
 
     @Override
     public boolean doBanCustomer(String customerNumber) {
-        boolean ban = true;
+
         try {
             Optional<Customer> data = customerRepository.findById(customerNumber);
-            Customer customer = new Customer();
             if (data.isPresent()) {
-                customer = data.get();
-                customer.setBanned(1);
+                Customer customer = data.get();
                 if (customer.getLoanCount() > 0) {
-                    ban = false;
+                    return false;
                 } else {
+                    customer.setBanned(1);
                     customerRepository.save(customer);
                     logService.saveLogs(CUSTOMER, SUCCESS, BAN);
+                    return true;
                 }
+            } else {
+                throw new Exception("User not found");
             }
         } catch (Exception e) {
+            LOGGER.error(e.getMessage());
             logService.saveLogs(CUSTOMER, e.getMessage(), BAN);
-            ban = false;
+            return false;
         }
-        return ban;
     }
 
     @Override
-    public List<Customer> getBannedCustomerlist(Integer page) {
-        int dataCount = 10;
-        Pageable pagination = PageRequest.of(page - 1, dataCount);
+    public DataDTO<List<Customer>> getBannedCustomerlist(Integer page) {
+        int dataCount = 5;
+        try {
+            Pageable pagination = PageRequest.of(page - 1, dataCount);
+            Page<Customer> bannedCustomer = customerRepository.getBannedListCustomer(pagination);
 
-        return customerRepository.getBannedListCustomer(pagination);
+            return DataDTO.<List<Customer>>builder()
+                    .data(bannedCustomer.getContent())
+                    .totalPage((long) bannedCustomer.getTotalPages())
+                    .build();
+
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage());
+
+            return DataDTO.<List<Customer>>builder()
+                    .data(new ArrayList<>())
+                    .totalPage(0L)
+                    .build();
+        }
     }
 
-    @Override
-    public Long getCountBannedList() {
-        int dataCount = 10;
-        Double data = customerRepository.getCountBannedCustomer();
-
-        return (long) Math.ceil(data / dataCount);
-    }
 
 
     private Customer mapInsert(CustomerInsertDto dto) {

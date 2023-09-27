@@ -3,6 +3,7 @@ package com.example.AppWinterhold.Service.imp;
 import com.example.AppWinterhold.Dao.CustomerRepository;
 import com.example.AppWinterhold.Dao.LoanRepository;
 import com.example.AppWinterhold.Dao.LogsIncomeRepository;
+import com.example.AppWinterhold.Dto.Book.BookUpdateDto;
 import com.example.AppWinterhold.Dto.Loan.LoanIndexDto;
 import com.example.AppWinterhold.Dto.Loan.LoanInsertDto;
 import com.example.AppWinterhold.Dto.Loan.LoanUpdateDto;
@@ -14,6 +15,7 @@ import com.example.AppWinterhold.Service.abs.LoanService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -25,6 +27,7 @@ import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -58,46 +61,30 @@ public class LoanServiceImp implements LoanService {
         Integer row = 5;
         int flag = 0;
         String message = "";
-        Long totalPage = getCountPage(title, name);
+        try {
 
-        Pageable paging = PageRequest.of(page - 1, row, Sort.by("id").descending());
+            Pageable paging = PageRequest.of(page - 1, row, Sort.by("id").descending());
+            Page<LoanIndexDto> rawDataLoan = loanRepository.getListLoanBySearch(title, name, paging);
 
-        List<LoanIndexDto> dataLoan =  mapIndexLoan(loanRepository.getListLoanBySearch(title, name, paging));
-
-        if(dataLoan.isEmpty()){
-            flag = 1;
-            message = INDEX_EMPTY;
-        }
-
-        return DataDTO.<List<LoanIndexDto>>builder()
-                .flag(flag)
-                .data(dataLoan)
-                .message(message)
-                .totalPage(totalPage)
-                .build();
-    }
-
-    private List<LoanIndexDto> mapIndexLoan( List<LoanIndexDto> data){
-        List<LoanIndexDto> dataLoan = data;
-        for (LoanIndexDto val : dataLoan) {
-
-            if (val.getReturnDate() != null) {
-
-                val.setDayLeft(val.getReturnDate().isBefore(val.getDueDate()) ? "On Time" : "Late");
-                val.setLoanStatus("Returned");
-            } else if (val.getDueDate().equals(LocalDate.now())) {
-                val.setDayLeft("Last day");
-                val.setLoanStatus("On Loan");
-            } else {
-
-                Long dif = ChronoUnit.DAYS.between(LocalDate.now(), val.getDueDate());
-                val.setDayLeft(dif > 0 ? dif.toString() : "Late");
-                val.setLoanStatus("On Loan");
+            if (rawDataLoan.getContent().isEmpty()) {
+                flag = 1;
+                message = INDEX_EMPTY;
             }
-        }
 
-        return dataLoan;
+            return DataDTO.<List<LoanIndexDto>>builder()
+                    .flag(flag)
+                    .data(mapIndexLoan(rawDataLoan.getContent()))
+                    .message(message)
+                    .totalPage((long) rawDataLoan.getTotalPages())
+                    .build();
+        } catch (Exception e) {
+            return DataDTO.<List<LoanIndexDto>>builder()
+                    .data(new ArrayList<>())
+                    .totalPage(0L)
+                    .build();
+        }
     }
+
 
     @Override
     public boolean returnBook(Long id) {
@@ -154,34 +141,18 @@ public class LoanServiceImp implements LoanService {
     }
 
     @Override
-    public void insert(LoanInsertDto dto) {
+    public void insert(LoanInsertDto newData) {
         try {
-            // Update in borrow if insert loan
-            var book = bookService.getBooksById(dto.getBookCode());
-            var customer = customerServiceImp.getCustomerByEntity(dto.getCustomerNumber());
+            // Update book and customer property during create new loan
+            BookUpdateDto updateBook = updateBookProperty(newData.getBookCode());
+            Customer updateCustomer = updateCustomerProperty(newData.getCustomerNumber());
+            Loan insertLoan = mapInsert(newData);
 
-            if (book.getQuantity() > book.getInBorrow()) {
-                book.setInBorrow(book.getInBorrow() + 1);
-            }
-
-            if (book.getQuantity() == book.getInBorrow()) {
-                book.setIsBorrowed(true);
-            }
-
-
-            customer.setLoanCount(customerServiceImp.loanCountSetter(dto.getCustomerNumber(), "loan"));
-            customerServiceImp.updateWithEntity(customer);
-            bookService.update(book);
-            Loan en;
-            if (dto.getDenda() == null) {
-                en = new Loan(dto.getId(), dto.getCustomerNumber(), dto.getBookCode(), LocalDate.now(), LocalDate.now().plusDays(5), null, dto.getNote(), 0, null);
-                logService.saveLogs(LOAN, SUCCESS, INSERT);
-            } else {
-                en = new Loan(dto.getId(), dto.getCustomerNumber(), dto.getBookCode(), LocalDate.now(), LocalDate.now().plusDays(5), null, dto.getNote(), 0, dto.getDenda());
-                logService.saveLogs(LOAN, SUCCESS, INSERT);
-            }
-            loanRepository.save(en);
+            chainUpdateLoan(updateCustomer, updateBook, insertLoan);
+            LOGGER.info(SUCCESS_INSERT_DATA, insertLoan.getId());
+            logService.saveLogs(LOAN, SUCCESS, INSERT);
         } catch (Exception e) {
+            LOGGER.error(e.getMessage());
             logService.saveLogs(LOAN, FAILED, INSERT);
         }
     }
@@ -215,8 +186,6 @@ public class LoanServiceImp implements LoanService {
                 0, dto.getDenda());
         loanRepository.save(en);
     }
-
-
 
 
     @Override
@@ -317,6 +286,69 @@ public class LoanServiceImp implements LoanService {
         Long totaPage = (long) Math.ceil(totalData / row);
 
         return totaPage;
+    }
+
+
+    private List<LoanIndexDto> mapIndexLoan(List<LoanIndexDto> data) {
+        List<LoanIndexDto> listLoanDetails = data;
+        for (LoanIndexDto loanDetails : listLoanDetails) {
+
+            if (loanDetails.getReturnDate() != null) {
+
+                loanDetails.setDayLeft(loanDetails.getReturnDate().isBefore(loanDetails.getDueDate()) ? "On Time" : "Late");
+                loanDetails.setLoanStatus("Returned");
+            } else if (loanDetails.getDueDate().equals(LocalDate.now())) {
+                loanDetails.setDayLeft("Last day");
+                loanDetails.setLoanStatus("On Loan");
+            } else {
+                Long dif = ChronoUnit.DAYS.between(LocalDate.now(), loanDetails.getDueDate());
+                loanDetails.setDayLeft(dif > 0 ? dif.toString() : "Late");
+                loanDetails.setLoanStatus("On Loan");
+            }
+        }
+        return listLoanDetails;
+    }
+
+
+    private void chainUpdateLoan(Customer customerData, BookUpdateDto bookData, Loan loanData) {
+        customerServiceImp.updateWithEntity(customerData);
+        bookService.update(bookData);
+        loanRepository.save(loanData);
+    }
+
+    private Loan mapInsert(LoanInsertDto newData) {
+        Loan newDataLoan;
+        if (newData.getDenda() == null) {
+            newDataLoan = new Loan(newData.getId(), newData.getCustomerNumber(), newData.getBookCode(), LocalDate.now(), LocalDate.now().plusDays(5), null, newData.getNote(), 0, null);
+            logService.saveLogs(LOAN, SUCCESS, INSERT);
+        } else {
+            newDataLoan = new Loan(newData.getId(), newData.getCustomerNumber(), newData.getBookCode(), LocalDate.now(), LocalDate.now().plusDays(5), null, newData.getNote(), 0, newData.getDenda());
+            logService.saveLogs(LOAN, SUCCESS, INSERT);
+        }
+        return newDataLoan;
+    }
+
+
+    private Customer updateCustomerProperty(String membershipNumber) {
+        Customer updatedCustomer = customerServiceImp.getCustomerByEntity(membershipNumber);
+
+        updatedCustomer.setLoanCount(customerServiceImp.loanCountSetter(membershipNumber, "loan"));
+        return updatedCustomer;
+    }
+
+    private BookUpdateDto updateBookProperty(String bookCode) {
+
+        BookUpdateDto updatedBook = bookService.getBooksById(bookCode);
+
+        if (updatedBook.getQuantity() > updatedBook.getInBorrow()) {
+            updatedBook.setInBorrow(updatedBook.getInBorrow() + 1);
+        }
+
+        if (updatedBook.getQuantity() == updatedBook.getInBorrow()) {
+            updatedBook.setIsBorrowed(true);
+        }
+
+        return updatedBook;
     }
 
 }

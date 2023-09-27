@@ -3,6 +3,7 @@ package com.example.AppWinterhold.Dao;
 import com.example.AppWinterhold.Dto.Loan.LoanIndexDto;
 import com.example.AppWinterhold.Entity.Loan;
 import liquibase.pro.packaged.P;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -33,7 +34,7 @@ public interface LoanRepository extends JpaRepository<Loan, Long> {
                 AND CONCAT(c.firstName,' ',c.lastName) LIKE %:name% 
                 AND l.returnDate IS NULL    
             """)
-    List<LoanIndexDto> getListLoanBySearch(String title, String name, Pageable paging);
+    Page<LoanIndexDto> getListLoanBySearch(String title, String name, Pageable paging);
 
 
     @Query("""

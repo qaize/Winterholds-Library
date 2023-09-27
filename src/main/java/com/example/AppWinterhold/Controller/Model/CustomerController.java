@@ -104,22 +104,12 @@ public class CustomerController {
 
     @GetMapping("/delete")
     public String delete(@RequestParam(required = true) String number) {
-
-        Boolean result = customerService.delete(number);
-        if (!result) {
-            return "Customer/delete";
-        }
-        return "redirect:/customer/index";
+        return customerService.delete(number) ? "redirect:/customer/index" : "Customer/delete";
     }
 
     @GetMapping("/extend")
     public String extend(@RequestParam(required = true) String number) {
-
-        var data = customerService.getCustomerByMemberInsert(number);
-        data.setMembershipExpireDate(data.getMembershipExpireDate().plusYears(2));
-        customerService.update(data);
-
-        return "redirect:/customer/index";
+        return customerService.doExtendMember(number) ? "redirect:/customer/index" : "redirect:/customer/index";
     }
 
     @GetMapping("/detail")
@@ -149,43 +139,33 @@ public class CustomerController {
     @GetMapping("/ban")
     public String ban(Model model, @RequestParam String customerNumber) {
 
-        if (customerService.doBanCustomer(customerNumber)) {
+        model.addAttribute("validationHeader", "Sorry you can't ban customer during loan");
+        model.addAttribute("validationReason", "Please, complete the loan session first!");
+        model.addAttribute("flag", 1);
 
-            return "redirect:/customer/index";
-        } else {
-
-            int flag = 1;
-            model.addAttribute("validationHeader", "Sorry you can't ban customer during loan");
-            model.addAttribute("validationReason", "Please, complete the loan session first!");
-            model.addAttribute("flag", flag);
-            return "Customer/valid";
-        }
+        return customerService.doBanCustomer(customerNumber) ? "redirect:/customer/index" : "Customer/valid";
     }
 
     @GetMapping("/unban")
     public String unban(Model model, @RequestParam String customerNumber) {
-            int flag = 1;
-            customerService.doUnbanCustomer(customerNumber);
+        int flag = 1;
+        customerService.doUnbanCustomer(customerNumber);
 
-            model.addAttribute("validationHeader", "Success unban : "+customerNumber );
-            model.addAttribute("validationReason", "Please, be kind!");
-            model.addAttribute("flag", flag);
+        model.addAttribute("validationHeader", "Success unban : " + customerNumber);
+        model.addAttribute("validationReason", "Please, be kind!");
+        model.addAttribute("flag", flag);
 
-            return "Customer/valid";
+        return "Customer/valid";
     }
 
     @GetMapping("/banned-customer")
     public String bannedlist(Model model, @RequestParam(defaultValue = "1") Integer page) {
 
-        List<Customer> customers = customerService.getBannedCustomerlist(page);
-        Long totalPage = customerService.getCountBannedList();
-        if (totalPage == 0) {
-            page = 0;
-        }
+        DataDTO<List<Customer>> data = customerService.getBannedCustomerlist(page);
 
-        model.addAttribute("totalPage", totalPage);
+        model.addAttribute("totalPage", data.getTotalPage());
         model.addAttribute("currentPage", page);
-        model.addAttribute("bannedList", customers);
+        model.addAttribute("bannedList", data.getData());
 
         return "Customer/bannedList";
     }

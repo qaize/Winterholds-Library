@@ -12,7 +12,6 @@ import java.util.List;
 public interface CustomerService {
     DataDTO<List<CustomerIndexDto>> getListCustomerBySearch(Integer page, String number, String name);
 
-    Long getCountBannedList();
     Boolean delete(String number);
     List<CustomerIndexDto> getAll();
     String customerNumberGenerator();
@@ -23,12 +22,12 @@ public interface CustomerService {
     boolean doBanCustomer(String customerNumber);
     List<CustomerIndexDto> getAvaliableCustomer();
     Long getCountPage(String number, String name);
-    List<Customer> getBannedCustomerlist(Integer page);
+    DataDTO<List<Customer>> getBannedCustomerlist(Integer page);
     Customer getCustomerByEntity(String customerNumber);
     CustomerIndexDto getCustomerByMember(String customerNumber);
     CustomerUpdateDto getCustomerByMemberInsert(String number);
     Integer loanCountSetter(String customer, String action);
     List<CustomerIndexDto> getAvaliableCustomerEdit(String customerNumber);
-
     void doUnbanCustomer(String customerNumber);
+    Boolean doExtendMember(String number);
 }

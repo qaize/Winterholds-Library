@@ -87,7 +87,7 @@ public class LoanController {
 
         model.addAttribute("name", name);
         model.addAttribute("flag", index.getFlag());
-        model.addAttribute("empty",INDEX_EMPTY);
+        model.addAttribute("empty",index.getMessage());
         model.addAttribute("title", title);
         model.addAttribute("currentPage", page);
         model.addAttribute("listLoan", index.getData());
