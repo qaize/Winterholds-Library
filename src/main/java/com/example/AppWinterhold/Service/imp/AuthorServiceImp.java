@@ -26,6 +26,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityManager;
 import javax.persistence.Tuple;
 import java.math.BigInteger;
 import java.time.LocalDate;
@@ -73,12 +74,14 @@ public class AuthorServiceImp implements AuthorService {
                 message = INDEX_EMPTY;
             }
 
+            LOGGER.info(SUCCESS_GET_DATA,AUTHOR);
             return DataDTO.<List<AuthorIndexDto>>builder()
                     .flag(flag)
                     .totalPage(Long.valueOf(authorData.getTotalPages()))
                     .message(message)
                     .data(authorData.getContent())
                     .build();
+
         } catch (Exception e) {
             LOGGER.error(e.getMessage());
             return DataDTO.<List<AuthorIndexDto>>builder()

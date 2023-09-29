@@ -49,10 +49,6 @@ public class CategoryServiceImp implements CategoryService {
                 message = INDEX_EMPTY;
                 flag = 1;
             }
-//            long totalPage = data.getTotalPage();
-//            if (totalPage == 0) {
-//                page = 0;
-//            }
             
             return DataDTO.<List<CategoryIndexDto>>builder()
                     .message(message)
