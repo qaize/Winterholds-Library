@@ -4,6 +4,7 @@ import com.example.AppWinterhold.Entity.Account;
 import com.example.AppWinterhold.Service.abs.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
 import javax.servlet.ServletException;
@@ -23,11 +24,18 @@ public class CustomAuthencticationSuccessHandler implements AuthenticationSucces
                                         Authentication authentication) throws IOException, ServletException {
 
         var username = request.getParameter("username");
-        Optional<Account> data = accountService.getAccount(username);
-        data.get().setCountWrong(0);
-        accountService.setCountWrong(data.get());
-
+        var role = request.getParameter("role");
         String link = "/home/index";
+        Account currentLogin = accountService.getAccount(username)
+                .orElseThrow(() -> new UsernameNotFoundException("Username : " + username + " not found"));
+
+        if (!currentLogin.getRole().equals(role)) {
+            link = "/login/loginForm?error=".concat("username not found");
+        } else {
+            currentLogin.setCountWrong(0);
+            accountService.setCountWrong(currentLogin);
+        }
+
         response.sendRedirect(request.getContextPath() + link);
     }
 }

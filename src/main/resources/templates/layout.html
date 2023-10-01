@@ -63,7 +63,7 @@
 <!--</html>-->
 
 <!doctype html>
-<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head th:fragment="headLayout">
     <meta charset="UTF-8">
     <meta name="viewport"
@@ -97,12 +97,12 @@
         <span>Book</span>
     </a>
 
-    <a class="menu customer" th:href="@{/customer/index}">
+    <a sec:authorize="hasRole('administrator')" class="menu customer" th:href="@{/customer/index}">
         <i class="fas fa-users"></i>
         <span>Customer</span>
     </a>
 
-    <div class="dropdown">
+    <div sec:authorize="hasRole('administrator')" class="dropdown">
         <i class="fas fa-book-reader"></i>
         <span>Loan</span>
         <div class="dropdown-content">

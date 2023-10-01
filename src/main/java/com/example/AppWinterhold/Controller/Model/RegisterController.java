@@ -2,6 +2,7 @@ package com.example.AppWinterhold.Controller.Model;
 
 import com.example.AppWinterhold.Dto.Account.AccountInsertDto;
 import com.example.AppWinterhold.Service.abs.AccountService;
+import com.example.AppWinterhold.Utility.Dropdown;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -24,6 +25,7 @@ public class RegisterController extends BaseController {
 
         AccountInsertDto Accountdto = new AccountInsertDto();
         model.addAttribute("dto", Accountdto);
+        model.addAttribute("roleList", Dropdown.dropdownRole());
 
         return "Register/registerForm";
     }
@@ -34,7 +36,7 @@ public class RegisterController extends BaseController {
         if (bindingResult.hasErrors()) {
 
             model.addAttribute("dto", dto);
-
+            model.addAttribute("roleList", Dropdown.dropdownRole());
             return "Register/registerForm";
         } else {
 

@@ -22,6 +22,13 @@
                     <div class="field-validation-error" th:errors="*{username}"></div>
                 </div>
                 <div style="text-align : left">
+                    <select th:field="*{role}">
+                        <option th:value="null">-Role-</option>
+                        <option th:each="data : ${roleList}" th:value="${data.val}" th:text="${data.text}"/>
+                    </select>
+                    <div class="field-validation-error" th:errors="*{role}"></div>
+                </div>
+                <div style="text-align : left">
                     <input type="password" th:field="*{password}" placeholder="Password">
                     <div class="field-validation-error" th:errors="*{password}"></div>
                     <div class="field-validation-error" th:errors="${dto}"></div>

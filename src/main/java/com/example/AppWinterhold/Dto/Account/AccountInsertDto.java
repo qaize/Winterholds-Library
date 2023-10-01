@@ -32,6 +32,12 @@ public class AccountInsertDto {
     @Size(max = 200,message = "Max 200 char")
     private String conpassword;
 
+    @Size(max = 200,message = "Max 200 char")
+    private String email;
+
+
+    private String role;
+
     public AccountInsertDto(String username, String password) {
         this.username = username;
         this.password = password;

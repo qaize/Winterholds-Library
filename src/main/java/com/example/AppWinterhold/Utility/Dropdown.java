@@ -57,5 +57,12 @@ public class Dropdown {
         return data;
     }
 
+    public static List<DropdownDto> dropdownRole() {
+        List<DropdownDto> data = new ArrayList<>();
+        data.add(new DropdownDto("administrator", "Administrator"));
+        data.add(new DropdownDto("customer", "Customer"));
+        return data;
+    }
+
 
 }

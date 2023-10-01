@@ -1,11 +1,16 @@
 package com.example.AppWinterhold.Service.imp;
 
 import com.example.AppWinterhold.Dao.AccountRepository;
+import com.example.AppWinterhold.Dao.CustomerRepository;
 import com.example.AppWinterhold.Dto.Account.AccountIndexDto;
 import com.example.AppWinterhold.Dto.Account.AccountInsertDto;
 import com.example.AppWinterhold.Dto.Account.AccountUpdateDto;
+import com.example.AppWinterhold.Dto.Customer.CustomerInsertDto;
 import com.example.AppWinterhold.Entity.Account;
+import com.example.AppWinterhold.Entity.Customer;
 import com.example.AppWinterhold.Service.abs.AccountService;
+import com.example.AppWinterhold.Service.abs.CustomerService;
+import com.example.AppWinterhold.Service.abs.LogService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +19,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,19 +29,48 @@ public class AccountServiceImp implements AccountService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AccountServiceImp.class);
 
-    @Autowired
-    private AccountRepository accountRepository;
+    private final AccountRepository accountRepository;
+
+    private final CustomerRepository customerRepository;
+
+
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    private PasswordEncoder passwordEncoder;
+    public AccountServiceImp ( AccountRepository accountRepository,CustomerRepository customerRepository,PasswordEncoder passwordEncoder ){
+        this.accountRepository = accountRepository;
+        this.customerRepository = customerRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     @Override
     public void insert(AccountInsertDto dto) {
 
+        if (dto.getRole().equals("customer")){
+            CustomerInsertDto newDataCustomer = new CustomerInsertDto(dto.getUsername(), dto.getName(), LocalDate.now().plusYears(2));
+            customerRepository.save(mapInsertCustomer(newDataCustomer));
+        }
+
         String hash = passwordEncoder.encode(dto.getPassword());
-        Account en = new Account(dto.getUsername(), hash, false, 0, dto.getName());
+        Account en = new Account(dto.getUsername(), hash, false, 0, dto.getName(),dto.getRole());
 
         accountRepository.save(en);
+    }
+
+    private Customer mapInsertCustomer(CustomerInsertDto dto) {
+
+        LocalDateTime createDate = LocalDateTime.now();
+
+        return new Customer(
+                dto.getMembershipNumber(),
+                dto.getFirstName(),
+                "",
+                null,
+                null,
+                null,
+                null,
+                dto.getMembershipExpireDate(),
+                createDate, 0, 0, 0);
     }
 
     @Override
@@ -71,7 +107,7 @@ public class AccountServiceImp implements AccountService {
     public void update(AccountUpdateDto dto) {
 
         String hash = passwordEncoder.encode(dto.getPassword());
-        Account en = new Account(dto.getUsername(), hash, false, 0, "sementara");
+        Account en = new Account(dto.getUsername(), hash, false, 0, "sementara","admin");
         accountRepository.save(en);
     }
 

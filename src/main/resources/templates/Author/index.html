@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml" lang="en">
 <head th:replace="~{layout::headLayout}"><!-- layout itu dari layout.html,
                             headLayout dari nama fragment yang ada di layout.html  -->
 <body class="main-body">
@@ -13,7 +13,7 @@
             <button class=" btn blue-button" type="submit">Search</button>
         </form>
 
-        <a class="btn create-button" th:href="@{/author/insert}"> Add Author </a>
+        <a sec:authorize="hasRole('administrator')" class="btn create-button" th:href="@{/author/insert}"> Add Author </a>
 
         <div class="divTable">
             <h1 th:style="${flag == 1 ? 'display : inline-block' : 'display : none'}" th:text="${message}"></h1>
@@ -34,8 +34,8 @@
                     <td class="action">
                         <div class="button-wrapper">
                             <a class="btn blue-button" th:href="@{/author/detail(id=*{id})}">Books</a>
-                            <a class="btn update-button" th:href="@{/author/update(id=*{id})}">Edit</a>
-                            <a class="btn warning-button" th:href="@{/author/delete(id=*{id})}">Delete</a>
+                            <a sec:authorize="hasRole('administrator')" class="btn update-button" th:href="@{/author/update(id=*{id})}">Edit</a>
+                            <a sec:authorize="hasRole('administrator')" class="btn warning-button" th:href="@{/author/delete(id=*{id})}">Delete</a>
                         </div>
                     </td>
                     <td th:text="*{fullname}"></td>

@@ -79,8 +79,9 @@ public class CustomerServiceImp implements CustomerService {
 
     @Override
     public void insert(CustomerInsertDto dto) {
+
         try {
-            Customer newCustomer = mapInsert(dto);
+            Customer newCustomer = mapInsertAdmin(dto);
             customerRepository.save(newCustomer);
             LOGGER.info(SUCCESS_INSERT_DATA, newCustomer.getMembershipNumber());
             logService.saveLogs(CUSTOMER, SUCCESS, INSERT);
@@ -281,11 +282,10 @@ public class CustomerServiceImp implements CustomerService {
     }
 
 
-
-    private Customer mapInsert(CustomerInsertDto dto) {
+    private Customer mapInsertAdmin(CustomerInsertDto dto) {
 
         String generatedMember = customerNumberGenerator();
-        LocalDateTime date = LocalDateTime.now();
+        LocalDateTime createDate = LocalDateTime.now();
         Customer customer = new Customer(
                 generatedMember,
                 dto.getFirstName(),
@@ -295,10 +295,11 @@ public class CustomerServiceImp implements CustomerService {
                 dto.getPhone(),
                 dto.getAddress(),
                 dto.getMembershipExpireDate(),
-                date, 0, 0, 0);
+                createDate, 0, 0, 0);
 
         return customer;
     }
+
 
     private Customer mapUpdate(CustomerUpdateDto dto) {
         Optional<Customer> dataCus = customerRepository.findById(dto.getMembershipNumber());

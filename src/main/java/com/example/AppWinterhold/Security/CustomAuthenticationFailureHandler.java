@@ -27,6 +27,7 @@ public class CustomAuthenticationFailureHandler implements AuthenticationFailure
 
         var username = request.getParameter("username");
         var password = request.getParameter("password");
+        var role = request.getParameter("role");
 
         if ((username == null || username.isBlank())) {
 
@@ -40,10 +41,18 @@ public class CustomAuthenticationFailureHandler implements AuthenticationFailure
 
 
         }
+        else if((role == null || role.isBlank())){
+
+            message = "role required";
+            response.sendRedirect(request.getContextPath() + link + "?role=" + message);
+
+        }
         else{
             Optional<Account> data = accountService.getAccount(username);
 
             if (data.isPresent()) {
+
+
                 Integer count = data.get().getCountWrong() + 1;
                 data.get().setCountWrong(count);
                 if (data.get().getCountWrong() >= 3) {

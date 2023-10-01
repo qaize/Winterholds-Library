@@ -29,4 +29,7 @@ public class Account {
     @Column(name="name")
     private String userLogin;
 
+    @Column(name = "role")
+    private String role;
+
 }
