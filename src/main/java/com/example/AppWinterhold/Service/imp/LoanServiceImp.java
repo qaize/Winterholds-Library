@@ -2,15 +2,15 @@ package com.example.AppWinterhold.Service.imp;
 
 import com.example.AppWinterhold.Dao.CustomerRepository;
 import com.example.AppWinterhold.Dao.LoanRepository;
+import com.example.AppWinterhold.Dao.LoanRequestRepository;
 import com.example.AppWinterhold.Dao.LogsIncomeRepository;
 import com.example.AppWinterhold.Dto.Book.BookUpdateDto;
-import com.example.AppWinterhold.Dto.Loan.LoanIndexDto;
-import com.example.AppWinterhold.Dto.Loan.LoanInsertDto;
-import com.example.AppWinterhold.Dto.Loan.LoanUpdateDto;
+import com.example.AppWinterhold.Dto.Loan.*;
 import com.example.AppWinterhold.Dto.Models.DataDTO;
 import com.example.AppWinterhold.Entity.Customer;
 import com.example.AppWinterhold.Entity.Loan;
 import com.example.AppWinterhold.Entity.LogsIncome;
+import com.example.AppWinterhold.Entity.RequestLoan;
 import com.example.AppWinterhold.Service.abs.LoanService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,6 +26,7 @@ import org.springframework.stereotype.Service;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,22 +39,25 @@ import static com.example.AppWinterhold.Const.actionConst.*;
 public class LoanServiceImp implements LoanService {
     private static final Logger LOGGER = LoggerFactory.getLogger(LoanServiceImp.class);
 
-    @Autowired
     private LoanRepository loanRepository;
-
-    @Autowired
     private LogsIncomeRepository logsIncomeRepository;
-
-    @Autowired
     private LogServiceImpl logService;
-
-    @Autowired
     private CustomerServiceImp customerServiceImp;
-    @Autowired
     private CustomerRepository customerRepository;
+    private BookServiceImp bookService;
+    private LoanRequestRepository loanRequestRepository;
 
     @Autowired
-    private BookServiceImp bookService;
+    public LoanServiceImp(LoanRepository loanRepository, LogsIncomeRepository logsIncomeRepository, LogServiceImpl logService, CustomerServiceImp customerServiceImp,
+                          CustomerRepository customerRepository, BookServiceImp bookService, LoanRequestRepository loanRequestRepository) {
+        this.loanRepository = loanRepository;
+        this.logsIncomeRepository = logsIncomeRepository;
+        this.logService = logService;
+        this.customerServiceImp = customerServiceImp;
+        this.customerRepository = customerRepository;
+        this.bookService = bookService;
+        this.loanRequestRepository = loanRequestRepository;
+    }
 
 
     @Override
@@ -113,7 +117,53 @@ public class LoanServiceImp implements LoanService {
             return true;
         }
 
+
         return false;
+    }
+
+    @Override
+    public boolean newLoanRequest(RequestLoanDTO requestNew) {
+        try {
+            RequestLoan requestNewLoan = new RequestLoan(
+                    requestNew.getMembershipNumber(),
+                    requestNew.getBookCode(),
+                    LocalDateTime.now(), false);
+            loanRequestRepository.save(requestNewLoan);
+            return true;
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage());
+            return false;
+        }
+    }
+
+    @Override
+    public DataDTO<List<RequestLoanIndexDTO>> getRequestLoanByCurrentLogin(String currentLogin, Integer page) {
+            int flag = 0;
+            String message = "";
+        try {
+
+            Pageable pages = PageRequest.of(page-1,5,Sort.by("requestDate").descending());
+            Page<RequestLoanIndexDTO> fetchedData = loanRequestRepository.findRequestLoanById(currentLogin,pages);
+
+            if(fetchedData.getContent().isEmpty()){
+                flag = 1;
+                message = INDEX_EMPTY;
+            }
+
+            return DataDTO.<List<RequestLoanIndexDTO>>builder()
+                    .totalPage((long) fetchedData.getTotalPages())
+                    .flag(flag)
+                    .message(message)
+                    .data(fetchedData.getContent())
+                    .build();
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage());
+            return DataDTO.<List<RequestLoanIndexDTO>>builder()
+                    .message(e.getMessage())
+                    .data(new ArrayList<>())
+                    .totalPage(0L)
+                    .build();
+        }
     }
 
     @Override
@@ -213,12 +263,12 @@ public class LoanServiceImp implements LoanService {
             logsIncomeRepository.save(log);
             logService.saveLogs(LOAN, SUCCESS, PAY);
         } else {
-            LogsIncome incomingPaymentLogs = new LogsIncome(UUID.randomUUID().toString(), "PELUNASAN DENDA ID :" + loanDataToUpdate.getId() + "/" + loanDataToUpdate.getCustomerNumber(), currentLogin, loanDataToUpdate.getDenda().doubleValue(), addNewPayment(previousLogs.getTotal(),loanDataToUpdate.getDenda()), date);
+            LogsIncome incomingPaymentLogs = new LogsIncome(UUID.randomUUID().toString(), "PELUNASAN DENDA ID :" + loanDataToUpdate.getId() + "/" + loanDataToUpdate.getCustomerNumber(), currentLogin, loanDataToUpdate.getDenda().doubleValue(), addNewPayment(previousLogs.getTotal(), loanDataToUpdate.getDenda()), date);
             loanDataToUpdate.setDenda(0L);
             updateCustomer.setLoanCount(customerServiceImp.loanCountSetter(updateCustomer.getMembershipNumber(), "Return"));
 
             // Update Customer and loan status then save it into log income table
-            chainUpdateLogsIncome(incomingPaymentLogs,updateCustomer,loanDataToUpdate);
+            chainUpdateLogsIncome(incomingPaymentLogs, updateCustomer, loanDataToUpdate);
         }
     }
 
@@ -344,11 +394,11 @@ public class LoanServiceImp implements LoanService {
     }
 
 
-    private Double addNewPayment(Double total, Long denda){
+    private Double addNewPayment(Double total, Long denda) {
         return total + denda;
     }
 
-    private void chainUpdateLogsIncome(LogsIncome newLog, Customer updateCustomer, Loan updateLoan ){
+    private void chainUpdateLogsIncome(LogsIncome newLog, Customer updateCustomer, Loan updateLoan) {
         logsIncomeRepository.save(newLog);
         logService.saveLogs(LOAN, SUCCESS, PAY);
         customerRepository.save(updateCustomer);

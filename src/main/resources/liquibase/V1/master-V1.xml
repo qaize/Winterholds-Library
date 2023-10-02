@@ -187,4 +187,28 @@
         <comment>ALTER TABLE CUSTOMER NULLABLE</comment>
     </changeSet>
 
+    <changeSet id="DDL01-111-20231002-0001"
+               author="iwan">
+        <sqlFile dbms="mssql" relativeToChangelogFile="false"
+                 splitStatements="true" stripComments="true"
+                 path="liquibase/V1/sql/create_table_request_20231002.sql"/>
+        <comment>CREATE TABLE REQUEST</comment>
+    </changeSet>
+
+    <changeSet id="DDL01-222-20231002-0002"
+               author="iwan">
+        <sqlFile dbms="mssql" relativeToChangelogFile="false"
+                 splitStatements="true" stripComments="true"
+                 path="liquibase/V1/sql/alter_table_request_20231002.sql"/>
+        <comment>ALTER TABLE CUSTOMER ADD COLUMN STATUS</comment>
+    </changeSet>
+
+    <changeSet id="DDL01-222-20231002-0003"
+               author="iwan">
+        <sqlFile dbms="mssql" relativeToChangelogFile="false"
+                 splitStatements="true" stripComments="true"
+                 path="liquibase/V1/sql/alter_table_request_20231002_2.sql"/>
+        <comment>ALTER TABLE REQUEST ADD PK</comment>
+    </changeSet>
+
 </databaseChangeLog>

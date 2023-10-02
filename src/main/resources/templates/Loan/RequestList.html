@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head th:replace="~{layout::headLayout}">
+<body class="main-body">
+<nav th:replace="~{layout::navLayout}"></nav>
+<header th:replace="~{layout::header('Request List Loan')}"></header>
+<main>
+    <div class="grid-container">
+        <form method="get" class="filter" th:attr="action=@{/loan/index}">
+
+            <input type="text" name="title" placeholder="title" th:attr="value=${title}">
+
+            <input type="text" name="name" placeholder="name" th:attr="value=${name}">
+
+            <button class="btn blue-button" type="submit">Search</button>
+        </form>
+        <div class="filter">
+            <a class="btn blue-button" th:href="@{/loan/insert}"> Add New Loan </a>
+        </div>
+
+        <div class="divTable">
+            <h1 th:style="${flag == 1 ? 'display : inline-block' : 'display : none'}" th:text="${empty}"></h1>
+            <table th:style="${flag == 0 ? 'display : table' : 'display : none'}">
+                <thead>
+                <tr>
+                    <th></th>
+                    <th>Customer Name</th>
+                    <th>Book Title</th>
+                    <th>Request Date</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="data : ${list}" th:object="${data}">
+                    <td th:text="*{fullName}"></td>
+                    <td th:text="*{bookTitle}"></td>
+                    <td th:text="*{requestDate}"></td>
+                    <td th:text="*{Status}"></td>
+                    <td class="action">
+                        <div class="button-wrapper">
+                            <a class="btn update-button" th:href="@{/loan/detail(id=*{id})}">Accept</a>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+                <tfoot>
+                <tr>
+                    <td colspan="6">
+                        <div class="pagination">
+                            <div th:attr="data-currentPage=${currentPage}"
+                                 th:text="|page ${currentPage} of ${totalPage}|">
+                            </div>
+                            <div>
+                                <a th:if="${totalPage !=0}"
+                                   th:each="loop:${#numbers.sequence(1, totalPage)}"
+                                   th:href="@{/loan/index(page=${loop}, title=${title}, name=${name})}"
+                                   th:text="${loop}"></a>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                </tfoot>
+            </table>
+
+        </div>
+
+    </div>
+</main>
+
+</body>
+</html>

@@ -1,12 +1,11 @@
 package com.example.AppWinterhold.Controller.Model;
 
 import com.example.AppWinterhold.Dao.LoanRepository;
-import com.example.AppWinterhold.Dto.Loan.LoanIndexDto;
-import com.example.AppWinterhold.Dto.Loan.LoanInsertDto;
-import com.example.AppWinterhold.Dto.Loan.LoanUpdateDto;
+import com.example.AppWinterhold.Dto.Loan.*;
 import com.example.AppWinterhold.Dto.Models.DataDTO;
 import com.example.AppWinterhold.Entity.Loan;
 import com.example.AppWinterhold.Entity.LogsIncome;
+import com.example.AppWinterhold.Entity.RequestLoan;
 import com.example.AppWinterhold.Service.abs.BookService;
 import com.example.AppWinterhold.Service.abs.CategoryService;
 import com.example.AppWinterhold.Service.abs.CustomerService;
@@ -294,6 +293,37 @@ public class LoanController {
         model.addAttribute("logs", logs);
 
         return "loan/paymentHistory";
+    }
+
+
+    @GetMapping("/request-loan")
+    public String requestLoan(
+            Model model,
+            @RequestParam String bookCode
+    ){
+        BaseController baseController = new BaseController();
+        String currentLogin = baseController.getCurrentLogin();
+        RequestLoanDTO requestNew = new RequestLoanDTO(currentLogin,bookCode);
+
+        model.addAttribute("validationHeader","Unable To Reqeust");
+        model.addAttribute("validationReason","You already loan this books or reached maximum loan");
+        return loanService.newLoanRequest(requestNew) ? "redirect:/loan/request-loan-list" : "Loan/valid";
+    }
+
+
+    @GetMapping("/request-loan-list")
+    public String requestLoanList(Model model,@RequestParam(defaultValue = "1") Integer page ){
+        BaseController baseController = new BaseController();
+        String currentLogin = baseController.getCurrentLogin();
+
+        DataDTO<List<RequestLoanIndexDTO>> data = loanService.getRequestLoanByCurrentLogin(currentLogin,page);
+
+        model.addAttribute("flag",data.getFlag());
+        model.addAttribute("page",page);
+        model.addAttribute("totalPage",data.getTotalPage());
+        model.addAttribute("message",data.getMessage());
+        model.addAttribute("list",data.getData());
+        return "Loan/RequestList";
     }
 
 }

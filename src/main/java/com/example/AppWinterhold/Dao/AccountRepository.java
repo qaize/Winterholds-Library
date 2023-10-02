@@ -4,11 +4,13 @@ import com.example.AppWinterhold.Dto.Account.AccountIndexDto;
 import com.example.AppWinterhold.Entity.Account;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Transactional
+@Repository
 public interface AccountRepository extends JpaRepository<Account, String> {
 
     @Query("""

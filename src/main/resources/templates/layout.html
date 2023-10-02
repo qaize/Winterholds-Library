@@ -102,6 +102,11 @@
         <span>Customer</span>
     </a>
 
+    <a sec:authorize="hasRole('customer')" class="menu customer" th:href="@{/loan/request-loan-list}">
+        <i class="fas fa-users"></i>
+        <span>Request List</span>
+    </a>
+
     <div sec:authorize="hasRole('administrator')" class="dropdown">
         <i class="fas fa-book-reader"></i>
         <span>Loan</span>

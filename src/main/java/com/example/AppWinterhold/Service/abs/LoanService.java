@@ -1,11 +1,10 @@
 package com.example.AppWinterhold.Service.abs;
 
-import com.example.AppWinterhold.Dto.Loan.LoanIndexDto;
-import com.example.AppWinterhold.Dto.Loan.LoanInsertDto;
-import com.example.AppWinterhold.Dto.Loan.LoanUpdateDto;
+import com.example.AppWinterhold.Dto.Loan.*;
 import com.example.AppWinterhold.Dto.Models.DataDTO;
 import com.example.AppWinterhold.Entity.Loan;
 import com.example.AppWinterhold.Entity.LogsIncome;
+import com.example.AppWinterhold.Entity.RequestLoan;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -29,4 +28,7 @@ public interface LoanService {
     List<LoanIndexDto> getListLoanHistoryBySearch(Integer page);
     DataDTO<List<LoanIndexDto>> getListLoanBySearch(Integer page, String title, String name);
     boolean returnBook(Long id);
+
+    boolean newLoanRequest(RequestLoanDTO requestNew);
+    DataDTO<List<RequestLoanIndexDTO>> getRequestLoanByCurrentLogin(String currentLogin, Integer page);
 }

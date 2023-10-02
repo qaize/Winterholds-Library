@@ -23,7 +23,7 @@
             <table>
                 <thead>
                 <tr>
-                    <th sec:authorize="hasRole('administrator')">Action</th>
+                    <th>Action</th>
                     <th>Book Title</th>
                     <th>Author Name</th>
                     <th>Status</th>
@@ -34,10 +34,11 @@
                 </thead>
                 <tbody>
                 <tr th:each="data : ${listBooks}" th:object="${data}">
-                    <td sec:authorize="hasRole('administrator')">
+                    <td>
                         <div  class="button-wrapper">
-                            <a class="btn blue-button" th:href="@{/book/update(bookCode=*{code})}">Edit</a>
-                            <a  class="btn warning-button" th:href="@{/book/delete(bookCode=*{code})}">Delete</a>
+                            <a sec:authorize="hasRole('customer')" class="btn blue-button" th:href="@{/loan/request-loan(bookCode=*{code})}">Request</a>
+                            <a sec:authorize="hasRole('administrator')" class="btn blue-button" th:href="@{/book/update(bookCode=*{code})}">Edit</a>
+                            <a sec:authorize="hasRole('administrator')"  class="btn warning-button" th:href="@{/book/delete(bookCode=*{code})}">Delete</a>
                         </div>
                     </td>
                     <td th:text="*{title}"></td>
