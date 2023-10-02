@@ -10,10 +10,11 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;
+import java.math.BigInteger;
 
 @Transactional
 @Repository
-public interface LoanRequestRepository extends JpaRepository<RequestLoan,Long> {
+public interface LoanRequestRepository extends JpaRepository<RequestLoan, Long> {
 
 
     @Query("""

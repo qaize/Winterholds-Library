@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.math.BigInteger;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -17,7 +18,6 @@ import java.time.LocalDateTime;
 public class RequestLoan {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
 
@@ -32,6 +32,7 @@ public class RequestLoan {
 
     @Column(name = "status")
     private Boolean status;
+
 
     public RequestLoan(String membershipNumber, String bookCode, LocalDateTime requestDate, Boolean status) {
         this.membershipNumber = membershipNumber;

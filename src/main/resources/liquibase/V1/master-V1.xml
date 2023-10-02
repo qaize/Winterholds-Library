@@ -203,12 +203,13 @@
         <comment>ALTER TABLE CUSTOMER ADD COLUMN STATUS</comment>
     </changeSet>
 
-    <changeSet id="DDL01-222-20231002-0003"
+    <changeSet id="DDL01-333-20231002-0003"
                author="iwan">
         <sqlFile dbms="mssql" relativeToChangelogFile="false"
                  splitStatements="true" stripComments="true"
-                 path="liquibase/V1/sql/alter_table_request_20231002_2.sql"/>
-        <comment>ALTER TABLE REQUEST ADD PK</comment>
+                 path="liquibase/V1/sql/drop_create_table_request_20231002_2.sql"/>
+        <comment>DROP TABLE REQUEST</comment>
     </changeSet>
+
 
 </databaseChangeLog>

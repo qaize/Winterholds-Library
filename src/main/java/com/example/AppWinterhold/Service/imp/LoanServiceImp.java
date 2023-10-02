@@ -30,6 +30,7 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import static com.example.AppWinterhold.Const.actionConst.*;
@@ -124,11 +125,21 @@ public class LoanServiceImp implements LoanService {
     @Override
     public boolean newLoanRequest(RequestLoanDTO requestNew) {
         try {
-            RequestLoan requestNewLoan = new RequestLoan(
-                    requestNew.getMembershipNumber(),
-                    requestNew.getBookCode(),
-                    LocalDateTime.now(), false);
-            loanRequestRepository.save(requestNewLoan);
+            List<RequestLoan> initalData = loanRequestRepository.findAll(Sort.by("id").descending());
+            RequestLoan requestNewLoan;
+            if (initalData.isEmpty()) {
+                requestNewLoan = new RequestLoan(1L,
+                        requestNew.getMembershipNumber(),
+                        requestNew.getBookCode(),
+                        LocalDateTime.now(), false);
+                loanRequestRepository.save(requestNewLoan);
+            }else {
+                 requestNewLoan = new RequestLoan(initalData.get(0).getId()+1L,
+                        requestNew.getMembershipNumber(),
+                        requestNew.getBookCode(),
+                        LocalDateTime.now(), false);
+                loanRequestRepository.save(requestNewLoan);
+            }
             return true;
         } catch (Exception e) {
             LOGGER.error(e.getMessage());
@@ -138,14 +149,14 @@ public class LoanServiceImp implements LoanService {
 
     @Override
     public DataDTO<List<RequestLoanIndexDTO>> getRequestLoanByCurrentLogin(String currentLogin, Integer page) {
-            int flag = 0;
-            String message = "";
+        int flag = 0;
+        String message = "";
         try {
 
-            Pageable pages = PageRequest.of(page-1,5,Sort.by("requestDate").descending());
-            Page<RequestLoanIndexDTO> fetchedData = loanRequestRepository.findRequestLoanById(currentLogin,pages);
+            Pageable pages = PageRequest.of(page - 1, 5, Sort.by("requestDate").descending());
+            Page<RequestLoanIndexDTO> fetchedData = loanRequestRepository.findRequestLoanById(currentLogin, pages);
 
-            if(fetchedData.getContent().isEmpty()){
+            if (fetchedData.getContent().isEmpty()) {
                 flag = 1;
                 message = INDEX_EMPTY;
             }

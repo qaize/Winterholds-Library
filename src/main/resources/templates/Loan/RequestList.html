@@ -23,7 +23,6 @@
             <table th:style="${flag == 0 ? 'display : table' : 'display : none'}">
                 <thead>
                 <tr>
-                    <th></th>
                     <th>Customer Name</th>
                     <th>Book Title</th>
                     <th>Request Date</th>
@@ -36,10 +35,10 @@
                     <td th:text="*{fullName}"></td>
                     <td th:text="*{bookTitle}"></td>
                     <td th:text="*{requestDate}"></td>
-                    <td th:text="*{Status}"></td>
+                    <td th:text="*{status}"></td>
                     <td class="action">
                         <div class="button-wrapper">
-                            <a class="btn update-button" th:href="@{/loan/detail(id=*{id})}">Accept</a>
+                            <a class="btn update-button">Accept</a>
                         </div>
                     </td>
                 </tr>
