@@ -48,11 +48,17 @@ public class Customer {
     @Column(name = "deleted")
     private Integer deleted;
 
+    @Column(name = "requestCount")
+    private Integer requestCount;
+
     @OneToMany
     @JoinColumn(name = "CustomerNumber")
     private List<Loan> loan;
 
-    public Customer(String membershipNumber, String firstName, String lastName, LocalDate birthDate, String gender, String phone, String address, LocalDate membershipExpireDate, LocalDateTime createdDate, Integer loanCount, Integer banned, Integer deleted) {
+    public Customer(String membershipNumber, String firstName, String lastName,
+                    LocalDate birthDate, String gender, String phone, String address,
+                    LocalDate membershipExpireDate, LocalDateTime createdDate, Integer loanCount,
+                    Integer banned, Integer deleted,Integer requestCount) {
         this.membershipNumber = membershipNumber;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -65,5 +71,6 @@ public class Customer {
         this.loanCount = loanCount;
         this.banned = banned;
         this.deleted = deleted;
+        this.requestCount = requestCount;
     }
 }

@@ -14,12 +14,14 @@ import java.time.LocalDateTime;
 @Setter
 public class RequestLoanIndexDTO {
 
+    private Long requestId;
     private String fullName;
     private String bookTitle;
     private LocalDateTime requestDate;
     private String status;
 
-    public RequestLoanIndexDTO(String fullName, String bookTitle,LocalDateTime requestDate, Boolean status) {
+    public RequestLoanIndexDTO(Long requestId, String fullName, String bookTitle,LocalDateTime requestDate, Boolean status) {
+        this.requestId = requestId;
         this.fullName = fullName;
         this.bookTitle = bookTitle;
         this.requestDate = requestDate;

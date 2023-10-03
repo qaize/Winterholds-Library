@@ -34,10 +34,19 @@ public class RequestLoan {
     private Boolean status;
 
 
-    public RequestLoan(String membershipNumber, String bookCode, LocalDateTime requestDate, Boolean status) {
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "membershipNumber",insertable = false,updatable = false)
+    private Customer customer;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "bookCode",insertable = false,updatable = false)
+    private Book book;
+
+
+    public RequestLoan(Long id,String membershipNumber, String bookCode, LocalDateTime requestDate, Boolean status) {
         this.membershipNumber = membershipNumber;
         this.bookCode = bookCode;
         this.requestDate = requestDate;
         this.status = status;
+        this.id = id;
     }
 }

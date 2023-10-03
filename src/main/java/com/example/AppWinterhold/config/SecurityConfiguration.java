@@ -22,18 +22,30 @@ public class SecurityConfiguration {
 
     @Bean
     public AuthenticationManager authenticationManager(
-            AuthenticationConfiguration authenticationConfiguration) throws  Exception
-    {
+            AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
 
     @Bean
     @Order(2)
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers("/resources/**","/login/**","/register/**","/home/**","/book/**","/category/**","/author/**").permitAll()
-                .antMatchers("/customer/**").hasRole("administrator")
-                .antMatchers("/loan/request-loan-list").hasRole("customer")
+                .antMatchers("/resources/**", "/login/**", "/register/**", "/home/**", "/book/**", "/category/**", "/author/**").permitAll()
+                .antMatchers(
+                        "/customer/**",
+                        "/loan/history",
+                        "/loan/insert",
+                        "/loan/return",
+                        "/loan/detail",
+                        "/loan/denda",
+                        "/loan/payment",
+                        "/loan/extend",
+                        "/loan/paymentHistory"
+                ).hasRole("administrator")
+                .antMatchers(
+                        "/loan/request-loan-list",
+                        "/loan/request-loan"
+                ).hasAnyRole("customer", "administrator")
                 .anyRequest().authenticated()
                 .and().formLogin()
                 .loginPage("/login/loginForm")
@@ -48,17 +60,17 @@ public class SecurityConfiguration {
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder(){
+    public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
     @Bean
-    public AuthenticationFailureHandler authenticationFailureHandler(){
+    public AuthenticationFailureHandler authenticationFailureHandler() {
         return new CustomAuthenticationFailureHandler();
     }
 
     @Bean
-    public AuthenticationSuccessHandler authenticationSuccessHandler(){
+    public AuthenticationSuccessHandler authenticationSuccessHandler() {
         return new CustomAuthencticationSuccessHandler();
     }
 

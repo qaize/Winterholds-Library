@@ -1,5 +1,6 @@
 package com.example.AppWinterhold.Controller.Model;
 
+import com.example.AppWinterhold.Dto.CurrentLoginDetailDTO;
 import com.example.AppWinterhold.Service.imp.AccountServiceImp;
 import com.example.AppWinterhold.Utility.JwtToken;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,15 @@ public class BaseController {
         var username = authentication.getName();
 
         return username;
+    }
+
+    public CurrentLoginDetailDTO getCurrentLoginDetail() {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        CurrentLoginDetailDTO data = new CurrentLoginDetailDTO(authentication.getName(),authentication.getAuthorities().toString());
+
+        return data;
     }
 
 }

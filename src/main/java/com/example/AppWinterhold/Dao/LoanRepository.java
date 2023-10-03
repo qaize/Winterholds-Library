@@ -157,4 +157,18 @@ public interface LoanRepository extends JpaRepository<Loan, Long> {
                 l.customerNumber = :member and l.returnDate is null
             """)
     List<Loan> validateCurrentUserOnLoan(String member);
+
+    @Query("""
+            SELECT 
+                new com.example.AppWinterhold.Dto.Loan.LoanIndexDto
+                (   l.id, CONCAT(c.firstName,' ',c.lastName),b.title,
+                    l.loanDate,l.dueDate,l.returnDate,l.note,l.denda    )
+            FROM 
+                Loan AS l
+                        LEFT JOIN l.book AS b
+                        LEFT JOIN l.customer AS c
+            WHERE 
+                l.returnDate is null AND l.customerNumber = :username
+              """)
+    Page<LoanIndexDto> getCustomerOnLoan(String username,Pageable pages);
 }

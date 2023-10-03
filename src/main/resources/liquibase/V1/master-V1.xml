@@ -179,6 +179,7 @@
                  path="liquibase/V1/sql/alter_table_account_20230929.sql"/>
         <comment>ALTER TABLE ACCOUNT ADD ROL</comment>
     </changeSet>
+
     <changeSet id="DDL01-222-20230930-0001"
                author="iwan">
         <sqlFile dbms="mssql" relativeToChangelogFile="false"
@@ -211,5 +212,12 @@
         <comment>DROP TABLE REQUEST</comment>
     </changeSet>
 
+    <changeSet id="DDL01-222-20231003-0001"
+               author="iwan">
+        <sqlFile dbms="mssql" relativeToChangelogFile="false"
+                 splitStatements="true" stripComments="true"
+                 path="liquibase/V1/sql/alter_table_customer_20231003.sql"/>
+        <comment>ALTER TABLE CUSTOMER ADD COLUMN REQUEST COUNT</comment>
+    </changeSet>
 
 </databaseChangeLog>

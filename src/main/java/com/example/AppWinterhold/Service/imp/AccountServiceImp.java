@@ -70,7 +70,7 @@ public class AccountServiceImp implements AccountService {
                 null,
                 null,
                 dto.getMembershipExpireDate(),
-                createDate, 0, 0, 0);
+                createDate, 0, 0, 0,0);
     }
 
     @Override

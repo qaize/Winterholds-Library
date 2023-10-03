@@ -295,7 +295,7 @@ public class CustomerServiceImp implements CustomerService {
                 dto.getPhone(),
                 dto.getAddress(),
                 dto.getMembershipExpireDate(),
-                createDate, 0, 0, 0);
+                createDate, 0, 0, 0,0);
 
         return customer;
     }

@@ -11,6 +11,9 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.Column;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -171,4 +174,22 @@ public interface CustomerRepository extends JpaRepository<Customer, String> {
             where MembershipNumber = :number
             """)
     void softDeleteCustomer(String number);
+
+    @Query("""
+            select 
+                count(c)
+            from 
+                Customer as c
+            where
+                c.membershipNumber = :membershipNumber AND
+                c.membershipExpireDate >  GETDATE() AND 
+                c.loanCount < 3 AND 
+                c.banned = 0 AND 
+                c.deleted = 0 AND
+                c.requestCount <= 3
+            """)
+    Long validateAvailableCustomerByMembershipNumber(String membershipNumber);
+
+
+
 }

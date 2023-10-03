@@ -1,5 +1,6 @@
 package com.example.AppWinterhold.Service.abs;
 
+import com.example.AppWinterhold.Dto.CurrentLoginDetailDTO;
 import com.example.AppWinterhold.Dto.Loan.*;
 import com.example.AppWinterhold.Dto.Models.DataDTO;
 import com.example.AppWinterhold.Entity.Loan;
@@ -29,6 +30,10 @@ public interface LoanService {
     DataDTO<List<LoanIndexDto>> getListLoanBySearch(Integer page, String title, String name);
     boolean returnBook(Long id);
 
-    boolean newLoanRequest(RequestLoanDTO requestNew);
-    DataDTO<List<RequestLoanIndexDTO>> getRequestLoanByCurrentLogin(String currentLogin, Integer page);
+    DataDTO<Boolean> newLoanRequest(RequestLoanDTO requestNew);
+    DataDTO<List<RequestLoanIndexDTO>> getRequestLoanByCurrentLogin(CurrentLoginDetailDTO currentLogin, Integer page);
+
+    DataDTO<Boolean> insertByRequestId(Long id);
+
+    DataDTO<List<LoanIndexDto>> getListLoanByMembershipNumber(String username);
 }

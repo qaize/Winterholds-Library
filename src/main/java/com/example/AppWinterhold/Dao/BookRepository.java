@@ -132,4 +132,13 @@ public interface BookRepository extends JpaRepository<Book, String> {
             """)
     BookUpdateDto getBooksBycodeUpdate(String bookCode);
 
+    @Query("""
+            select 
+                count(b)
+            from Book as b
+            where
+                b.code = :bookCode AND 
+                b.isBorrowed = 1
+            """)
+    Long validateAvailableBookByBookCode(String bookCode);
 }

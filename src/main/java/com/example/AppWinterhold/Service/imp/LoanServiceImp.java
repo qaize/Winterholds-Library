@@ -1,10 +1,8 @@
 package com.example.AppWinterhold.Service.imp;
 
-import com.example.AppWinterhold.Dao.CustomerRepository;
-import com.example.AppWinterhold.Dao.LoanRepository;
-import com.example.AppWinterhold.Dao.LoanRequestRepository;
-import com.example.AppWinterhold.Dao.LogsIncomeRepository;
+import com.example.AppWinterhold.Dao.*;
 import com.example.AppWinterhold.Dto.Book.BookUpdateDto;
+import com.example.AppWinterhold.Dto.CurrentLoginDetailDTO;
 import com.example.AppWinterhold.Dto.Loan.*;
 import com.example.AppWinterhold.Dto.Models.DataDTO;
 import com.example.AppWinterhold.Entity.Customer;
@@ -30,7 +28,6 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 import static com.example.AppWinterhold.Const.actionConst.*;
@@ -40,17 +37,19 @@ import static com.example.AppWinterhold.Const.actionConst.*;
 public class LoanServiceImp implements LoanService {
     private static final Logger LOGGER = LoggerFactory.getLogger(LoanServiceImp.class);
 
-    private LoanRepository loanRepository;
-    private LogsIncomeRepository logsIncomeRepository;
-    private LogServiceImpl logService;
-    private CustomerServiceImp customerServiceImp;
-    private CustomerRepository customerRepository;
-    private BookServiceImp bookService;
-    private LoanRequestRepository loanRequestRepository;
+    private final LoanRepository loanRepository;
+    private final LogsIncomeRepository logsIncomeRepository;
+    private final LogServiceImpl logService;
+    private final CustomerServiceImp customerServiceImp;
+    private final CustomerRepository customerRepository;
+    private final BookServiceImp bookService;
+    private final LoanRequestRepository loanRequestRepository;
+    private final BookRepository bookRepository;
 
     @Autowired
     public LoanServiceImp(LoanRepository loanRepository, LogsIncomeRepository logsIncomeRepository, LogServiceImpl logService, CustomerServiceImp customerServiceImp,
-                          CustomerRepository customerRepository, BookServiceImp bookService, LoanRequestRepository loanRequestRepository) {
+                          CustomerRepository customerRepository, BookServiceImp bookService, LoanRequestRepository loanRequestRepository,
+                          BookRepository bookRepository) {
         this.loanRepository = loanRepository;
         this.logsIncomeRepository = logsIncomeRepository;
         this.logService = logService;
@@ -58,12 +57,13 @@ public class LoanServiceImp implements LoanService {
         this.customerRepository = customerRepository;
         this.bookService = bookService;
         this.loanRequestRepository = loanRequestRepository;
+        this.bookRepository = bookRepository;
     }
 
 
     @Override
     public DataDTO<List<LoanIndexDto>> getListLoanBySearch(Integer page, String title, String name) {
-        Integer row = 5;
+        int row = 5;
         int flag = 0;
         String message = "";
         try {
@@ -123,38 +123,83 @@ public class LoanServiceImp implements LoanService {
     }
 
     @Override
-    public boolean newLoanRequest(RequestLoanDTO requestNew) {
+    public DataDTO<Boolean> newLoanRequest(RequestLoanDTO requestNew) {
+        String message = "";
+        int flag = 0;
         try {
-            List<RequestLoan> initalData = loanRequestRepository.findAll(Sort.by("id").descending());
-            RequestLoan requestNewLoan;
-            if (initalData.isEmpty()) {
-                requestNewLoan = new RequestLoan(1L,
-                        requestNew.getMembershipNumber(),
-                        requestNew.getBookCode(),
-                        LocalDateTime.now(), false);
-                loanRequestRepository.save(requestNewLoan);
-            }else {
-                 requestNewLoan = new RequestLoan(initalData.get(0).getId()+1L,
-                        requestNew.getMembershipNumber(),
-                        requestNew.getBookCode(),
-                        LocalDateTime.now(), false);
-                loanRequestRepository.save(requestNewLoan);
+            Boolean dataReturn = true;
+//            check books if available
+            if (bookRepository.validateAvailableBookByBookCode(requestNew.getBookCode()) == 1) {
+                dataReturn = false;
+                message = "Books is out of stock";
+                flag = 1;
             }
-            return true;
+//            Check Customer if not banned/expire/denda/
+            if (customerRepository.validateAvailableCustomerByMembershipNumber(requestNew.getMembershipNumber()) == 0) {
+                dataReturn = false;
+                message = "This Customer cannot loan the books, please contact admin!";
+                flag = 1;
+            }
+
+            if (loanRepository.validateReplicateBookLoan(requestNew.getMembershipNumber(), requestNew.getBookCode()) == 1) {
+                dataReturn = false;
+                message = "You already loan this books!";
+                flag = 1;
+            }
+
+
+
+            if (dataReturn) {
+                Customer customer = customerRepository.findById(requestNew.getMembershipNumber()).get();
+                List<RequestLoan> initalData = loanRequestRepository.findAll(Sort.by("id").descending());
+                RequestLoan requestNewLoan;
+                if (initalData.isEmpty()) {
+
+                    requestNewLoan = new RequestLoan(1L,
+                            requestNew.getMembershipNumber(),
+                            requestNew.getBookCode(),
+                            LocalDateTime.now(), false);
+                    customer.setRequestCount(customer.getRequestCount()+1);
+                    customerRepository.save(customer);
+                    loanRequestRepository.save(requestNewLoan);
+                } else {
+                    requestNewLoan = new RequestLoan(initalData.get(0).getId() + 1L,
+                            requestNew.getMembershipNumber(),
+                            requestNew.getBookCode(),
+                            LocalDateTime.now(), false);
+                    customer.setRequestCount(customer.getRequestCount()+1);
+                    customerRepository.save(customer);
+                    loanRequestRepository.save(requestNewLoan);
+                }
+            }
+            return DataDTO.<Boolean>builder()
+                    .data(dataReturn)
+                    .message(message)
+                    .flag(flag)
+                    .build();
         } catch (Exception e) {
             LOGGER.error(e.getMessage());
-            return false;
+            return DataDTO.<Boolean>builder()
+                    .data(false)
+                    .message(e.getMessage())
+                    .flag(1)
+                    .build();
         }
     }
 
     @Override
-    public DataDTO<List<RequestLoanIndexDTO>> getRequestLoanByCurrentLogin(String currentLogin, Integer page) {
+    public DataDTO<List<RequestLoanIndexDTO>> getRequestLoanByCurrentLogin(CurrentLoginDetailDTO currentLogin, Integer page) {
         int flag = 0;
         String message = "";
         try {
 
             Pageable pages = PageRequest.of(page - 1, 5, Sort.by("requestDate").descending());
-            Page<RequestLoanIndexDTO> fetchedData = loanRequestRepository.findRequestLoanById(currentLogin, pages);
+            Page<RequestLoanIndexDTO> fetchedData;
+            if (currentLogin.getRole().contains("customer")) {
+                fetchedData = loanRequestRepository.findRequestLoanById(currentLogin.getUsername(), pages);
+            } else {
+                fetchedData = loanRequestRepository.findAllRequestLoan(pages);
+            }
 
             if (fetchedData.getContent().isEmpty()) {
                 flag = 1;
@@ -178,18 +223,75 @@ public class LoanServiceImp implements LoanService {
     }
 
     @Override
+    public DataDTO<Boolean> insertByRequestId(Long id) {
+
+        Boolean returnData = true;
+        String message = "";
+        int flag = 1;
+        try {
+            RequestLoan requestLoanData = loanRequestRepository.findById(id).get();
+            BookUpdateDto updateBook = updateBookProperty(requestLoanData.getBookCode());
+            Customer updateCustomer = updateCustomerProperty(requestLoanData.getMembershipNumber());
+            updateCustomer.setRequestCount(updateCustomer.getRequestCount()-1);
+
+            Long lastIdLoan = loanRepository.findAll(Sort.by("id").descending()).get(0).getId();
+            Loan requestedLoan = new Loan(lastIdLoan + 1, requestLoanData.getMembershipNumber(), requestLoanData.getBookCode(), LocalDate.now(), LocalDate.now().plusDays(5), null, "Order By Request", 0, 0L);
+            requestLoanData.setStatus(true);
+            chainUpdateLoan(updateCustomer, updateBook, requestedLoan);
+            loanRequestRepository.save(requestLoanData);
+
+            return DataDTO.<Boolean>builder()
+                    .data(returnData)
+                    .message(message)
+                    .flag(flag)
+                    .build();
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage());
+            return DataDTO.<Boolean>builder().build();
+        }
+    }
+
+    @Override
+    public DataDTO<List<LoanIndexDto>> getListLoanByMembershipNumber(String username) {
+        String message = "";
+        int flag = 1;
+        try {
+            Pageable pages = PageRequest.of(0, 3, Sort.by("id").descending());
+            Page<LoanIndexDto> data = loanRepository.getCustomerOnLoan(username, pages);
+            List<LoanIndexDto> mappedData;
+
+            if (data.getContent().isEmpty()) {
+                message = INDEX_EMPTY;
+                flag = 0;
+                mappedData = new ArrayList<>();
+            } else {
+                mappedData = mapIndexLoan(data.getContent());
+            }
+
+            return DataDTO.<List<LoanIndexDto>>builder()
+                    .data(mappedData)
+                    .flag(flag)
+                    .message(message)
+                    .build();
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage());
+            return null;
+        }
+
+
+    }
+
+    @Override
     public Long getCountPage(String title, String name) {
         Integer row = 5;
         Double totalData = (double) loanRepository.getCountPage(title, name);
-        Long totaPage = (long) Math.ceil(totalData / row);
-
-        return totaPage;
+        return (long) Math.ceil(totalData / row);
     }
 
     @Override
     public Long getCountDenda(Loan loan) {
 
-        Long denda = 0L;
+        Long denda;
         if (loan.getReturnDate() != null && loan.getDenda() != null) {
             denda = ChronoUnit.DAYS.between(loan.getDueDate(), loan.getReturnDate()) * 2000;
         } else {

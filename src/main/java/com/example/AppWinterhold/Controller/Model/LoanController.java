@@ -1,6 +1,7 @@
 package com.example.AppWinterhold.Controller.Model;
 
 import com.example.AppWinterhold.Dao.LoanRepository;
+import com.example.AppWinterhold.Dto.CurrentLoginDetailDTO;
 import com.example.AppWinterhold.Dto.Loan.*;
 import com.example.AppWinterhold.Dto.Models.DataDTO;
 import com.example.AppWinterhold.Entity.Loan;
@@ -93,6 +94,13 @@ public class LoanController {
         model.addAttribute("totalPage", index.getTotalPage());
 
         return "Loan/index";
+    }
+
+
+    @GetMapping("/insert-by-request")
+    public String insertFromRequest(@RequestParam Long id) {
+        DataDTO<Boolean> data = loanService.insertByRequestId(id);
+        return data.getData() ? "redirect:/loan/index" : "Loan/valid";
     }
 
     @GetMapping("/insert")
@@ -304,25 +312,29 @@ public class LoanController {
         BaseController baseController = new BaseController();
         String currentLogin = baseController.getCurrentLogin();
         RequestLoanDTO requestNew = new RequestLoanDTO(currentLogin,bookCode);
+        DataDTO<Boolean> newLoanReq = loanService.newLoanRequest(requestNew);
 
-        model.addAttribute("validationHeader","Unable To Reqeust");
-        model.addAttribute("validationReason","You already loan this books or reached maximum loan");
-        return loanService.newLoanRequest(requestNew) ? "redirect:/loan/request-loan-list" : "Loan/valid";
+        model.addAttribute("validationHeader","Unable To Request");
+        model.addAttribute("validationReason",newLoanReq.getMessage());
+        model.addAttribute("flag",newLoanReq.getFlag());
+        return newLoanReq.getData() ? "redirect:/loan/request-loan-list" : "Loan/valid";
     }
 
 
     @GetMapping("/request-loan-list")
     public String requestLoanList(Model model,@RequestParam(defaultValue = "1") Integer page ){
         BaseController baseController = new BaseController();
-        String currentLogin = baseController.getCurrentLogin();
+        CurrentLoginDetailDTO currentLogin = baseController.getCurrentLoginDetail();
 
         DataDTO<List<RequestLoanIndexDTO>> data = loanService.getRequestLoanByCurrentLogin(currentLogin,page);
+        DataDTO<List<LoanIndexDto>> dataLoan = loanService.getListLoanByMembershipNumber(currentLogin.getUsername());
 
         model.addAttribute("flag",data.getFlag());
-        model.addAttribute("page",page);
+        model.addAttribute("currentPage",page);
         model.addAttribute("totalPage",data.getTotalPage());
         model.addAttribute("message",data.getMessage());
         model.addAttribute("list",data.getData());
+        model.addAttribute("listLoan",dataLoan.getData());
         return "Loan/RequestList";
     }
 

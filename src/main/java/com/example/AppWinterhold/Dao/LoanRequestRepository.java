@@ -20,10 +20,28 @@ public interface LoanRequestRepository extends JpaRepository<RequestLoan, Long> 
     @Query("""
             SELECT 
             new com.example.AppWinterhold.Dto.Loan.RequestLoanIndexDTO(
-             l.membershipNumber,l.bookCode,l.requestDate,l.status )
+             l.id,CONCAT(c.firstName,' ',c.lastName),b.title,l.requestDate,l.status )
             FROM 
                 RequestLoan AS l
+            JOIN 
+                l.book as b
+            JOIN 
+                l.customer as c
             WHERE l.membershipNumber = :currentLogin
             """)
     Page<RequestLoanIndexDTO> findRequestLoanById(String currentLogin, Pageable pages);
+
+    @Query("""
+            SELECT 
+            new com.example.AppWinterhold.Dto.Loan.RequestLoanIndexDTO(
+             l.id,CONCAT(c.firstName,' ',c.lastName),b.title,l.requestDate,l.status )
+            FROM 
+                RequestLoan AS l
+            JOIN 
+                l.book as b
+            JOIN 
+                l.customer as c
+            WHERE l.status = 0
+            """)
+    Page<RequestLoanIndexDTO> findAllRequestLoan(Pageable pages);
 }
