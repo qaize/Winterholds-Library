@@ -220,4 +220,12 @@
         <comment>ALTER TABLE CUSTOMER ADD COLUMN REQUEST COUNT</comment>
     </changeSet>
 
+    <changeSet id="DDL01-222-20231004-0001"
+               author="iwan">
+        <sqlFile dbms="mssql" relativeToChangelogFile="false"
+                 splitStatements="true" stripComments="true"
+                 path="liquibase/V1/sql/alter_table_request_20231004.sql"/>
+        <comment>ALTER TABLE REQUEST ADD isActive</comment>
+    </changeSet>
+
 </databaseChangeLog>

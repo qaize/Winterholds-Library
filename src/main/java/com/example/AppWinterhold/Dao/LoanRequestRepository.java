@@ -27,7 +27,7 @@ public interface LoanRequestRepository extends JpaRepository<RequestLoan, Long> 
                 l.book as b
             JOIN 
                 l.customer as c
-            WHERE l.membershipNumber = :currentLogin
+            WHERE l.membershipNumber = :currentLogin AND l.isActive = 1
             """)
     Page<RequestLoanIndexDTO> findRequestLoanById(String currentLogin, Pageable pages);
 
@@ -41,7 +41,15 @@ public interface LoanRequestRepository extends JpaRepository<RequestLoan, Long> 
                 l.book as b
             JOIN 
                 l.customer as c
-            WHERE l.status = 0
+            WHERE l.status = 0 AND l.isActive = 1
             """)
     Page<RequestLoanIndexDTO> findAllRequestLoan(Pageable pages);
+
+
+    @Query("""
+            select count(r)
+            from RequestLoan as r
+            where r.membershipNumber = :membershipNumber AND r.bookCode = :bookCode AND r.isActive = 1
+            """)
+    Long validateRepicateRequest(String membershipNumber, String bookCode);
 }

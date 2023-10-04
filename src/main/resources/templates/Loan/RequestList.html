@@ -8,7 +8,7 @@
     <div class="grid-container">
         <h1>My Request Loan</h1>
         <div class="divTable">
-            <h1 th:style="${flag == 1 ? 'display : inline-block' : 'display : none'}" th:text="${empty}"></h1>
+            <h1 th:style="${flag == 1 ? 'display : inline-block' : 'display : none'}" th:text="${message}"></h1>
             <table th:style="${flag == 0 ? 'display : table' : 'display : none'}">
                 <thead>
                 <tr>
@@ -16,7 +16,7 @@
                     <th>Book Title</th>
                     <th>Request Date</th>
                     <th>Status</th>
-                    <th sec:authorize="hasRole('administrator')">Action</th>
+                    <th>Action</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -29,6 +29,14 @@
                         <div class="button-wrapper">
                             <a class="btn update-button"
                                th:href="@{/loan/insert-by-request(id=*{requestId})}">Accept</a>
+                            <a class="btn warning-button"
+                               th:href="@{/loan/delete-request-loan(id=*{requestId})}">Reject</a>
+                        </div>
+                    </td>
+                    <td sec:authorize="hasRole('customer')" class="action">
+                        <div class="button-wrapper">
+                            <a class="btn warning-button"
+                               th:href="@{/loan/delete-request-loan(id=*{requestId})}">Remove</a>
                         </div>
                     </td>
                 </tr>

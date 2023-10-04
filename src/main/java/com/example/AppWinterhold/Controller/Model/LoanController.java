@@ -96,13 +96,6 @@ public class LoanController {
         return "Loan/index";
     }
 
-
-    @GetMapping("/insert-by-request")
-    public String insertFromRequest(@RequestParam Long id) {
-        DataDTO<Boolean> data = loanService.insertByRequestId(id);
-        return data.getData() ? "redirect:/loan/index" : "Loan/valid";
-    }
-
     @GetMapping("/insert")
     public String insert(Model model) {
 
@@ -336,6 +329,27 @@ public class LoanController {
         model.addAttribute("list",data.getData());
         model.addAttribute("listLoan",dataLoan.getData());
         return "Loan/RequestList";
+    }
+
+    @GetMapping("/insert-by-request")
+    public String insertFromRequest(Model model, @RequestParam Long id) {
+        DataDTO<Boolean> data = loanService.insertByRequestId(id);
+
+        model.addAttribute("validationHeader","Unable To Request");
+        model.addAttribute("validationReason",data.getMessage());
+        model.addAttribute("flag",data.getFlag());
+        return data.getData() ? "redirect:/loan/index" : "Loan/valid";
+    }
+
+
+    @GetMapping(value = "/delete-request-loan")
+    public String deleteRequest(Model model,@RequestParam Long id){
+        DataDTO<Boolean> deleteRequest = loanService.deleteLoanRequest(id);
+
+        model.addAttribute("validationHeader","Unable To Request");
+        model.addAttribute("validationReason",deleteRequest.getMessage());
+        model.addAttribute("flag",deleteRequest.getFlag());
+        return deleteRequest.getData() ? "redirect:/loan/request-loan-list" : "Loan/valid";
     }
 
 }

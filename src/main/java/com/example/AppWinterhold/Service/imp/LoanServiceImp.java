@@ -122,164 +122,6 @@ public class LoanServiceImp implements LoanService {
         return false;
     }
 
-    @Override
-    public DataDTO<Boolean> newLoanRequest(RequestLoanDTO requestNew) {
-        String message = "";
-        int flag = 0;
-        try {
-            Boolean dataReturn = true;
-//            check books if available
-            if (bookRepository.validateAvailableBookByBookCode(requestNew.getBookCode()) == 1) {
-                dataReturn = false;
-                message = "Books is out of stock";
-                flag = 1;
-            }
-//            Check Customer if not banned/expire/denda/
-            if (customerRepository.validateAvailableCustomerByMembershipNumber(requestNew.getMembershipNumber()) == 0) {
-                dataReturn = false;
-                message = "This Customer cannot loan the books, please contact admin!";
-                flag = 1;
-            }
-
-            if (loanRepository.validateReplicateBookLoan(requestNew.getMembershipNumber(), requestNew.getBookCode()) == 1) {
-                dataReturn = false;
-                message = "You already loan this books!";
-                flag = 1;
-            }
-
-
-
-            if (dataReturn) {
-                Customer customer = customerRepository.findById(requestNew.getMembershipNumber()).get();
-                List<RequestLoan> initalData = loanRequestRepository.findAll(Sort.by("id").descending());
-                RequestLoan requestNewLoan;
-                if (initalData.isEmpty()) {
-
-                    requestNewLoan = new RequestLoan(1L,
-                            requestNew.getMembershipNumber(),
-                            requestNew.getBookCode(),
-                            LocalDateTime.now(), false);
-                    customer.setRequestCount(customer.getRequestCount()+1);
-                    customerRepository.save(customer);
-                    loanRequestRepository.save(requestNewLoan);
-                } else {
-                    requestNewLoan = new RequestLoan(initalData.get(0).getId() + 1L,
-                            requestNew.getMembershipNumber(),
-                            requestNew.getBookCode(),
-                            LocalDateTime.now(), false);
-                    customer.setRequestCount(customer.getRequestCount()+1);
-                    customerRepository.save(customer);
-                    loanRequestRepository.save(requestNewLoan);
-                }
-            }
-            return DataDTO.<Boolean>builder()
-                    .data(dataReturn)
-                    .message(message)
-                    .flag(flag)
-                    .build();
-        } catch (Exception e) {
-            LOGGER.error(e.getMessage());
-            return DataDTO.<Boolean>builder()
-                    .data(false)
-                    .message(e.getMessage())
-                    .flag(1)
-                    .build();
-        }
-    }
-
-    @Override
-    public DataDTO<List<RequestLoanIndexDTO>> getRequestLoanByCurrentLogin(CurrentLoginDetailDTO currentLogin, Integer page) {
-        int flag = 0;
-        String message = "";
-        try {
-
-            Pageable pages = PageRequest.of(page - 1, 5, Sort.by("requestDate").descending());
-            Page<RequestLoanIndexDTO> fetchedData;
-            if (currentLogin.getRole().contains("customer")) {
-                fetchedData = loanRequestRepository.findRequestLoanById(currentLogin.getUsername(), pages);
-            } else {
-                fetchedData = loanRequestRepository.findAllRequestLoan(pages);
-            }
-
-            if (fetchedData.getContent().isEmpty()) {
-                flag = 1;
-                message = INDEX_EMPTY;
-            }
-
-            return DataDTO.<List<RequestLoanIndexDTO>>builder()
-                    .totalPage((long) fetchedData.getTotalPages())
-                    .flag(flag)
-                    .message(message)
-                    .data(fetchedData.getContent())
-                    .build();
-        } catch (Exception e) {
-            LOGGER.error(e.getMessage());
-            return DataDTO.<List<RequestLoanIndexDTO>>builder()
-                    .message(e.getMessage())
-                    .data(new ArrayList<>())
-                    .totalPage(0L)
-                    .build();
-        }
-    }
-
-    @Override
-    public DataDTO<Boolean> insertByRequestId(Long id) {
-
-        Boolean returnData = true;
-        String message = "";
-        int flag = 1;
-        try {
-            RequestLoan requestLoanData = loanRequestRepository.findById(id).get();
-            BookUpdateDto updateBook = updateBookProperty(requestLoanData.getBookCode());
-            Customer updateCustomer = updateCustomerProperty(requestLoanData.getMembershipNumber());
-            updateCustomer.setRequestCount(updateCustomer.getRequestCount()-1);
-
-            Long lastIdLoan = loanRepository.findAll(Sort.by("id").descending()).get(0).getId();
-            Loan requestedLoan = new Loan(lastIdLoan + 1, requestLoanData.getMembershipNumber(), requestLoanData.getBookCode(), LocalDate.now(), LocalDate.now().plusDays(5), null, "Order By Request", 0, 0L);
-            requestLoanData.setStatus(true);
-            chainUpdateLoan(updateCustomer, updateBook, requestedLoan);
-            loanRequestRepository.save(requestLoanData);
-
-            return DataDTO.<Boolean>builder()
-                    .data(returnData)
-                    .message(message)
-                    .flag(flag)
-                    .build();
-        } catch (Exception e) {
-            LOGGER.error(e.getMessage());
-            return DataDTO.<Boolean>builder().build();
-        }
-    }
-
-    @Override
-    public DataDTO<List<LoanIndexDto>> getListLoanByMembershipNumber(String username) {
-        String message = "";
-        int flag = 1;
-        try {
-            Pageable pages = PageRequest.of(0, 3, Sort.by("id").descending());
-            Page<LoanIndexDto> data = loanRepository.getCustomerOnLoan(username, pages);
-            List<LoanIndexDto> mappedData;
-
-            if (data.getContent().isEmpty()) {
-                message = INDEX_EMPTY;
-                flag = 0;
-                mappedData = new ArrayList<>();
-            } else {
-                mappedData = mapIndexLoan(data.getContent());
-            }
-
-            return DataDTO.<List<LoanIndexDto>>builder()
-                    .data(mappedData)
-                    .flag(flag)
-                    .message(message)
-                    .build();
-        } catch (Exception e) {
-            LOGGER.error(e.getMessage());
-            return null;
-        }
-
-
-    }
 
     @Override
     public Long getCountPage(String title, String name) {
@@ -441,6 +283,221 @@ public class LoanServiceImp implements LoanService {
         Long totaPage = (long) Math.ceil(totalData / row);
 
         return totaPage;
+    }
+
+
+    @Override
+    public DataDTO<Boolean> newLoanRequest(RequestLoanDTO requestNew) {
+        String message = "";
+        int flag = 0;
+        try {
+            Boolean dataReturn = true;
+//            check books if available
+            if (bookRepository.validateAvailableBookByBookCode(requestNew.getBookCode()) == 1) {
+                dataReturn = false;
+                message = "Books is out of stock";
+                flag = 1;
+            }
+//            Check Customer if not banned/expire/denda/
+            if (customerRepository.validateAvailableCustomerByMembershipNumber(requestNew.getMembershipNumber()) == 0) {
+                dataReturn = false;
+                message = "This Customer cannot request the books, please contact admin!";
+                flag = 1;
+            }
+//Customer if already loan the books
+            if (loanRepository.validateReplicateBookLoan(requestNew.getMembershipNumber(), requestNew.getBookCode()) == 1) {
+                dataReturn = false;
+                message = "this user already loan this books!";
+                flag = 1;
+            }
+//Customer if already request the books
+            if (loanRequestRepository.validateRepicateRequest(requestNew.getMembershipNumber(), requestNew.getBookCode()) == 1) {
+                dataReturn = false;
+                message = "You already request this books!";
+                flag = 1;
+            }
+
+
+            if (dataReturn) {
+                Customer customer = customerRepository.findById(requestNew.getMembershipNumber()).get();
+                List<RequestLoan> initalData = loanRequestRepository.findAll(Sort.by("id").descending());
+                RequestLoan requestNewLoan;
+                if (initalData.isEmpty()) {
+
+                    requestNewLoan = new RequestLoan(1L,
+                            requestNew.getMembershipNumber(),
+                            requestNew.getBookCode(),
+                            LocalDateTime.now(), false, true);
+                    customer.setRequestCount(customer.getRequestCount() + 1);
+                    customerRepository.save(customer);
+                    loanRequestRepository.save(requestNewLoan);
+                } else {
+                    requestNewLoan = new RequestLoan(initalData.get(0).getId() + 1L,
+                            requestNew.getMembershipNumber(),
+                            requestNew.getBookCode(),
+                            LocalDateTime.now(), false, true);
+                    customer.setRequestCount(customer.getRequestCount() + 1);
+                    customerRepository.save(customer);
+                    loanRequestRepository.save(requestNewLoan);
+                }
+            }
+            return DataDTO.<Boolean>builder()
+                    .data(dataReturn)
+                    .message(message)
+                    .flag(flag)
+                    .build();
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage());
+            return DataDTO.<Boolean>builder()
+                    .data(false)
+                    .message(e.getMessage())
+                    .flag(1)
+                    .build();
+        }
+    }
+
+    @Override
+    public DataDTO<List<RequestLoanIndexDTO>> getRequestLoanByCurrentLogin(CurrentLoginDetailDTO currentLogin, Integer page) {
+        int flag = 0;
+        String message = "";
+        try {
+
+            Pageable pages = PageRequest.of(page - 1, 5, Sort.by("requestDate").descending());
+            Page<RequestLoanIndexDTO> fetchedData;
+            if (currentLogin.getRole().contains("customer")) {
+                fetchedData = loanRequestRepository.findRequestLoanById(currentLogin.getUsername(), pages);
+            } else {
+                fetchedData = loanRequestRepository.findAllRequestLoan(pages);
+            }
+
+            if (fetchedData.getContent().isEmpty()) {
+                flag = 1;
+                message = INDEX_EMPTY;
+            }
+
+            return DataDTO.<List<RequestLoanIndexDTO>>builder()
+                    .totalPage((long) fetchedData.getTotalPages())
+                    .flag(flag)
+                    .message(message)
+                    .data(fetchedData.getContent())
+                    .build();
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage());
+            return DataDTO.<List<RequestLoanIndexDTO>>builder()
+                    .message(e.getMessage())
+                    .data(new ArrayList<>())
+                    .totalPage(0L)
+                    .build();
+        }
+    }
+
+
+    @Override
+    public DataDTO<Boolean> deleteLoanRequest(Long id) {
+        Boolean returnData = true;
+        int flag = 0;
+        String message = "";
+        try {
+
+            RequestLoan data = loanRequestRepository.findById(id).get();
+            Customer updateCustomer = customerRepository.findById(data.getMembershipNumber()).get();
+
+            if (data.getStatus()) {
+                flag = 1;
+                message = "This request already accepted";
+                returnData = false;
+            } else {
+                if (updateCustomer.getRequestCount() > 0) {
+                    updateCustomer.setRequestCount(updateCustomer.getRequestCount() - 1);
+                }
+                data.setIsActive(false);
+            }
+
+            loanRequestRepository.save(data);
+
+            return DataDTO.<Boolean>builder()
+                    .message(message)
+                    .flag(flag)
+                    .data(returnData)
+                    .build();
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage());
+            return null;
+        }
+    }
+
+
+    @Override
+    public DataDTO<List<LoanIndexDto>> getListLoanByMembershipNumber(String username) {
+        String message = "";
+        int flag = 1;
+        try {
+            Pageable pages = PageRequest.of(0, 3, Sort.by("id").descending());
+            Page<LoanIndexDto> data = loanRepository.getCustomerOnLoan(username, pages);
+            List<LoanIndexDto> mappedData;
+
+            if (data.getContent().isEmpty()) {
+                message = INDEX_EMPTY;
+                flag = 0;
+                mappedData = new ArrayList<>();
+            } else {
+                mappedData = mapIndexLoan(data.getContent());
+            }
+
+            return DataDTO.<List<LoanIndexDto>>builder()
+                    .data(mappedData)
+                    .flag(flag)
+                    .message(message)
+                    .build();
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage());
+            return null;
+        }
+    }
+
+    @Override
+    public DataDTO<Boolean> insertByRequestId(Long id) {
+
+        Boolean returnData = true;
+        String message = "";
+        int flag = 0;
+        try {
+            RequestLoan requestLoanData = loanRequestRepository.findById(id).get();
+
+            if (customerRepository.validateAvailableCustomerByMembershipNumber(requestLoanData.getMembershipNumber()) == 0) {
+                returnData = false;
+                message = "this customer unable to loan, please contact admin!";
+                flag = 1;
+            }
+
+            if (loanRepository.validateReplicateBookLoan(requestLoanData.getMembershipNumber(), requestLoanData.getBookCode()) == 1) {
+                returnData = false;
+                message = "this user already loan this books!";
+                flag = 1;
+            }
+
+            if (returnData) {
+
+                BookUpdateDto updateBook = updateBookProperty(requestLoanData.getBookCode());
+                Customer updateCustomer = updateCustomerProperty(requestLoanData.getMembershipNumber());
+                updateCustomer.setRequestCount(updateCustomer.getRequestCount() - 1);
+
+                Long lastIdLoan = loanRepository.findAll(Sort.by("id").descending()).get(0).getId();
+                Loan requestedLoan = new Loan(lastIdLoan + 1, requestLoanData.getMembershipNumber(), requestLoanData.getBookCode(), LocalDate.now(), LocalDate.now().plusDays(5), null, "Order By Request", 0, 0L);
+                requestLoanData.setStatus(true);
+                chainUpdateLoan(updateCustomer, updateBook, requestedLoan);
+                loanRequestRepository.save(requestLoanData);
+            }
+
+            return DataDTO.<Boolean>builder()
+                    .data(returnData)
+                    .message(message)
+                    .flag(flag)
+                    .build();
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage());
+            return DataDTO.<Boolean>builder().build();
+        }
     }
 
 

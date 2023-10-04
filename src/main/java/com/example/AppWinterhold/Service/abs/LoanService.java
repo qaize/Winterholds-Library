@@ -36,4 +36,6 @@ public interface LoanService {
     DataDTO<Boolean> insertByRequestId(Long id);
 
     DataDTO<List<LoanIndexDto>> getListLoanByMembershipNumber(String username);
+
+    DataDTO<Boolean> deleteLoanRequest(Long id);
 }
