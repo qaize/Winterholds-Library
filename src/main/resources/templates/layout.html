@@ -109,7 +109,6 @@
 
     <a class="menu customer" th:href="@{/loan/request-loan-list}">
         <i class="fas fa-users"></i>
-        <span>Request List</span>
     </a>
 
     <div sec:authorize="hasRole('administrator')" class="dropdown">
@@ -133,6 +132,12 @@
         <div class="user">
             <span class="full-name" th:text="${#authentication.name}">anonymous</span>
             <span class="role" th:text="${#authentication.principal.authorities}">guest</span>
+        </div>
+        <div class="user">
+            <a class="menu customer" th:href="@{/account/notfication}">
+                <i class="fas fa-bell"></i>
+            </a>
+            <span class="role">4</span>
         </div>
         <div class="sign-out">
             <form th:attr="action=@{/logout}" method="POST">

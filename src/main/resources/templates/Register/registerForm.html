@@ -8,39 +8,36 @@
 
         <form method="post" th:attr="action=@{/register/registerForm}" enctype="multipart/form-data" th:object="${dto}">
             <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
-            <div class="divLogin">
-                <div>
-                    <h1>Sign Up</h1>
-                </div>
 
-                <div style="text-align : left">
-                    <input type="text" th:field="*{name}" placeholder="name">
-                    <div class="field-validation-error" th:errors="*{name}"></div>
-                </div>
-                <div style="text-align : left">
-                    <input type="text" th:field="*{username}" placeholder="Username">
-                    <div class="field-validation-error" th:errors="*{username}"></div>
-                </div>
-                <div style="text-align : left">
-                    <select th:field="*{role}">
-                        <option th:value="null">-Role-</option>
-                        <option th:each="data : ${roleList}" th:value="${data.val}" th:text="${data.text}"/>
-                    </select>
-                    <div class="field-validation-error" th:errors="*{role}"></div>
-                </div>
-                <div style="text-align : left">
-                    <input type="password" th:field="*{password}" placeholder="Password">
-                    <div class="field-validation-error" th:errors="*{password}"></div>
-                    <div class="field-validation-error" th:errors="${dto}"></div>
-                </div>
-                <div style="text-align : left">
-                    <input type="password" th:field="*{conpassword}" placeholder="Re-password">
-                    <div class="field-validation-error" th:errors="*{conpassword}"></div>
-                </div>
-                <div>
-                    <button class="btn blue-button" type="submit"> Sign Up</button>
-                </div>
+            <div>
+                <h1>Sign Up</h1>
             </div>
+
+            <div style="text-align : left">
+                <input type="text" th:field="*{name}" placeholder="name">
+                <div class="field-validation-error" th:errors="*{name}"></div>
+            </div>
+            <div style="text-align : left">
+                <input type="text" th:field="*{username}" placeholder="Username">
+                <div class="field-validation-error" th:errors="*{username}"></div>
+            </div>
+            <div style="text-align : left">
+                <select th:field="*{role}">
+                    <option th:value="null">-Role-</option>
+                    <option th:each="data : ${roleList}" th:value="${data.val}" th:text="${data.text}"/>
+                </select>
+                <div class="field-validation-error" th:errors="*{role}"></div>
+            </div>
+            <div style="text-align : left">
+                <input type="password" th:field="*{password}" placeholder="Password">
+                <div class="field-validation-error" th:errors="*{password}"></div>
+                <div class="field-validation-error" th:errors="${dto}"></div>
+            </div>
+            <div style="text-align : left">
+                <input type="password" th:field="*{conpassword}" placeholder="Re-password">
+                <div class="field-validation-error" th:errors="*{conpassword}"></div>
+            </div>
+            <button class="btn blue-button" type="submit"> Sign Up</button>
 
         </form>
         <div style="text-align:center;margin-bottom : 20px">

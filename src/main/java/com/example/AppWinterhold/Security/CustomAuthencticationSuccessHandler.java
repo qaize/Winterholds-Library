@@ -11,7 +11,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Optional;
 
 public class CustomAuthencticationSuccessHandler implements AuthenticationSuccessHandler {
 
@@ -24,17 +23,12 @@ public class CustomAuthencticationSuccessHandler implements AuthenticationSucces
                                         Authentication authentication) throws IOException, ServletException {
 
         var username = request.getParameter("username");
-        var role = request.getParameter("role");
         String link = "/home/index";
         Account currentLogin = accountService.getAccount(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Username : " + username + " not found"));
+        currentLogin.setCountWrong(0);
+        accountService.setCountWrong(currentLogin);
 
-        if (!currentLogin.getRole().equals(role)) {
-            link = "/login/loginForm?error=".concat("username not found");
-        } else {
-            currentLogin.setCountWrong(0);
-            accountService.setCountWrong(currentLogin);
-        }
 
         response.sendRedirect(request.getContextPath() + link);
     }

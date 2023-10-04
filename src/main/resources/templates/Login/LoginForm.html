@@ -11,10 +11,6 @@
             <div th:if="${param.error != null}" th:text="${param.error}" class="field-validation-error"></div>
             <input type="text" name="username" placeholder="Username"  required>
             <input type="password" name="password" placeholder="Password" required>
-            <select  name="role"  required>
-                <option th:value="null">-select Role-</option>
-                <option th:each="data : ${listRole}" th:value="${data.val}" th:text="${data.text}"/>
-            </select>
             <button type="submit">Sign in</button>
 
         </form>

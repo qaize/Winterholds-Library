@@ -228,4 +228,12 @@
         <comment>ALTER TABLE REQUEST ADD isActive</comment>
     </changeSet>
 
+    <changeSet id="DDL01-222-20231004-0002"
+               author="iwan">
+        <sqlFile dbms="mssql" relativeToChangelogFile="false"
+                 splitStatements="true" stripComments="true"
+                 path="liquibase/V1/sql/alter_table_customer_20231004.sql"/>
+        <comment>ALTER TABLE CUSTOMER ADD COLUMN EMAIL</comment>
+    </changeSet>
+
 </databaseChangeLog>

@@ -12,9 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class LoginController {
 
     @GetMapping("/loginForm")
-    public String loginForm(Model model) {
-
-        model.addAttribute("listRole", Dropdown.dropdownRole());
+    public String loginForm() {
         return "Login/LoginForm";
     }
 
