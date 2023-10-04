@@ -309,6 +309,7 @@ public class CustomerServiceImp implements CustomerService {
             dataCus.get().setFirstName(dto.getFirstName());
             dataCus.get().setLastName(dto.getLastName());
             dataCus.get().setGender(dto.getGender());
+            dataCus.get().setBirthDate(dto.getBirthDate());
             dataCus.get().setPhone(dto.getPhone());
             dataCus.get().setAddress(dto.getAddress());
             dataCus.get().setMembershipExpireDate(dto.getMembershipExpireDate());

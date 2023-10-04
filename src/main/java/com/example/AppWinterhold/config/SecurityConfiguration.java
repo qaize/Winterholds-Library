@@ -32,7 +32,13 @@ public class SecurityConfiguration {
         http.authorizeRequests()
                 .antMatchers("/resources/**", "/login/**", "/register/**", "/home/**", "/book/**", "/category/**", "/author/**").permitAll()
                 .antMatchers(
-                        "/customer/**",
+                        "/customer/index",
+                        "/customer/insert",
+                        "/customer/delete",
+                        "/customer/extend",
+                        "/customer/ban",
+                        "/customer/unban",
+                        "/customer/banned-customer",
                         "/loan/history",
                         "/loan/insert",
                         "/loan/return",
@@ -43,6 +49,8 @@ public class SecurityConfiguration {
                         "/loan/paymentHistory"
                 ).hasRole("administrator")
                 .antMatchers(
+                        "/customer/detail",
+                        "/customer/update",
                         "/loan/request-loan-list",
                         "/loan/request-loan"
                 ).hasAnyRole("customer", "administrator")

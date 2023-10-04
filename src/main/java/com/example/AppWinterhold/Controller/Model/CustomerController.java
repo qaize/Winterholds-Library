@@ -1,5 +1,6 @@
 package com.example.AppWinterhold.Controller.Model;
 
+import com.example.AppWinterhold.Dto.CurrentLoginDetailDTO;
 import com.example.AppWinterhold.Dto.Customer.CustomerIndexDto;
 import com.example.AppWinterhold.Dto.Customer.CustomerInsertDto;
 import com.example.AppWinterhold.Dto.Customer.CustomerUpdateDto;
@@ -80,6 +81,7 @@ public class CustomerController {
         CustomerUpdateDto dto = customerService.getCustomerByMemberInsert(number);
 
         model.addAttribute("dto", dto);
+        model.addAttribute("profile", true);
         model.addAttribute("dropdownGender", Dropdown.dropdownGender());
 
         return "Customer/update";
@@ -91,6 +93,7 @@ public class CustomerController {
         if (bindingResult.hasErrors()) {
 
             model.addAttribute("dto", dto);
+            model.addAttribute("profile", true);
             model.addAttribute("dropdownGender", Dropdown.dropdownGender());
 
             return "Customer/update";
@@ -122,6 +125,7 @@ public class CustomerController {
 
         return "Customer/Detail";
     }
+
 
     @GetMapping("/valid")
     public String valid(Model model, @RequestParam String customerNumber) {
@@ -168,5 +172,52 @@ public class CustomerController {
         model.addAttribute("bannedList", data.getData());
 
         return "Customer/bannedList";
+    }
+
+
+    @GetMapping("/update-profile")
+    public String updateProfile(Model model) {
+        BaseController baseController = new BaseController();
+        CurrentLoginDetailDTO currentLogin = baseController.getCurrentLoginDetail();
+
+        CustomerUpdateDto dto = customerService.getCustomerByMemberInsert(currentLogin.getUsername());
+
+        model.addAttribute("dto", dto);
+        model.addAttribute("profile", false);
+        model.addAttribute("dropdownGender", Dropdown.dropdownGender());
+
+        return "Customer/update";
+    }
+
+    @PostMapping("/update-profile")
+    public String updateProfile(@Valid @ModelAttribute("dto") CustomerUpdateDto dto, BindingResult bindingResult, Model model) {
+
+        if (bindingResult.hasErrors()) {
+
+            model.addAttribute("dto", dto);
+            model.addAttribute("profile", false);
+            model.addAttribute("dropdownGender", Dropdown.dropdownGender());
+
+            return "Customer/update";
+        } else {
+            customerService.update(dto);
+            return "redirect:/customer/detail?number="+dto.getMembershipNumber();
+        }
+
+    }
+
+
+    @GetMapping("/detail-profile")
+    public String detail(Model model) {
+
+        BaseController baseController = new BaseController();
+        CurrentLoginDetailDTO currentLogin = baseController.getCurrentLoginDetail();
+
+        var memberDto = customerService.getCustomerByMember(currentLogin.getUsername());
+
+        model.addAttribute("membershipNumber", currentLogin.getRole());
+        model.addAttribute("memberDto", memberDto);
+
+        return "Customer/Detail";
     }
 }

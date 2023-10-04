@@ -87,6 +87,11 @@
         </a>
     </div>
 
+    <a sec:authorize="hasRole('customer')" class="menu account" th:href="@{/customer/detail-profile}">
+        <i class="fas fa-pen"></i>
+        <span>My Profile</span>
+    </a>
+
     <a class="menu account" th:href="@{/author/index}">
         <i class="fas fa-pen"></i>
         <span>Author</span>
