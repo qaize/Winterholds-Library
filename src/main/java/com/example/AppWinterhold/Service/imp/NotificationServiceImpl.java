@@ -70,4 +70,44 @@ public class NotificationServiceImpl implements NotificationService {
             return null;
         }
     }
+
+    @Override
+    public DataDTO<List<Notification>> getNotificationFromUser(Integer page) {
+
+        String message = "";
+        int flag = 0;
+
+        try {
+            Pageable pagination = PageRequest.of(page - 1, 5, Sort.by("createdDate").descending());
+            Page<Notification> dataNotification = notificationRepository.findNotifcationByCurrentLogin("admin",pagination);
+
+            if (dataNotification.getContent().isEmpty()) {
+                message = INDEX_EMPTY;
+                flag = 1;
+            }
+
+            List<Notification> fetchedNotification = dataNotification.getContent();
+            if (!fetchedNotification.isEmpty()) {
+                for (Notification viewednotification : fetchedNotification
+                ) {
+                    viewednotification.setIsViewed(true);
+                    viewednotification.setIsNew(false);
+                }
+                notificationRepository.saveAll(fetchedNotification);
+            }else {
+                fetchedNotification = new ArrayList<>();
+            }
+
+            return DataDTO.<List<Notification>>builder()
+                    .data(fetchedNotification)
+                    .totalPage((long) dataNotification.getTotalPages())
+                    .message(message)
+                    .flag(flag)
+                    .build();
+
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage());
+            return null;
+        }
+    }
 }

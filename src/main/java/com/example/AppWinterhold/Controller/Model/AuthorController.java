@@ -7,6 +7,7 @@ import com.example.AppWinterhold.Dto.Models.DataDTO;
 import com.example.AppWinterhold.Service.abs.AuthorService;
 import com.example.AppWinterhold.Service.abs.BookService;
 import com.example.AppWinterhold.Service.imp.AccountServiceImp;
+import com.example.AppWinterhold.Service.imp.LoanServiceImp;
 import com.example.AppWinterhold.Utility.Dropdown;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.validation.Valid;
@@ -30,6 +31,8 @@ public class AuthorController {
 
     @Autowired
     private AccountServiceImp accountServiceImp;
+    @Autowired
+    private LoanServiceImp loanServiceImp;
 
     @GetMapping("/index")
     public String index(Model model,
@@ -44,6 +47,7 @@ public class AuthorController {
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPage", data.getTotalPage());
         model.addAttribute("listAuthor", data.getData());
+        model.addAttribute("newNotification",loanServiceImp.getNotification());
 
         return "Author/index";
     }

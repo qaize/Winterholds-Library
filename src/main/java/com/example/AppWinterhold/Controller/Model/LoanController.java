@@ -92,6 +92,7 @@ public class LoanController {
         model.addAttribute("currentPage", page);
         model.addAttribute("listLoan", index.getData());
         model.addAttribute("totalPage", index.getTotalPage());
+        model.addAttribute("newNotification",loanService.getNotification());
 
         return "Loan/index";
     }
@@ -328,6 +329,7 @@ public class LoanController {
         model.addAttribute("message",data.getMessage());
         model.addAttribute("list",data.getData());
         model.addAttribute("listLoan",dataLoan.getData());
+        model.addAttribute("newNotification",loanService.getNotification());
         return "Loan/RequestList";
     }
 

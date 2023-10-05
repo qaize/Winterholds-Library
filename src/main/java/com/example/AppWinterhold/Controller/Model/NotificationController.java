@@ -37,7 +37,14 @@ public class NotificationController {
 
 
     @GetMapping(value = "/show-all-notification")
-    public String getAllNotification(){
+    public String getAllNotification(Model model, @RequestParam(defaultValue = "1") Integer page){
+        DataDTO<List<Notification>> data = notificationService.getNotificationFromUser(page);
+
+        model.addAttribute("flag",data.getFlag());
+        model.addAttribute("message",data.getMessage());
+        model.addAttribute("totalPage",data.getFlag());
+        model.addAttribute("currentPage",page);
+        model.addAttribute("notificationList",data.getData());
 
         return "Notification/Index";
     }

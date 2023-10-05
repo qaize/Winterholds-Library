@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface NotificationService {
     DataDTO<List<Notification>> getNotificationByCurrentLogin(Integer page);
+
+    DataDTO<List<Notification>> getNotificationFromUser(Integer page);
 }

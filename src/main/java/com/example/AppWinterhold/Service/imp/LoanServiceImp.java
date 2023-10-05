@@ -288,6 +288,8 @@ public class LoanServiceImp implements LoanService {
 
     @Override
     public DataDTO<Boolean> newLoanRequest(RequestLoanDTO requestNew) {
+        String currentLogin = new BaseController().getCurrentLogin();
+
         String message = "";
         int flag = 0;
         try {
@@ -329,17 +331,18 @@ public class LoanServiceImp implements LoanService {
                             requestNew.getBookCode(),
                             LocalDateTime.now(), false, true);
                     customer.setRequestCount(customer.getRequestCount() + 1);
-                    customerRepository.save(customer);
-                    loanRequestRepository.save(requestNewLoan);
                 } else {
                     requestNewLoan = new RequestLoan(initalData.get(0).getId() + 1L,
                             requestNew.getMembershipNumber(),
                             requestNew.getBookCode(),
                             LocalDateTime.now(), false, true);
                     customer.setRequestCount(customer.getRequestCount() + 1);
-                    customerRepository.save(customer);
-                    loanRequestRepository.save(requestNewLoan);
                 }
+                Notification userNotification = mapNotification(UUID.randomUUID(),"admin","Request new loan",requestNewLoan.getBookCode(),LocalDateTime.now(),currentLogin);
+
+                notificationRepository.save(userNotification);
+                customerRepository.save(customer);
+                loanRequestRepository.save(requestNewLoan);
             }
             return DataDTO.<Boolean>builder()
                     .data(dataReturn)
@@ -508,6 +511,21 @@ public class LoanServiceImp implements LoanService {
             LOGGER.error(e.getMessage());
             return DataDTO.<Boolean>builder().build();
         }
+    }
+
+
+    public Integer getNotification() {
+        CurrentLoginDetailDTO currentLoginDetailDTO = new BaseController().getCurrentLoginDetail();
+
+        Integer newNotification;
+
+        if (currentLoginDetailDTO.getRole().contains("customer"))
+        {
+            newNotification = notificationRepository.findNewNotification(currentLoginDetailDTO.getUsername());
+        }else {
+            newNotification = notificationRepository.findNewNotification("admin");
+        }
+        return newNotification;
     }
 
     private Notification mapNotification(UUID uuid, String membershipNumber, String header, String message, LocalDateTime date, String currentLogin) {

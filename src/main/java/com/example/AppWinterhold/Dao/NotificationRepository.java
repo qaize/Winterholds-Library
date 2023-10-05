@@ -19,4 +19,11 @@ public interface NotificationRepository extends JpaRepository<Notification,Strin
             where n.recipientId = :currentLogin
             """)
     Page<Notification> findNotifcationByCurrentLogin(String currentLogin, Pageable pagination);
+
+    @Query("""
+            select count(n)
+            from Notification n
+            where n.recipientId = :currentLogin AND n.isNew = 1
+            """)
+    Integer findNewNotification(String currentLogin);
 }

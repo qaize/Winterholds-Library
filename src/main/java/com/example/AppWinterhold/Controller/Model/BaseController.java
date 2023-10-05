@@ -1,6 +1,8 @@
 package com.example.AppWinterhold.Controller.Model;
 
+import com.example.AppWinterhold.Dao.NotificationRepository;
 import com.example.AppWinterhold.Dto.CurrentLoginDetailDTO;
+import com.example.AppWinterhold.Entity.Notification;
 import com.example.AppWinterhold.Service.imp.AccountServiceImp;
 import com.example.AppWinterhold.Utility.JwtToken;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +18,7 @@ public class BaseController {
 
     @Autowired
     AccountServiceImp account;
+
 
     public String getToken() {
 
@@ -42,5 +45,6 @@ public class BaseController {
 
         return data;
     }
+
 
 }

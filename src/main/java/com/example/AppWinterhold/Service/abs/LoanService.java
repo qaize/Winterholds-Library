@@ -5,6 +5,7 @@ import com.example.AppWinterhold.Dto.Loan.*;
 import com.example.AppWinterhold.Dto.Models.DataDTO;
 import com.example.AppWinterhold.Entity.Loan;
 import com.example.AppWinterhold.Entity.LogsIncome;
+import com.example.AppWinterhold.Entity.Notification;
 import com.example.AppWinterhold.Entity.RequestLoan;
 
 import java.time.LocalDate;
@@ -38,4 +39,6 @@ public interface LoanService {
     DataDTO<List<LoanIndexDto>> getListLoanByMembershipNumber(String username);
 
     DataDTO<Boolean> deleteLoanRequest(Long id);
+
+    Integer getNotification();
 }

@@ -135,10 +135,13 @@
             <span class="role" th:text="${#authentication.principal.authorities}">guest</span>
         </div>
         <div class="user">
-            <a class="menu customer" th:href="@{/notification/show-notification-by-id}">
+            <a  sec:authorize="hasRole('customer')" class="menu customer" th:href="@{/notification/show-notification-by-id}">
                 <i class="fas fa-bell"></i>
             </a>
-            <span class="role">4</span>
+            <a sec:authorize="hasRole('administrator')" class="menu customer" th:href="@{/notification/show-all-notification}">
+                <i class="fas fa-bell"></i>
+            </a>
+            <span th:text="${newNotification}" class="role">1</span>
         </div>
         <div class="sign-out">
             <form th:attr="action=@{/logout}" method="POST">

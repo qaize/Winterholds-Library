@@ -8,6 +8,7 @@ import com.example.AppWinterhold.Dto.Models.DataDTO;
 import com.example.AppWinterhold.Service.abs.BookService;
 import com.example.AppWinterhold.Service.abs.CategoryService;
 import com.example.AppWinterhold.Service.imp.AccountServiceImp;
+import com.example.AppWinterhold.Service.imp.LoanServiceImp;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -29,6 +30,9 @@ public class CategoryController {
     @Autowired
     private AccountServiceImp account;
 
+    @Autowired
+    private LoanServiceImp loanServiceImp;
+
     @GetMapping("/index")
     public String index(Model model,
                         @RequestParam(defaultValue = "") String name,
@@ -36,6 +40,7 @@ public class CategoryController {
 
         DataDTO<List<CategoryIndexDto>> data = categoryService.getListCategoryBySearch(page, name);
 
+        model.addAttribute("newNotification",loanServiceImp.getNotification());
         model.addAttribute("name", name);
         model.addAttribute("flag", data.getFlag());
         model.addAttribute("message", data.getMessage());
