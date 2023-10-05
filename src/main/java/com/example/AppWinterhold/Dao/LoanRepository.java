@@ -19,6 +19,13 @@ import java.util.Optional;
 @Repository
 public interface LoanRepository extends JpaRepository<Loan, Long> {
 
+    @Query("""
+            select l
+            from Loan l
+            order by l.id DESC
+            """)
+    List<Loan> findLatestData();
+
 
     @Query("""
             SELECT 

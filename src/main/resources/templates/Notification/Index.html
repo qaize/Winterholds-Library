@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head th:replace="~{layout::headLayout}"><!-- layout itu dari layout.html,
+                            headLayout dari nama fragment yang ada di layout.html  -->
+<body class="main-body">
+<nav th:replace="~{layout::navLayout}"></nav>
+<header th:replace="~{layout::header('Notification')}"></header>
+<main>
+    <div class="grid-container">
+        <div class="divTable">
+            <h1 th:style="${flag == 1 ? 'display : inline-block' : 'display : none'}" th:text="${message}"></h1>
+            <table th:style="${flag == 0 ? 'display : table' : 'display : none'}">
+                <thead>
+                <tr>
+                    <th>Notification Header</th>
+                    <th>Notification Message</th>
+                    <th>Date</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="data : ${notificationList}" th:object="${data}">
+                    <td th:text="*{notificationHeader}"></td>
+                    <td th:text="*{notificationMessage}"></td>
+                    <td th:text="*{createdDate}"></td>
+                </tr>
+                </tbody>
+                <tfoot>
+                <tr>
+                    <td colspan="6">
+                        <div class="pagination">
+                            <div th:attr="data-currentPage=${currentPage}"
+                                 th:text="|page ${currentPage} of ${totalPage}|">
+                            </div>
+                            <div>
+                                <a th:if="${totalPage !=0}"
+                                   th:each="loop:${#numbers.sequence(1, totalPage)}"
+                                   th:href="@{/notification/show-notification-by-id(page=${loop})}"
+                                   th:text="${loop}"></a>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                </tfoot>
+            </table>
+
+        </div>
+
+    </div>
+</main>
+
+</body>
+</html>

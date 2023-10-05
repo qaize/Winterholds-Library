@@ -1,14 +1,12 @@
 package com.example.AppWinterhold.Service.imp;
 
+import com.example.AppWinterhold.Controller.Model.BaseController;
 import com.example.AppWinterhold.Dao.*;
 import com.example.AppWinterhold.Dto.Book.BookUpdateDto;
 import com.example.AppWinterhold.Dto.CurrentLoginDetailDTO;
 import com.example.AppWinterhold.Dto.Loan.*;
 import com.example.AppWinterhold.Dto.Models.DataDTO;
-import com.example.AppWinterhold.Entity.Customer;
-import com.example.AppWinterhold.Entity.Loan;
-import com.example.AppWinterhold.Entity.LogsIncome;
-import com.example.AppWinterhold.Entity.RequestLoan;
+import com.example.AppWinterhold.Entity.*;
 import com.example.AppWinterhold.Service.abs.LoanService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,11 +43,12 @@ public class LoanServiceImp implements LoanService {
     private final BookServiceImp bookService;
     private final LoanRequestRepository loanRequestRepository;
     private final BookRepository bookRepository;
+    private final NotificationRepository notificationRepository;
 
     @Autowired
     public LoanServiceImp(LoanRepository loanRepository, LogsIncomeRepository logsIncomeRepository, LogServiceImpl logService, CustomerServiceImp customerServiceImp,
                           CustomerRepository customerRepository, BookServiceImp bookService, LoanRequestRepository loanRequestRepository,
-                          BookRepository bookRepository) {
+                          BookRepository bookRepository,NotificationRepository notificationRepository) {
         this.loanRepository = loanRepository;
         this.logsIncomeRepository = logsIncomeRepository;
         this.logService = logService;
@@ -58,6 +57,7 @@ public class LoanServiceImp implements LoanService {
         this.bookService = bookService;
         this.loanRequestRepository = loanRequestRepository;
         this.bookRepository = bookRepository;
+        this.notificationRepository = notificationRepository;
     }
 
 
@@ -394,6 +394,9 @@ public class LoanServiceImp implements LoanService {
 
     @Override
     public DataDTO<Boolean> deleteLoanRequest(Long id) {
+
+        String currentLogin = new BaseController().getCurrentLogin();
+
         Boolean returnData = true;
         int flag = 0;
         String message = "";
@@ -401,7 +404,7 @@ public class LoanServiceImp implements LoanService {
 
             RequestLoan data = loanRequestRepository.findById(id).get();
             Customer updateCustomer = customerRepository.findById(data.getMembershipNumber()).get();
-
+            Notification deleteNotification;
             if (data.getStatus()) {
                 flag = 1;
                 message = "This request already accepted";
@@ -410,7 +413,9 @@ public class LoanServiceImp implements LoanService {
                 if (updateCustomer.getRequestCount() > 0) {
                     updateCustomer.setRequestCount(updateCustomer.getRequestCount() - 1);
                 }
+                deleteNotification = mapNotification(UUID.randomUUID(),updateCustomer.getMembershipNumber(),"Request cancaled","",LocalDateTime.now(),currentLogin);
                 data.setIsActive(false);
+                notificationRepository.save(deleteNotification);
             }
 
             loanRequestRepository.save(data);
@@ -458,6 +463,8 @@ public class LoanServiceImp implements LoanService {
     @Override
     public DataDTO<Boolean> insertByRequestId(Long id) {
 
+        BaseController currentLogin = new BaseController();
+
         Boolean returnData = true;
         String message = "";
         int flag = 0;
@@ -482,10 +489,13 @@ public class LoanServiceImp implements LoanService {
                 Customer updateCustomer = updateCustomerProperty(requestLoanData.getMembershipNumber());
                 updateCustomer.setRequestCount(updateCustomer.getRequestCount() - 1);
 
-                Long lastIdLoan = loanRepository.findAll(Sort.by("id").descending()).get(0).getId();
+                Long lastIdLoan = loanRepository.findLatestData().get(0).getId();
                 Loan requestedLoan = new Loan(lastIdLoan + 1, requestLoanData.getMembershipNumber(), requestLoanData.getBookCode(), LocalDate.now(), LocalDate.now().plusDays(5), null, "Order By Request", 0, 0L);
                 requestLoanData.setStatus(true);
+                requestLoanData.setIsActive(false);
+                Notification sendNotification = mapNotification(UUID.randomUUID(),updateCustomer.getMembershipNumber(),"Request Loan Accepted","Thankyou for Loan",LocalDateTime.now(),currentLogin.getCurrentLogin());
                 chainUpdateLoan(updateCustomer, updateBook, requestedLoan);
+                notificationRepository.save(sendNotification);
                 loanRequestRepository.save(requestLoanData);
             }
 
@@ -498,6 +508,12 @@ public class LoanServiceImp implements LoanService {
             LOGGER.error(e.getMessage());
             return DataDTO.<Boolean>builder().build();
         }
+    }
+
+    private Notification mapNotification(UUID uuid, String membershipNumber, String header, String message, LocalDateTime date, String currentLogin) {
+        Notification newNotification = new Notification(uuid.toString(),membershipNumber,false,true,header,message,date,currentLogin);
+
+        return newNotification;
     }
 
 

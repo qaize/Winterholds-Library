@@ -36,7 +36,7 @@
                     <td sec:authorize="hasRole('customer')" class="action">
                         <div class="button-wrapper">
                             <a class="btn warning-button"
-                               th:href="@{/loan/delete-request-loan(id=*{requestId})}">Remove</a>
+                               th:href="@{/loan/delete-request-loan(id=*{requestId})}">cancel</a>
                         </div>
                     </td>
                 </tr>
@@ -65,8 +65,7 @@
     <div sec:authorize="hasRole('customer')" class="grid-container">
         <h1>Current Loan</h1>
         <div class="divTable">
-            <h1 th:style="${flag == 1 ? 'display : inline-block' : 'display : none'}" th:text="${empty}"></h1>
-            <table th:style="${flag == 0 ? 'display : table' : 'display : none'}">
+            <table>
                 <thead>
                 <tr>
                     <th>Book Title</th>

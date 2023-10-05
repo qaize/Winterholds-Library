@@ -1,0 +1,44 @@
+package com.example.AppWinterhold.Controller.Model;
+
+import com.example.AppWinterhold.Dto.Models.DataDTO;
+import com.example.AppWinterhold.Entity.Notification;
+import com.example.AppWinterhold.Service.abs.NotificationService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.List;
+
+@Controller
+@RequestMapping("/notification")
+public class NotificationController {
+
+    private final NotificationService notificationService;
+
+    @Autowired
+    public NotificationController(NotificationService notificationService) {
+        this.notificationService = notificationService;
+    }
+
+    @GetMapping(value = "/show-notification-by-id")
+    public String getNotificationById(Model model, @RequestParam(defaultValue = "1") Integer page){
+        DataDTO<List<Notification>> data = notificationService.getNotificationByCurrentLogin(page);
+
+        model.addAttribute("flag",data.getFlag());
+        model.addAttribute("message",data.getMessage());
+        model.addAttribute("totalPage",data.getFlag());
+        model.addAttribute("currentPage",page);
+        model.addAttribute("notificationList",data.getData());
+        return "Notification/Index";
+    }
+
+
+    @GetMapping(value = "/show-all-notification")
+    public String getAllNotification(){
+
+        return "Notification/Index";
+    }
+}

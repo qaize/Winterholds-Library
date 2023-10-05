@@ -46,9 +46,11 @@ public class SecurityConfiguration {
                         "/loan/denda",
                         "/loan/payment",
                         "/loan/extend",
-                        "/loan/paymentHistory"
+                        "/loan/paymentHistory",
+                        "/notification/show-all-notification"
                 ).hasRole("administrator")
                 .antMatchers(
+                        "/notification/show-notification-by-id",
                         "/customer/detail",
                         "/customer/update",
                         "/loan/request-loan-list",
