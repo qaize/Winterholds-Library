@@ -57,108 +57,153 @@
 <!--        &lt;!&ndash;        <span class="role" th:text="${#authentication.principal.role}">guest</span>&ndash;&gt;-->
 <!--    </div>-->
 
-
 <!--</nav>-->
 <!--</body>-->
 <!--</html>-->
 
-<!doctype html>
-<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:sec="http://www.w3.org/1999/xhtml">
-<head th:fragment="headLayout">
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+<!DOCTYPE html>
+<html
+  lang="en"
+  xmlns:th="http://www.w3.org/1999/xhtml"
+  xmlns:sec="http://www.w3.org/1999/xhtml"
+>
+  <head th:fragment="headLayout">
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Winterhold</title>
-    <link rel="icon" type="image/ico" th:href="@{/favicon.ico}"/>
-    <link rel="stylesheet" th:href="@{/resources/css/normalize.css}"/>
-    <link rel="stylesheet" th:href="@{/resources/css/font-awesome.css}"/>
-    <link rel="stylesheet" th:href="@{/resources/css/site.css}"/>
-    <link rel="stylesheet" th:href="@{/resources/css/site-part-two.css}"/>
+    <link rel="icon" type="image/ico" th:href="@{/favicon.ico}" />
+    <link rel="stylesheet" th:href="@{/resources/css/normalize.css}" />
+    <link rel="stylesheet" th:href="@{/resources/css/font-awesome.css}" />
+    <link rel="stylesheet" th:href="@{/resources/css/site.css}" />
+    <link rel="stylesheet" th:href="@{/resources/css/site-part-two.css}" />
     <script th:src="@{/resources/js/jquery-3.6.0.js}"></script>
     <script th:src="@{/resources/js/site.js}" defer></script>
-</head>
-<body>
-<nav th:fragment="navLayout">
-    <div class="company-logo" >
-        <img th:src="@{/favicon.ico}" alt="Unicorn">
+    <script
+      src="https://code.jquery.com/jquery-3.7.1.js"
+      integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
+      crossorigin="anonymous"
+    ></script>
+  </head>
+  <body>
+    <nav th:fragment="navLayout">
+      <div class="company-logo">
+        <img th:src="@{/favicon.ico}" alt="Unicorn" />
         <a th:href="@{/}">
-        <h1>Knowladge is <span class="bold">Power</span></h1>
+          <h1>Knowladge is <span class="bold">Power</span></h1>
         </a>
-    </div>
+      </div>
 
-    <a sec:authorize="hasRole('customer')" class="menu account" th:href="@{/customer/detail-profile}">
+      <a
+        sec:authorize="hasRole('customer')"
+        class="menu account"
+        th:href="@{/customer/detail-profile}"
+      >
         <i class="fas fa-pen"></i>
         <span>My Profile</span>
-    </a>
+      </a>
 
-    <a class="menu account" th:href="@{/author/index}">
+      <a class="menu account" th:href="@{/author/index}">
         <i class="fas fa-pen"></i>
         <span>Author</span>
-    </a>
+      </a>
 
-    <a class="menu book" th:href="@{/books/}">
+      <a class="menu book" th:href="@{/books/}">
         <i class="fas fa-book-open"></i>
         <span>Book</span>
-    </a>
+      </a>
 
-    <a sec:authorize="hasRole('administrator')" class="menu customer" th:href="@{/customer/index}">
+      <a
+        sec:authorize="hasRole('administrator')"
+        class="menu customer"
+        th:href="@{/customer/index}"
+      >
         <i class="fas fa-users"></i>
         <span>Customer</span>
-    </a>
+      </a>
 
-    <a class="menu customer" th:href="@{/loan/request-loan-list}">
+      <a class="menu customer" th:href="@{/loan/request-loan-list}">
         <i class="fas fa-users"></i>
         <span>Request list</span>
-    </a>
+      </a>
 
-    <div sec:authorize="hasRole('administrator')" class="dropdown">
+      <div sec:authorize="hasRole('administrator')" class="dropdown">
         <i class="fas fa-book-reader"></i>
         <span>Loan</span>
         <div class="dropdown-content">
-            <a th:href="@{/loan/index}">Loan List</a>
-            <a th:href="@{/loan/paymentHistory}">Payment History</a>
-            <a th:href="@{/loan/history}">Loan History</a>
-            <a th:href="@{/loan/denda}">On Payment</a>
+          <a th:href="@{/loan/index}">Loan List</a>
+          <a th:href="@{/loan/paymentHistory}">Payment History</a>
+          <a th:href="@{/loan/history}">Loan History</a>
+          <a th:href="@{/loan/denda}">On Payment</a>
         </div>
-    </div>
-
-
-</nav>
-<header th:fragment="header (breadCrumbs)">
-    <div class="bread-crumbs">
+      </div>
+    </nav>
+    <header th:fragment="header (breadCrumbs)">
+      <div class="bread-crumbs">
         <span th:text="${breadCrumbs}"></span>
-    </div>
-    <div class="user-wrapper">
+      </div>
+      <div class="user-wrapper">
         <div class="user">
-            <span class="full-name" th:text="${#authentication.name}">anonymous</span>
-            <span class="role" th:text="${#authentication.principal.authorities}">guest</span>
+          <span class="full-name" th:text="${#authentication.name}"
+            >anonymous</span
+          >
+          <span class="role" th:text="${#authentication.principal.authorities}"
+            >guest</span
+          >
         </div>
-        <div class="user">
-            <a  sec:authorize="hasRole('customer')" class="menu customer" th:href="@{/notification/show-notification-by-id}">
-                <i class="fas fa-bell"></i>
-            </a>
-            <a sec:authorize="hasRole('administrator')" class="menu customer" th:href="@{/notification/show-all-notification}">
-                <i class="fas fa-bell"></i>
-            </a>
-            <span th:text="${newNotification}" class="role">1</span>
+        <div class="notification">
+          <a
+            sec:authorize="hasRole('customer')"
+            class="notification-button"
+            th:href="@{/notification/show-notification-by-id}"
+          >
+            <i class="fas fa-bell"></i>
+            <span
+              th:style="${newNotification} == 0 ? 'display : none' : 'display : flex' "
+              th:text="${newNotification} "
+              class="notification-badge"
+              >1</span
+            >
+          </a>
+        </div>
+        <div class="notification">
+          <a
+            sec:authorize="hasRole('administrator')"
+            class="notification-button"
+            th:href="@{/notification/show-all-notification}"
+          >
+            <i class="fas fa-bell"></i>
+            <span
+              th:style="${newNotification} == 0 ? 'display : none' : 'display : flex' "
+              th:text="${newNotification} "
+              class="notification-badge"
+              >1</span
+            >
+          </a>
         </div>
         <div class="sign-out">
-            <form th:attr="action=@{/logout}" method="POST">
-                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
-                <button type="submit"><i class="fas fa-sign-out-alt"></i></button>
-            </form>
+          <form th:attr="action=@{/logout}" method="POST">
+            <input
+              type="hidden"
+              th:name="${_csrf.parameterName}"
+              th:value="${_csrf.token}"
+            />
+            <button type="submit"><i class="fas fa-sign-out-alt"></i></button>
+          </form>
         </div>
-    </div>
-</header>
-<main></main>
-<footer th:fragment="footer">
-    Copyrights &copy; <span class="app-tahun"></span>
-    <span class="author">Anonymous</span>
-    All rights reserved.
-</footer>
-<th:block th:fragment="javascript">
-    <script th:src="@{/resources/js/site.js}" defer></script>
-</th:block>
-</body>
+      </div>
+    </header>
+    <main></main>
+    <footer th:fragment="footer">
+      Copyrights &copy; <span class="app-tahun"></span>
+      <span class="author">Anonymous</span>
+      All rights reserved.
+    </footer>
+    <th:block th:fragment="javascript">
+      <script th:src="@{/resources/js/site.js}" defer></script>
+    </th:block>
+  </body>
 </html>

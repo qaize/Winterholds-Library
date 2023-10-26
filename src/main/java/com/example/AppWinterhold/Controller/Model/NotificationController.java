@@ -31,6 +31,7 @@ public class NotificationController {
         model.addAttribute("message",data.getMessage());
         model.addAttribute("totalPage",data.getFlag());
         model.addAttribute("currentPage",page);
+        model.addAttribute("newNotification",0);
         model.addAttribute("notificationList",data.getData());
         return "Notification/Index";
     }
@@ -44,6 +45,7 @@ public class NotificationController {
         model.addAttribute("message",data.getMessage());
         model.addAttribute("totalPage",data.getFlag());
         model.addAttribute("currentPage",page);
+        model.addAttribute("newNotification",0);
         model.addAttribute("notificationList",data.getData());
 
         return "Notification/Index";
