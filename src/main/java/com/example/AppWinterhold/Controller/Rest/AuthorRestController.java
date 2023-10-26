@@ -68,10 +68,11 @@ public class AuthorRestController {
             @ApiResponse(responseCode = "200", description = "Successfully retrieved"),
             @ApiResponse(responseCode = "404", description = "Not found - The product was not found")
     })
-    public ResponseEntity<Object> postAuthorPage() {
+    public ResponseEntity<Object> postAuthorPage(@RequestParam(defaultValue = "1") Integer page,
+                                                 @RequestParam(defaultValue = "" ) String nama) {
         try {
 
-            Page<AuthorIndexDto> authorIndexDtos = authorService.getAllAuthorWithPage();
+            Page<AuthorIndexDto> authorIndexDtos = authorService.getAllAuthorWithPage(page,nama);
             List<AuthorIndexDto> list = authorIndexDtos.getContent();
 
             BaseResponseDTO.MetaData data = new BaseResponseDTO.MetaData();
@@ -81,9 +82,9 @@ public class AuthorRestController {
 
             BaseResponseDTO baseResponseDTO = new BaseResponseDTO();
 
-
-
-            return ResponseEntity.status(HttpStatus.OK).body(baseResponseDTO.<List<AuthorIndexDto>>builder().data(list).metaData(data).build());
+            return ResponseEntity.status(HttpStatus.OK).body(baseResponseDTO.<List<AuthorIndexDto>>builder()
+                            .status("1").httpStatus(HttpStatus.OK).message("Success Get Data")
+                    .data(list).metaData(data).build());
         } catch (Exception e) {
 
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());

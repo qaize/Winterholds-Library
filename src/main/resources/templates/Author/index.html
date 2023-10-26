@@ -7,11 +7,11 @@
 <header th:replace="~{layout::header('Author')}"></header>
 <main>
     <div class="grid-container">
-        <form method="get" class="filter" th:attr="action=@{/author/index}">
-            <span>Author Name :</span>
-            <input type="text" name="name" placeholder="name" th:attr="value=${name}">
-            <button class=" btn blue-button" type="submit">Search</button>
-        </form>
+        <div class="filter">
+            <span>Author Name: </span>
+            <input id="search-author" type="text">
+            <button id="search-button" class="button update-button">Search</button>
+        </div>
 
         <a sec:authorize="hasRole('administrator')" class="btn create-button" th:href="@{/author/insert}"> Add Author </a>
 
@@ -29,8 +29,8 @@
                     <th scope="col">Last Modified By</th>
                 </tr>
                 </thead>
-                <tbody>
-                <tr th:each="data : ${listAuthor}" th:object="${data}">
+                <tbody id="table-author">
+                <!-- <tr th:each="data : ${listAuthor}" th:object="${data}">
                     <td class="action">
                         <div class="button-wrapper">
                             <a class="btn blue-button" th:href="@{/author/detail(id=*{id})}">Books</a>
@@ -44,7 +44,7 @@
                     <td th:text="*{education}"></td>
                     <td th:text="*{createdBy}"></td>
                     <td th:text="*{modifiedBy}"></td>
-                </tr>
+                </tr> -->
                 </tbody>
                 <tfoot>
                 <tr>
@@ -53,10 +53,12 @@
                             <div th:attr="data-currentPage=${currentPage}"
                                  th:text="|page ${currentPage} of ${totalPage}|"></div>
                             <div>
-                                <a th:if="${totalPage !=0}"
+                                <!-- <a th:if="${totalPage !=0}"
                                    th:each="loop:${#numbers.sequence(1, totalPage)}"
                                    th:href="@{/author/index(page=${loop},name=${name})}"
-                                   th:text="${loop}"></a>
+                                   th:text="${loop}"></a> -->
+                                   <button id="prev-button"> Prev </button>
+                                   <button id="next-button"> Next </button>
                             </div>
                         </div>
                     </td>
@@ -68,16 +70,6 @@
 
     </div>
 
-    <script>
-        $.ajax({
-            url : "http://localhost:7081/winterhold/api/author/getAuthor",
-            type : "GET",
-            success : function(user){
-                console.log(user);
-            }
-        });
-    
-    </script>
 </main>
 
 

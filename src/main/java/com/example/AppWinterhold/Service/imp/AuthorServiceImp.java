@@ -89,8 +89,6 @@ public class AuthorServiceImp implements AuthorService {
                     .message(message)
                     .build();
         }
-
-
     }
 
     @Override
@@ -208,10 +206,10 @@ public class AuthorServiceImp implements AuthorService {
 
 
     @Override
-    public Page<AuthorIndexDto> getAllAuthorWithPage() {
-        Pageable page = PageRequest.of(1, 5);
+    public Page<AuthorIndexDto> getAllAuthorWithPage(Integer pages,String nama) {
+        Pageable page = PageRequest.of(pages -1, 5,Sort.by("id").descending());
 
-        return authorRepository.getAllAuthorWithPage(page);
+        return authorRepository.getAllAuthorWithPage(page,nama);
     }
 
     @Override

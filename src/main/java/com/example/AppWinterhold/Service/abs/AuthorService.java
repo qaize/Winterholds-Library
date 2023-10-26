@@ -27,7 +27,7 @@ public interface AuthorService {
 
     ResponseEntity<Object> getAllAuthorTuple(AuthorRequestDTO authorRequestDTO);
 
-    Page<AuthorIndexDto> getAllAuthorWithPage();
+    Page<AuthorIndexDto> getAllAuthorWithPage(Integer page,String nama);
 
     ResponseEntity<Object> geAllAuthorByTupple(AuthorRequestDTO authorRequestDTO);
 }

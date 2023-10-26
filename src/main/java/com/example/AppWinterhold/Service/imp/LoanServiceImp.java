@@ -94,7 +94,7 @@ public class LoanServiceImp implements LoanService {
     @Override
     public boolean returnBook(Long id) {
 
-
+        String currentLogin = new BaseController().getCurrentLogin();
         var data = getLoanById(id);
         var book = bookService.getBooksById(data.getBookCode());
         var customer = customerServiceImp.getCustomerByEntity(data.getCustomerNumber());
@@ -111,8 +111,10 @@ public class LoanServiceImp implements LoanService {
             if (!(data.getDenda() > 0)) {
                 customer.setLoanCount(customerServiceImp.loanCountSetter(data.getCustomerNumber(), "Return"));
             }
+            Notification returnNotification = mapNotification(UUID.randomUUID(), customer.getMembershipNumber(), "Returned by admin",book.getTitle().concat(": ".concat(book.getCategoryName())),LocalDateTime.now(),currentLogin);
 
             extendLoan(data);
+            notificationRepository.save(returnNotification);
             bookService.update(book);
             customerServiceImp.updateWithEntity(customer);
             return true;
@@ -148,14 +150,18 @@ public class LoanServiceImp implements LoanService {
     @Override
     public void insert(LoanInsertDto newData) {
         try {
+            String currentLogin = new BaseController().getCurrentLogin();
             // Update book and customer property during create new loan
             BookUpdateDto updateBook = updateBookProperty(newData.getBookCode());
             Customer updateCustomer = updateCustomerProperty(newData.getCustomerNumber());
             Loan insertNewLoan = mapInsert(newData);
 
+            Notification insertNotification = mapNotification(UUID.randomUUID(), updateCustomer.getMembershipNumber(), "New loan inserted by admin",updateBook.getTitle().concat(": ".concat(updateBook.getCategoryName())),LocalDateTime.now(),currentLogin);
+
             chainUpdateLoan(updateCustomer, updateBook, insertNewLoan);
             LOGGER.info(SUCCESS_INSERT_DATA, insertNewLoan.getId());
             logService.saveLogs(LOAN, SUCCESS, INSERT);
+            notificationRepository.save(insertNotification);
         } catch (Exception e) {
             LOGGER.error(e.getMessage());
             logService.saveLogs(LOAN, FAILED, INSERT);

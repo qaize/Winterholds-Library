@@ -113,8 +113,9 @@ public interface AuthorRepository extends JpaRepository<Author, Long> {
                 )
             FROM 
                 Author as a
+            where a.firstName LIKE %:nama% OR a.lastName LIKE %:nama%
             """)
-    Page<AuthorIndexDto> getAllAuthorWithPage(Pageable page);
+    Page<AuthorIndexDto> getAllAuthorWithPage(Pageable page,String nama);
 
     @Query(nativeQuery = true,value = """
             SELECT\s
