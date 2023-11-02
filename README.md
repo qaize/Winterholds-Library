@@ -10,13 +10,14 @@ Library Sistem Application based MVC Springboot framework
     - Customer can only loan 3 books at once
     - Customer can't loan same books
     - Customer was unable to loan if they was on penalty (Return books late), mush pay the penalty first
+    - Customer can request for loan the book and admin will get notification
 
 # Admin Side :
     - Can Search,create, delete, edit books category (Book deatails include books quantity)
     - Can Search, create, delete, edit books based on category
     - Can Search, create, delete, edit Author for the books
     - Can Create, retrun, extend Loan of Customer book
+    - Can approve request loan from customer
 
-This App is just on admin side
 
       
