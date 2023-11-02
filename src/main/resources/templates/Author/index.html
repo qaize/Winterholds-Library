@@ -10,7 +10,7 @@
         <div class="filter">
             <span>Author Name: </span>
             <input id="search-author" type="text">
-            <button id="search-button" class="button update-button">Search</button>
+            <button id="search-button" class="btn update-button">Search</button>
         </div>
 
         <a sec:authorize="hasRole('administrator')" class="btn create-button" th:href="@{/author/insert}"> Add Author </a>
@@ -49,16 +49,23 @@
                 <tfoot>
                 <tr>
                     <td colspan="9">
-                        <div class="pagination">
-                            <div th:attr="data-currentPage=${currentPage}"
-                                 th:text="|page ${currentPage} of ${totalPage}|"></div>
+                        <div id="paging" class="pagination">
                             <div>
+                                <span id="pagination-current">test</span>
+                            </div>
+                            <div class="pagination-nav">
                                 <!-- <a th:if="${totalPage !=0}"
                                    th:each="loop:${#numbers.sequence(1, totalPage)}"
                                    th:href="@{/author/index(page=${loop},name=${name})}"
                                    th:text="${loop}"></a> -->
-                                   <button id="prev-button"> Prev </button>
-                                   <button id="next-button"> Next </button>
+                                   <div class="next-pagination">
+                                       <button id="prev-button"> Prev </button>        
+                                   </div>
+                                   <div id="pagination-list" class="pagination-list">
+                                   </div>
+                                   <div class="prev-pagination">
+                                       <button id="next-button"> Next </button>
+                                   </div>
                             </div>
                         </div>
                     </td>

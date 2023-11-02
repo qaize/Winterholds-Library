@@ -663,3 +663,8 @@ form.upsert-form td.combined-validation {
   align-items: center;
   border-radius: 50%;
 }
+
+.pagination-nav {
+  display: flex;
+  justify-content: flex-end;
+}
