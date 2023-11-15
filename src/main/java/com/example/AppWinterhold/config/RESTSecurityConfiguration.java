@@ -42,7 +42,7 @@ public class RESTSecurityConfiguration {
     @Bean
     CorsConfigurationSource corsConfigurationSource(){
         var configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("*"));
+        configuration.setAllowedOrigins(List.of("http://localhost:7082"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowedMethods(List.of("POST","GET","PATCH","PUT","DELETE"));
 

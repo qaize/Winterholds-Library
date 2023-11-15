@@ -26,11 +26,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityManager;
+
 import javax.persistence.Tuple;
 import java.math.BigInteger;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -69,15 +68,15 @@ public class AuthorServiceImp implements AuthorService {
             Pageable paging = PageRequest.of(page - 1, row, Sort.by("id").descending());
             Page<AuthorIndexDto> authorData = authorRepository.getListAuthorBySearch(name, paging);
 
-            if(authorData.isEmpty()){
+            if (authorData.isEmpty()) {
                 flag = 1;
                 message = INDEX_EMPTY;
             }
 
-            LOGGER.info(SUCCESS_GET_DATA,AUTHOR);
+            LOGGER.info(SUCCESS_GET_DATA, AUTHOR);
             return DataDTO.<List<AuthorIndexDto>>builder()
                     .flag(flag)
-                    .totalPage(Long.valueOf(authorData.getTotalPages()))
+                    .totalPage((long) authorData.getTotalPages())
                     .message(message)
                     .data(authorData.getContent())
                     .build();
@@ -122,9 +121,8 @@ public class AuthorServiceImp implements AuthorService {
 
         Integer row = 10;
         Double totalData = (double) authorRepository.getCountPage(name);
-        Long totalPage = (long) Math.ceil(totalData / row);
 
-        return totalPage;
+        return (Long) (long) Math.ceil(totalData / row);
     }
 
     @Override
@@ -166,7 +164,7 @@ public class AuthorServiceImp implements AuthorService {
     @Override
     public AuthorIndexDto getAuthorById(Long id) throws JsonProcessingException {
         Optional<Author> author = authorRepository.findById(id);
-        AuthorIndexDto dataAuthor = author.isPresent() ? mapAuthorIndexDto(author.get()) : null;
+        AuthorIndexDto dataAuthor = author.map(this::mapAuthorIndexDto).orElse(null);
 
         LOGGER.info(SUCCESS_GET_DATA, objectMapper.writeValueAsString(dataAuthor));
         return dataAuthor;
@@ -206,10 +204,10 @@ public class AuthorServiceImp implements AuthorService {
 
 
     @Override
-    public Page<AuthorIndexDto> getAllAuthorWithPage(Integer pages,String nama) {
-        Pageable page = PageRequest.of(pages -1, 5,Sort.by("id").descending());
+    public Page<AuthorIndexDto> getAllAuthorWithPage(Integer pages, String nama) {
+        Pageable page = PageRequest.of(pages - 1, 5, Sort.by("id").descending());
 
-        return authorRepository.getAllAuthorWithPage(page,nama);
+        return authorRepository.getAllAuthorWithPage(page, nama);
     }
 
     @Override
@@ -232,7 +230,7 @@ public class AuthorServiceImp implements AuthorService {
     }
 
     private AuthorIndexDto mapAuthorIndexDto(Author data) {
-        AuthorIndexDto authorIndexDto = new AuthorIndexDto(
+        return new AuthorIndexDto(
                 data.getId(),
                 data.getTitle(),
                 data.getFirstName(),
@@ -244,7 +242,6 @@ public class AuthorServiceImp implements AuthorService {
                 data.getCreatedBy(),
                 data.getModifiedBy()
         );
-        return authorIndexDto;
     }
 
     public void mapInsert(Author author, AuthorInsertDto authorInsertDto) {
@@ -264,7 +261,8 @@ public class AuthorServiceImp implements AuthorService {
     }
 
     private List<AuthorIndexDto> mapTupleToAuthor(List<Tuple> data) {
-        List<AuthorIndexDto> authorIndexDtos = data.stream().map(auth -> new AuthorIndexDto(
+
+        return data.stream().map(auth -> new AuthorIndexDto(
                 auth.get("id", BigInteger.class).longValue(),
                 auth.get("title", String.class),
                 auth.get("firstName", String.class),
@@ -276,22 +274,23 @@ public class AuthorServiceImp implements AuthorService {
                 auth.get("createdBy", String.class),
                 auth.get("modifiedBy", String.class)
         )).collect(Collectors.toList());
-
-        return authorIndexDtos;
     }
 
     private void updateValidator(Author author) throws JsonProcessingException {
+        try {
+            Optional<Author> validatedData = authorRepository.findById(author.getId());
+            validatedData.ifPresent(value -> author.setModifiedBy(value.getModifiedBy()));
 
-        Optional<Author> validatedData = authorRepository.findById(author.getId());
-        author.setModifiedBy(validatedData.get().getModifiedBy());
+            String dataExisting = objectMapper.writeValueAsString(validatedData);
+            String dataUpdate = objectMapper.writeValueAsString(author);
 
-        String dataExisting = objectMapper.writeValueAsString(validatedData);
-        String dataUpdate = objectMapper.writeValueAsString(author);
-
-        if (dataExisting.equals(dataUpdate)) {
-            throw new CustomException(VALIDATE_UPDATE);
+            if (dataExisting.equals(dataUpdate)) {
+                throw new CustomException(VALIDATE_UPDATE);
+            }
+            author.setModifiedBy(baseController.getCurrentLogin());
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        author.setModifiedBy(baseController.getCurrentLogin());
     }
 
     private void UpdateAccountMapper(Author author, AuthorIndexDto authIndex, AuthorUpdateDto authorInsertDto) {

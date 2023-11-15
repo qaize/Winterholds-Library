@@ -8,6 +8,7 @@ import com.example.AppWinterhold.Dto.Models.DataDTO;
 import com.example.AppWinterhold.Entity.Customer;
 import com.example.AppWinterhold.Service.abs.CustomerService;
 import com.example.AppWinterhold.Service.imp.AccountServiceImp;
+import com.example.AppWinterhold.Service.imp.LoanServiceImp;
 import com.example.AppWinterhold.Utility.Dropdown;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,9 @@ public class CustomerController {
     @Autowired
     private AccountServiceImp account;
 
+    @Autowired
+    private LoanServiceImp loanServiceImp;
+
     @GetMapping("/index")
     public String index(Model model,
                         @RequestParam(defaultValue = "") String number,
@@ -43,6 +47,7 @@ public class CustomerController {
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPage", data.getTotalPage());
         model.addAttribute("listCustomer", data.getData());
+        model.addAttribute("newNotification",loanServiceImp.getNotification());
 
         return "Customer/index";
     }

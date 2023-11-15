@@ -32,11 +32,13 @@ var nama = "";
 
 searchAuthor.addEventListener("keyup", () => {
   nama = searchAuthor.value;
+  page = 1;
   loadAuthorData();
 });
 
 searchButton.addEventListener("click", () => {
   nama = searchAuthor.value;
+  page = 1;
   loadAuthorData();
 });
 
@@ -64,6 +66,7 @@ function loadAuthorData() {
       paging.style.display = "flex";
       paginationList.innerHTML = "";
       paginationCurrent.innerHTML = `page ${page} of ${totalPage}`;
+      $("#table-author").empty();
 
       // if true pagination not showing
       if (totalPage <= 1) {
@@ -82,27 +85,28 @@ function loadAuthorData() {
 
         paginationList.appendChild(button);
       }
+      console.log(user.data.length);
+      if (user.data.length != 0) {
+        // insert data to table with Next and prev paging
+        if (user.metaData.totalPage >= page) {
+          listAuthor.innerHTML = "";
+          $.each(user.data, function (key, value) {
+            let adminAction = ``;
 
-      // insert data to table with Next and prev paging
-      if (user.metaData.totalPage >= page) {
-        listAuthor.innerHTML = "";
-        $.each(user.data, function (key, value) {
-          let adminAction = ``;
-
-          if (role.textContent === "administrator") {
-            adminAction = `
+            if (role.textContent === "administrator") {
+              adminAction = `
             <a class="btn update-button" href="/winterhold/author/update?id=${value.id}">Edit</a>
             <a class="btn warning-button" href="/winterhold/author/delete?id=${value.id}">Delete</a>`;
-          }
+            }
 
-          $("#table-author").append(
-            `
+            $("#table-author").append(
+              `
             <tr>
               <td>
                   <div class="button-wrapper">
                       <a class="btn blue-button" href="/winterhold/author/detail?id=${value.id}">Books</a>` +
-              adminAction +
-              `
+                adminAction +
+                `
                   </div>
               </td>
               <td>${value.fullname}</td>
@@ -114,8 +118,13 @@ function loadAuthorData() {
             </tr>
 
             `
-          );
-        });
+            );
+          });
+        }
+      } else {
+        $("#table-author").append(`
+          <h1>Not Found</h1>
+          `);
       }
     },
   });

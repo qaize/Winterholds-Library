@@ -14,9 +14,9 @@ import java.util.List;
 public interface AccountRepository extends JpaRepository<Account, String> {
 
     @Query("""
-            SELECT 
+            SELECT
                 new com.example.AppWinterhold.Dto.Account.AccountIndexDto
-                
+             
                 ( a.username, a.password)
             
             FROM
@@ -25,18 +25,20 @@ public interface AccountRepository extends JpaRepository<Account, String> {
     List<AccountIndexDto> getall();
 
     @Query("""
-            SELECT 
+            SELECT
                 new com.example.AppWinterhold.Dto.Account.AccountIndexDto
                 (a.username, a.password)
             FROM
-                Account AS a       
-            WHERE 
+                Account AS a
+            WHERE
                 a.username = :username
             """)
     AccountIndexDto getAccountByUsername(String username);
 
+
+
     @Query("""
-            SELECT 
+            SELECT
                 COUNT(a.username)
             FROM
                 Account AS a
