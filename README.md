@@ -17,6 +17,4 @@ Library Sistem Application based MVC Springboot framework
     - Can Search, create, delete, edit Author for the books
     - Can Create, retrun, extend Loan of Customer book
 
-This App is just on admin side
-
       
