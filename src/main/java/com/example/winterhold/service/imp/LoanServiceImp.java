@@ -12,7 +12,6 @@ import com.example.winterhold.service.abs.NotificationService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -21,6 +20,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -101,7 +101,7 @@ public class LoanServiceImp implements LoanService {
             if (data.getDenda() <= 0) {
                 customer.setLoanCount(customerServiceImp.loanCountSetter(data.getCustomerNumber(), "Return"));
             }
-            Notification returnNotification = notificationService.mapNotification(UUID.randomUUID(), customer.getMembershipNumber(), "Returned by admin", book.getTitle().concat(": ".concat(book.getCategoryName())), LocalDateTime.now(), currentLogin);
+            Notification returnNotification = notificationService.sendNotification(UUID.randomUUID(), customer.getMembershipNumber(), "Returned by admin", book.getTitle().concat(": ".concat(book.getCategoryName())), LocalDateTime.now(), currentLogin);
 
             extendLoan(data);
             notificationRepository.save(returnNotification);
@@ -146,7 +146,7 @@ public class LoanServiceImp implements LoanService {
             Customer updateCustomer = updateCustomerProperty(newData.getCustomerNumber());
             Loan insertNewLoan = mapInsert(newData);
 
-            Notification insertNotification = notificationService.mapNotification(UUID.randomUUID(), updateCustomer.getMembershipNumber(), "New loan inserted by admin", updateBook.getTitle().concat(": ".concat(updateBook.getCategoryName())), LocalDateTime.now(), currentLogin);
+            Notification insertNotification = notificationService.sendNotification(UUID.randomUUID(), updateCustomer.getMembershipNumber(), "New loan inserted by admin", updateBook.getTitle().concat(": ".concat(updateBook.getCategoryName())), LocalDateTime.now(), currentLogin);
 
             chainUpdateLoan(updateCustomer, updateBook, insertNewLoan);
             LOGGER.info(SUCCESS_INSERT_DATA, insertNewLoan.getId());
@@ -281,7 +281,7 @@ public class LoanServiceImp implements LoanService {
         return  totalPage;
     }
 
-
+    @Transactional
     @Override
     public DataDTO<Boolean> newLoanRequest(RequestLoanDTO requestNew) {
         String currentLogin = new BaseController().getCurrentLogin();
@@ -334,7 +334,7 @@ public class LoanServiceImp implements LoanService {
                             LocalDateTime.now(), false, true);
                     customer.setRequestCount(customer.getRequestCount() + 1);
                 }
-                Notification userNotification = notificationService.mapNotification(UUID.randomUUID(), "admin", "Request new loan", requestNewLoan.getBookCode(), LocalDateTime.now(), currentLogin);
+                Notification userNotification = notificationService.sendNotification(UUID.randomUUID(), "admin", "Request new loan", requestNewLoan.getBookCode().concat(" by ").concat(requestNew.getMembershipNumber()), LocalDateTime.now(), currentLogin);
 
                 notificationRepository.save(userNotification);
                 customerRepository.save(customer);
@@ -356,7 +356,7 @@ public class LoanServiceImp implements LoanService {
     }
 
     @Override
-    public DataDTO<List<RequestLoanIndexDTO>> getRequestLoanByCurrentLogin(CurrentLoginDetailDTO currentLogin, Integer page) {
+    public DataDTO<List<RequestLoanIndexDTO>> fetchLoanRequest(CurrentLoginDetailDTO currentLogin, Integer page) {
         int flag = 0;
         String message = "";
         try {
@@ -392,7 +392,7 @@ public class LoanServiceImp implements LoanService {
 
 
     @Override
-    public DataDTO<Boolean> deleteLoanRequest(Long id) {
+    public DataDTO<Boolean> cancelLoan(Long id) {
 
         String currentLogin = new BaseController().getCurrentLogin();
 
@@ -412,7 +412,7 @@ public class LoanServiceImp implements LoanService {
                 if (updateCustomer.getRequestCount() > 0) {
                     updateCustomer.setRequestCount(updateCustomer.getRequestCount() - 1);
                 }
-                deleteNotification = notificationService.mapNotification(UUID.randomUUID(), updateCustomer.getMembershipNumber(), "Request canceled", "", LocalDateTime.now(), currentLogin);
+                deleteNotification = notificationService.sendNotification(UUID.randomUUID(), updateCustomer.getMembershipNumber(), "Request canceled", "", LocalDateTime.now(), currentLogin);
                 data.setIsActive(false);
                 notificationRepository.save(deleteNotification);
             }
@@ -492,7 +492,7 @@ public class LoanServiceImp implements LoanService {
                 Loan requestedLoan = new Loan(lastIdLoan + 1, requestLoanData.getMembershipNumber(), requestLoanData.getBookCode(), LocalDate.now(), LocalDate.now().plusDays(5), null, "Order By Request", 0, 0L);
                 requestLoanData.setStatus(true);
                 requestLoanData.setIsActive(false);
-                Notification sendNotification = notificationService.mapNotification(UUID.randomUUID(), updateCustomer.getMembershipNumber(), "Request Loan Accepted", "Thankyou for Loan", LocalDateTime.now(), currentLogin.getCurrentLogin());
+                Notification sendNotification = notificationService.sendNotification(UUID.randomUUID(), updateCustomer.getMembershipNumber(), "Request Loan Accepted", "Thankyou for Loan", LocalDateTime.now(), currentLogin.getCurrentLogin());
                 chainUpdateLoan(updateCustomer, updateBook, requestedLoan);
                 notificationRepository.save(sendNotification);
                 loanRequestRepository.save(requestLoanData);

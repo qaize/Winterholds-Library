@@ -309,7 +309,7 @@ public class LoanController {
         BaseController baseController = new BaseController();
         CurrentLoginDetailDTO currentLogin = baseController.getCurrentLoginDetail();
 
-        DataDTO<List<RequestLoanIndexDTO>> data = loanService.getRequestLoanByCurrentLogin(currentLogin,page);
+        DataDTO<List<RequestLoanIndexDTO>> data = loanService.fetchLoanRequest(currentLogin,page);
         DataDTO<List<LoanIndexDto>> dataLoan = loanService.getListLoanByMembershipNumber(currentLogin.getUsername());
 
         model.addAttribute("flag",data.getFlag());
@@ -335,7 +335,7 @@ public class LoanController {
 
     @GetMapping(value = "/delete-request-loan")
     public String deleteRequest(Model model,@RequestParam Long id){
-        DataDTO<Boolean> deleteRequest = loanService.deleteLoanRequest(id);
+        DataDTO<Boolean> deleteRequest = loanService.cancelLoan(id);
 
         model.addAttribute(WinterholdConstants.CONTROLLER_VALIDATION_HEADER,"Unable To Request");
         model.addAttribute(WinterholdConstants.CONTROLLER_VALIDATION_REASON,deleteRequest.getMessage());

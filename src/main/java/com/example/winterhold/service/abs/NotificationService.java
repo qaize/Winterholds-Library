@@ -12,5 +12,5 @@ public interface NotificationService {
     DataDTO<List<NotificationDetailDto>> retriveNotification(Integer page);
 
     Integer getNotification();
-    Notification mapNotification(UUID uuid, String membershipNumber, String header, String message, LocalDateTime date, String currentLogin);
+    Notification sendNotification(UUID uuid, String membershipNumber, String header, String message, LocalDateTime date, String currentLogin);
 }

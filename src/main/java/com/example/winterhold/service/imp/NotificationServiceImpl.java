@@ -17,6 +17,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -30,7 +31,6 @@ import static com.example.winterhold.constants.ActionConstants.INDEX_EMPTY;
 @Slf4j
 public class NotificationServiceImpl implements NotificationService {
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(NotificationServiceImpl.class);
 
     private final NotificationRepository notificationRepository;
 
@@ -61,29 +61,12 @@ public class NotificationServiceImpl implements NotificationService {
             if (!fetchedNotification.isEmpty()) {
                 for (Notification viewednotification : fetchedNotification
                 ) {
-                    log.info("date {}", viewednotification.getCreatedDate());
-                    Date date = null;
-                    if (viewednotification.getCreatedDate().toString().length() < 20) {
-                        date = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").parse(viewednotification.getCreatedDate().toString());
-                    } else {
-                        date = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS").parse(viewednotification.getCreatedDate().toString());
-                    }
-
-                    String dateNotif = new SimpleDateFormat("dd MMMM yyyy HH:mm").format(date);
-
-                    notificationDetailDtos.add(new NotificationDetailDto().builder()
-                            .type(viewednotification.getNotificationHeader())
-                            .dateRequest(dateNotif)
-                            .requester(viewednotification.getRecipientId())
-                            .message(viewednotification.getNotificationMessage())
-                            .build());
-
+                    NotificationDetailDto data = populateNotification(viewednotification);
+                    notificationDetailDtos.add(data);
                     viewednotification.setIsViewed(true);
                     viewednotification.setIsNew(false);
                 }
                 notificationRepository.saveAll(fetchedNotification);
-            } else {
-                fetchedNotification = new ArrayList<>();
             }
 
             return DataDTO.<List<NotificationDetailDto>>builder()
@@ -94,9 +77,28 @@ public class NotificationServiceImpl implements NotificationService {
                     .build();
 
         } catch (Exception e) {
-            LOGGER.error(e.getMessage());
+            log.error(e.getMessage());
             return null;
         }
+    }
+
+    private NotificationDetailDto populateNotification(Notification notification) throws ParseException {
+
+        Date date = null;
+        if (notification.getCreatedDate().toString().length() < 20) {
+            date = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").parse(notification.getCreatedDate().toString());
+        } else {
+            date = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS").parse(notification.getCreatedDate().toString());
+        }
+
+        String dateNotif = new SimpleDateFormat("dd MMMM yyyy HH:mm").format(date);
+
+        return  NotificationDetailDto.builder()
+                .type(notification.getNotificationHeader())
+                .dateRequest(dateNotif)
+                .requester(notification.getRecipientId())
+                .message(notification.getNotificationMessage())
+                .build();
     }
 
 
@@ -113,7 +115,7 @@ public class NotificationServiceImpl implements NotificationService {
         return newNotification;
     }
 
-    public Notification mapNotification(UUID uuid, String membershipNumber, String header, String message, LocalDateTime date, String currentLogin) {
+    public Notification sendNotification(UUID uuid, String membershipNumber, String header, String message, LocalDateTime date, String currentLogin) {
         return new Notification(uuid.toString(), membershipNumber, false, true, header, message, date, currentLogin);
     }
 }

@@ -29,13 +29,13 @@ public interface LoanService {
     boolean returnBook(Long id);
 
     DataDTO<Boolean> newLoanRequest(RequestLoanDTO requestNew);
-    DataDTO<List<RequestLoanIndexDTO>> getRequestLoanByCurrentLogin(CurrentLoginDetailDTO currentLogin, Integer page);
+    DataDTO<List<RequestLoanIndexDTO>> fetchLoanRequest(CurrentLoginDetailDTO currentLogin, Integer page);
 
     DataDTO<Boolean> insertByRequestId(Long id);
 
     DataDTO<List<LoanIndexDto>> getListLoanByMembershipNumber(String username);
 
-    DataDTO<Boolean> deleteLoanRequest(Long id);
+    DataDTO<Boolean> cancelLoan(Long id);
 
 
 }
