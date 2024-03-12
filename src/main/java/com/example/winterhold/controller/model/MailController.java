@@ -1,4 +1,4 @@
-package com.example.winterhold.Controller.Model;
+package com.example.winterhold.controller.model;
 
 import com.example.winterhold.Dto.Mail.MailDTO;
 import com.example.winterhold.Service.imp.EmailServiceImp;

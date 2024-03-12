@@ -1,10 +1,11 @@
-package com.example.winterhold.Controller.Rest;
+package com.example.winterhold.controller.rest;
 
-import com.example.winterhold.Dto.Customer.CustomerInsertDto;
+import com.example.winterhold.Dto.Loan.LoanIndexDto;
+import com.example.winterhold.Dto.Loan.LoanInsertDto;
 import com.example.winterhold.Dto.Rest.InsertFailedDto;
 import com.example.winterhold.Dto.Rest.ResponseCrudRestDto;
 import com.example.winterhold.Dto.Rest.ValidatorRestDto;
-import com.example.winterhold.Service.abs.CustomerService;
+import com.example.winterhold.Service.abs.LoanService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,16 +19,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/customer")
-public class CustomerRestController {
+@RequestMapping("/api/loan")
+public class LoanRestController {
+
 
     @Autowired
-    private CustomerService customerService;
+    private LoanService loanService;
 
-    @GetMapping("/getCustomers")
-    public ResponseEntity<Object> getCustomer() {
+    @GetMapping("/getLoan")
+    public ResponseEntity<Object> getAuthor() {
         try {
-            var list = customerService.getAll();
+            var list = loanService.getAll();
+            for (LoanIndexDto dto : list
+            ) {
+                System.out.println(dto.getId());
+
+            }
             return ResponseEntity.status(HttpStatus.OK).body(list);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Runtime Error on the server");
@@ -35,10 +42,10 @@ public class CustomerRestController {
     }
 
     @GetMapping
-    public ResponseEntity<Object> get(@RequestParam(required = true) String number) {
+    public ResponseEntity<Object> get(@RequestParam(required = true) Long id) {
         try {
-            var list = customerService.getCustomerByMember(number);
-//            return new ResponseEntity<>(list,HttpStatus.OK);
+            var list = loanService.getLoanById(id);
+            System.out.println(list.getBookCode());
             return ResponseEntity.status(HttpStatus.OK).body(list);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Runtime Error on the server");
@@ -47,11 +54,12 @@ public class CustomerRestController {
 
 
     @PostMapping
-    public ResponseEntity<Object> post(@Valid @RequestBody CustomerInsertDto dto, BindingResult bindingResult) {
+    public ResponseEntity<Object> post(@Valid @RequestBody LoanInsertDto dto, BindingResult bindingResult) {
         try {
             if (!bindingResult.hasErrors()) {
-//                customerService.insert(dto);
-
+                System.out.println(dto.getId());
+                System.out.println(dto.getBookCode());
+                loanService.insert(dto);
                 return ResponseEntity.status(HttpStatus.OK).body(new ResponseCrudRestDto(HttpStatus.OK, "Berhasil Insert", dto));
             } else {
                 List<ValidatorRestDto> list = new ArrayList<>();
@@ -78,11 +86,11 @@ public class CustomerRestController {
     }
 
     @PutMapping
-    public ResponseCrudRestDto put(@Valid @RequestBody CustomerInsertDto dto, BindingResult bindingResult) {
+    public ResponseCrudRestDto put(@Valid @RequestBody LoanInsertDto dto, BindingResult bindingResult) {
 
         try {
             if (!bindingResult.hasErrors()) {
-                customerService.insert(dto);
+                loanService.insert(dto);
                 return new ResponseCrudRestDto(HttpStatus.OK, "Berhasil Update", dto);
             } else {
                 List<ValidatorRestDto> list = new ArrayList<>();
@@ -108,18 +116,18 @@ public class CustomerRestController {
         }
     }
 
-    @DeleteMapping("/deleteCustomer={number}")
-    public ResponseCrudRestDto delete(@PathVariable(required = true) String number) {
+    @DeleteMapping("/deleteLoan={id}")
+    public ResponseCrudRestDto delete(@PathVariable(required = true) Long id) {
 
         try {
-            Boolean result = customerService.delete(number);
-            if (!result) {
-                return new ResponseCrudRestDto(HttpStatus.UNPROCESSABLE_ENTITY, "Customer " + number + " Cannot Be Deleted");
-            }
-            return new ResponseCrudRestDto(HttpStatus.OK, "Customer " + number + " Deleted");
+            loanService.delete(id);
+            ResponseCrudRestDto obj = new ResponseCrudRestDto(HttpStatus.OK, "id " + id + " Deleted");
+            return new ResponseCrudRestDto(HttpStatus.OK, "id " + id + " Deleted");
 
         } catch (Exception e) {
             return new ResponseCrudRestDto(HttpStatus.INTERNAL_SERVER_ERROR, "Internal Error Server");
         }
+
+
     }
 }

@@ -1,6 +1,6 @@
-package com.example.winterhold.Controller.Model;
+package com.example.winterhold.controller.model;
 
-import com.example.winterhold.Const.MvcRedirectConst;
+import com.example.winterhold.constants.MvcRedirectConst;
 import com.example.winterhold.Dto.Author.AuthorIndexDto;
 import com.example.winterhold.Dto.Author.AuthorInsertDto;
 import com.example.winterhold.Dto.Author.AuthorUpdateDto;
@@ -9,6 +9,7 @@ import com.example.winterhold.Service.abs.AuthorService;
 import com.example.winterhold.Service.abs.BookService;
 import com.example.winterhold.Service.imp.LoanServiceImp;
 import com.example.winterhold.Utility.Dropdown;
+import com.example.winterhold.constants.WinterholdConstants;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -55,7 +56,7 @@ public class AuthorController {
         AuthorInsertDto dto = new AuthorInsertDto();
 
         model.addAttribute("dto", dto);
-        model.addAttribute("dropdownTitle", Dropdown.dropdownTitle());
+        model.addAttribute(WinterholdConstants.CONTROLLER_DROPDOWN_TITLE, Dropdown.dropdownTitle());
 
         return "Author/insert";
     }
@@ -66,7 +67,7 @@ public class AuthorController {
         if (bindingResult.hasErrors()) {
 
             model.addAttribute("dto", dto);
-            model.addAttribute("dropdownTitle", Dropdown.dropdownTitle());
+            model.addAttribute(WinterholdConstants.CONTROLLER_DROPDOWN_TITLE, Dropdown.dropdownTitle());
 
             return "Author/insert";
         } else {
@@ -95,7 +96,7 @@ public class AuthorController {
 
         AuthorInsertDto dto = authorService.getAuthorByIdinsert(id);
 
-        model.addAttribute("dropdownTitle", Dropdown.dropdownTitle());
+        model.addAttribute(WinterholdConstants.CONTROLLER_DROPDOWN_TITLE, Dropdown.dropdownTitle());
         model.addAttribute("dto", dto);
 
         return "Author/update";
@@ -107,7 +108,7 @@ public class AuthorController {
         if (bindingResult.hasErrors()) {
 
             model.addAttribute("dto", dto);
-            model.addAttribute("dropdownTitle", Dropdown.dropdownTitle());
+            model.addAttribute(WinterholdConstants.CONTROLLER_DROPDOWN_TITLE, Dropdown.dropdownTitle());
 
             return "Author/update";
         } else {

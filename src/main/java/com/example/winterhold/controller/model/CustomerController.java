@@ -1,4 +1,4 @@
-package com.example.winterhold.Controller.Model;
+package com.example.winterhold.controller.model;
 
 import com.example.winterhold.Dto.CurrentLoginDetailDTO;
 import com.example.winterhold.Dto.Customer.CustomerIndexDto;
@@ -7,11 +7,12 @@ import com.example.winterhold.Dto.Customer.CustomerUpdateDto;
 import com.example.winterhold.Dto.Models.DataDTO;
 import com.example.winterhold.Entity.Customer;
 import com.example.winterhold.Service.abs.CustomerService;
-import com.example.winterhold.Service.imp.AccountServiceImp;
 import com.example.winterhold.Service.imp.LoanServiceImp;
 import com.example.winterhold.Utility.Dropdown;
+import com.example.winterhold.constants.MvcRedirectConst;
+import com.example.winterhold.constants.WinterholdConstants;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -22,16 +23,12 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/customer")
+@RequiredArgsConstructor
 public class CustomerController {
 
-    @Autowired
-    private CustomerService customerService;
-
-    @Autowired
-    private AccountServiceImp account;
-
-    @Autowired
-    private LoanServiceImp loanServiceImp;
+    private final CustomerService customerService;
+    
+    private final LoanServiceImp loanServiceImp;
 
     @GetMapping("/index")
     public String index(Model model,
@@ -59,7 +56,7 @@ public class CustomerController {
         dto.setMembershipExpireDate(LocalDate.now().plusYears(2));
 
         model.addAttribute("dto", dto);
-        model.addAttribute("dropdownGender", Dropdown.dropdownGender());
+        model.addAttribute(WinterholdConstants.CONTROLLER_DROPDOWN_GENDER, Dropdown.dropdownGender());
 
         return "Customer/insert";
     }
@@ -70,13 +67,13 @@ public class CustomerController {
         if (bindingResult.hasErrors()) {
 
             model.addAttribute("dto", dto);
-            model.addAttribute("dropdownGender", Dropdown.dropdownGender());
+            model.addAttribute(WinterholdConstants.CONTROLLER_DROPDOWN_GENDER, Dropdown.dropdownGender());
 
             return "Customer/insert";
         } else {
 
             customerService.insert(dto);
-            return "redirect:/customer/index";
+            return MvcRedirectConst.REDIRECT_CUSTOMER_INDEX;
         }
     }
 
@@ -87,7 +84,7 @@ public class CustomerController {
 
         model.addAttribute("dto", dto);
         model.addAttribute("profile", true);
-        model.addAttribute("dropdownGender", Dropdown.dropdownGender());
+        model.addAttribute(WinterholdConstants.CONTROLLER_DROPDOWN_GENDER, Dropdown.dropdownGender());
 
         return "Customer/update";
     }
@@ -99,29 +96,30 @@ public class CustomerController {
 
             model.addAttribute("dto", dto);
             model.addAttribute("profile", true);
-            model.addAttribute("dropdownGender", Dropdown.dropdownGender());
+            model.addAttribute(WinterholdConstants.CONTROLLER_DROPDOWN_GENDER, Dropdown.dropdownGender());
 
             return "Customer/update";
         } else {
 
             customerService.update(dto);
-            return "redirect:/customer/index";
+            return MvcRedirectConst.REDIRECT_CUSTOMER_INDEX;
         }
 
     }
 
     @GetMapping("/delete")
-    public String delete(@RequestParam(required = true) String number) {
-        return customerService.delete(number) ? "redirect:/customer/index" : "Customer/delete";
+    public String delete(@RequestParam String number) {
+        return Boolean.TRUE.equals(customerService.delete(number)) ? MvcRedirectConst.REDIRECT_CUSTOMER_INDEX : "Customer/delete";
     }
 
     @GetMapping("/extend")
-    public String extend(@RequestParam(required = true) String number) {
-        return customerService.doExtendMember(number) ? "redirect:/customer/index" : "redirect:/customer/index";
+    public String extend(@RequestParam String membershipNumber) {
+        //TODO please adjust return for failed extends
+        return Boolean.TRUE.equals(customerService.doExtendMember(membershipNumber)) ? MvcRedirectConst.REDIRECT_CUSTOMER_INDEX : MvcRedirectConst.REDIRECT_CUSTOMER_INDEX;
     }
 
     @GetMapping("/detail")
-    public String detail(Model model, @RequestParam(required = true) String number) {
+    public String detail(Model model, @RequestParam String number) {
 
         var memberDto = customerService.getCustomerByMember(number);
 
@@ -152,7 +150,7 @@ public class CustomerController {
         model.addAttribute("validationReason", "Please, complete the loan session first!");
         model.addAttribute("flag", 1);
 
-        return customerService.doBanCustomer(customerNumber) ? "redirect:/customer/index" : "Customer/valid";
+        return customerService.doBanCustomer(customerNumber) ? MvcRedirectConst.REDIRECT_CUSTOMER_INDEX : "Customer/valid";
     }
 
     @GetMapping("/unban")
@@ -168,7 +166,7 @@ public class CustomerController {
     }
 
     @GetMapping("/banned-customer")
-    public String bannedlist(Model model, @RequestParam(defaultValue = "1") Integer page) {
+    public String bannedList(Model model, @RequestParam(defaultValue = "1") Integer page) {
 
         DataDTO<List<Customer>> data = customerService.getBannedCustomerlist(page);
 
@@ -189,7 +187,7 @@ public class CustomerController {
 
         model.addAttribute("dto", dto);
         model.addAttribute("profile", false);
-        model.addAttribute("dropdownGender", Dropdown.dropdownGender());
+        model.addAttribute(WinterholdConstants.CONTROLLER_DROPDOWN_GENDER, Dropdown.dropdownGender());
 
         return "Customer/update";
     }
@@ -201,7 +199,7 @@ public class CustomerController {
 
             model.addAttribute("dto", dto);
             model.addAttribute("profile", false);
-            model.addAttribute("dropdownGender", Dropdown.dropdownGender());
+            model.addAttribute(WinterholdConstants.CONTROLLER_DROPDOWN_GENDER, Dropdown.dropdownGender());
 
             return "Customer/update";
         } else {

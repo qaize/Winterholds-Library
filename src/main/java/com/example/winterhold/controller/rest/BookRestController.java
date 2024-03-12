@@ -1,11 +1,11 @@
-package com.example.winterhold.Controller.Rest;
+package com.example.winterhold.controller.rest;
 
-import com.example.winterhold.Dto.Loan.LoanIndexDto;
-import com.example.winterhold.Dto.Loan.LoanInsertDto;
+import com.example.winterhold.Dao.BookRepository;
+import com.example.winterhold.Dto.Book.BookInsertDto;
 import com.example.winterhold.Dto.Rest.InsertFailedDto;
 import com.example.winterhold.Dto.Rest.ResponseCrudRestDto;
 import com.example.winterhold.Dto.Rest.ValidatorRestDto;
-import com.example.winterhold.Service.abs.LoanService;
+import com.example.winterhold.Service.abs.BookService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,22 +19,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/loan")
-public class LoanRestController {
-
+@RequestMapping("/api/book")
+public class BookRestController {
 
     @Autowired
-    private LoanService loanService;
+    private BookService bookService;
 
-    @GetMapping("/getLoan")
+    @Autowired
+    private BookRepository bookRepository;
+
+    @GetMapping("/getBooks")
     public ResponseEntity<Object> getAuthor() {
         try {
-            var list = loanService.getAll();
-            for (LoanIndexDto dto : list
-            ) {
-                System.out.println(dto.getId());
-
-            }
+            var list = bookService.getAll();
             return ResponseEntity.status(HttpStatus.OK).body(list);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Runtime Error on the server");
@@ -42,25 +39,25 @@ public class LoanRestController {
     }
 
     @GetMapping
-    public ResponseEntity<Object> get(@RequestParam(required = true) Long id) {
+    public ResponseEntity<Object> get(@RequestParam(required = true) String code) {
         try {
-            var list = loanService.getLoanById(id);
-            System.out.println(list.getBookCode());
+            var list = bookService.getBooksBycode2(code);
             return ResponseEntity.status(HttpStatus.OK).body(list);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Runtime Error on the server");
         }
     }
 
+//    @GetMapping
+//    public List<Book> getAllBooks(){return bookRepository.findAll();}
+
 
     @PostMapping
-    public ResponseEntity<Object> post(@Valid @RequestBody LoanInsertDto dto, BindingResult bindingResult) {
+    public ResponseEntity<Object> post(@Valid @RequestBody BookInsertDto dto, BindingResult bindingResult) {
         try {
             if (!bindingResult.hasErrors()) {
-                System.out.println(dto.getId());
-                System.out.println(dto.getBookCode());
-                loanService.insert(dto);
-                return ResponseEntity.status(HttpStatus.OK).body(new ResponseCrudRestDto(HttpStatus.OK, "Berhasil Insert", dto));
+                bookService.insert(dto);
+                return ResponseEntity.status(HttpStatus.OK).body(dto);
             } else {
                 List<ValidatorRestDto> list = new ArrayList<>();
                 List<FieldError> errorList = bindingResult.getFieldErrors();
@@ -86,11 +83,11 @@ public class LoanRestController {
     }
 
     @PutMapping
-    public ResponseCrudRestDto put(@Valid @RequestBody LoanInsertDto dto, BindingResult bindingResult) {
+    public ResponseCrudRestDto put(@Valid @RequestBody BookInsertDto dto, BindingResult bindingResult) {
 
         try {
             if (!bindingResult.hasErrors()) {
-                loanService.insert(dto);
+                bookService.insert(dto);
                 return new ResponseCrudRestDto(HttpStatus.OK, "Berhasil Update", dto);
             } else {
                 List<ValidatorRestDto> list = new ArrayList<>();
@@ -116,18 +113,18 @@ public class LoanRestController {
         }
     }
 
-    @DeleteMapping("/deleteLoan={id}")
-    public ResponseCrudRestDto delete(@PathVariable(required = true) Long id) {
+    @DeleteMapping("/deleteBook={code}")
+    public ResponseCrudRestDto delete(@PathVariable(required = true) String code) {
 
         try {
-            loanService.delete(id);
-            ResponseCrudRestDto obj = new ResponseCrudRestDto(HttpStatus.OK, "id " + id + " Deleted");
-            return new ResponseCrudRestDto(HttpStatus.OK, "id " + id + " Deleted");
+            Boolean result = bookService.delete(code);
+            if (!result) {
+                return new ResponseCrudRestDto(HttpStatus.UNPROCESSABLE_ENTITY, "Code " + code + " Cannot Be Deleted");
+            }
+            return new ResponseCrudRestDto(HttpStatus.OK, "Code " + code + " Deleted");
 
         } catch (Exception e) {
             return new ResponseCrudRestDto(HttpStatus.INTERNAL_SERVER_ERROR, "Internal Error Server");
         }
-
-
     }
 }

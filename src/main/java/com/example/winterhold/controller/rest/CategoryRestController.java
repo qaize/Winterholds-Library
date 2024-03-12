@@ -1,11 +1,10 @@
-package com.example.winterhold.Controller.Rest;
+package com.example.winterhold.controller.rest;
 
-import com.example.winterhold.Dao.BookRepository;
-import com.example.winterhold.Dto.Book.BookInsertDto;
+import com.example.winterhold.Dto.Category.CategoryInsertDto;
 import com.example.winterhold.Dto.Rest.InsertFailedDto;
 import com.example.winterhold.Dto.Rest.ResponseCrudRestDto;
 import com.example.winterhold.Dto.Rest.ValidatorRestDto;
-import com.example.winterhold.Service.abs.BookService;
+import com.example.winterhold.Service.abs.CategoryService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,20 +17,19 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 
+
 @RestController
-@RequestMapping("/api/book")
-public class BookRestController {
+@RequestMapping("/api/category")
+public class CategoryRestController {
+
 
     @Autowired
-    private BookService bookService;
+    private CategoryService categoryService;
 
-    @Autowired
-    private BookRepository bookRepository;
-
-    @GetMapping("/getBooks")
+    @GetMapping("/getCategory")
     public ResponseEntity<Object> getAuthor() {
         try {
-            var list = bookService.getAll();
+            var list = categoryService.getAll();
             return ResponseEntity.status(HttpStatus.OK).body(list);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Runtime Error on the server");
@@ -39,25 +37,22 @@ public class BookRestController {
     }
 
     @GetMapping
-    public ResponseEntity<Object> get(@RequestParam(required = true) String code) {
+    public ResponseEntity<Object> get(@RequestParam(required = true) String categoryName) {
         try {
-            var list = bookService.getBooksBycode2(code);
+            var list = categoryService.getCategoryByCategoryName(categoryName);
             return ResponseEntity.status(HttpStatus.OK).body(list);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Runtime Error on the server");
         }
     }
 
-//    @GetMapping
-//    public List<Book> getAllBooks(){return bookRepository.findAll();}
-
 
     @PostMapping
-    public ResponseEntity<Object> post(@Valid @RequestBody BookInsertDto dto, BindingResult bindingResult) {
+    public ResponseEntity<Object> post(@Valid @RequestBody CategoryInsertDto dto, BindingResult bindingResult) {
         try {
             if (!bindingResult.hasErrors()) {
-                bookService.insert(dto);
-                return ResponseEntity.status(HttpStatus.OK).body(dto);
+                categoryService.insert(dto);
+                return ResponseEntity.status(HttpStatus.OK).body(new ResponseCrudRestDto(HttpStatus.OK, "Berhasil Insert", dto));
             } else {
                 List<ValidatorRestDto> list = new ArrayList<>();
                 List<FieldError> errorList = bindingResult.getFieldErrors();
@@ -83,11 +78,11 @@ public class BookRestController {
     }
 
     @PutMapping
-    public ResponseCrudRestDto put(@Valid @RequestBody BookInsertDto dto, BindingResult bindingResult) {
+    public ResponseCrudRestDto put(@Valid @RequestBody CategoryInsertDto dto, BindingResult bindingResult) {
 
         try {
             if (!bindingResult.hasErrors()) {
-                bookService.insert(dto);
+                categoryService.insert(dto);
                 return new ResponseCrudRestDto(HttpStatus.OK, "Berhasil Update", dto);
             } else {
                 List<ValidatorRestDto> list = new ArrayList<>();
@@ -113,15 +108,15 @@ public class BookRestController {
         }
     }
 
-    @DeleteMapping("/deleteBook={code}")
-    public ResponseCrudRestDto delete(@PathVariable(required = true) String code) {
+    @DeleteMapping("/deleteCategory={categoryName}")
+    public ResponseCrudRestDto delete(@PathVariable(required = true) String categoryName) {
 
         try {
-            Boolean result = bookService.delete(code);
+            Boolean result = categoryService.delete(categoryName);
             if (!result) {
-                return new ResponseCrudRestDto(HttpStatus.UNPROCESSABLE_ENTITY, "Code " + code + " Cannot Be Deleted");
+                return new ResponseCrudRestDto(HttpStatus.UNPROCESSABLE_ENTITY, "Category Name " + categoryName + " Cannot Be Deleted");
             }
-            return new ResponseCrudRestDto(HttpStatus.OK, "Code " + code + " Deleted");
+            return new ResponseCrudRestDto(HttpStatus.OK, "Category Name " + categoryName + " Deleted");
 
         } catch (Exception e) {
             return new ResponseCrudRestDto(HttpStatus.INTERNAL_SERVER_ERROR, "Internal Error Server");

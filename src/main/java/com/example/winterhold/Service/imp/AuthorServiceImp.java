@@ -1,6 +1,6 @@
 package com.example.winterhold.Service.imp;
 
-import com.example.winterhold.Controller.Model.BaseController;
+import com.example.winterhold.controller.model.BaseController;
 import com.example.winterhold.CustomException.CustomException;
 import com.example.winterhold.Dao.AuthorRepository;
 import com.example.winterhold.Dto.Author.AuthorIndexDto;
@@ -36,7 +36,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static com.example.winterhold.Const.actionConst.*;
+import static com.example.winterhold.constants.ActionConstants.*;
 
 @Service
 public class AuthorServiceImp implements AuthorService {

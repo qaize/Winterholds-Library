@@ -1,4 +1,4 @@
-package com.example.winterhold.Controller.AuthorServiceTest;
+package com.example.winterhold.controller.AuthorServiceTest;
 
 
 import com.example.winterhold.Dao.AuthorRepository;

@@ -1,4 +1,4 @@
-package com.example.winterhold.Controller.Rest;
+package com.example.winterhold.controller.rest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

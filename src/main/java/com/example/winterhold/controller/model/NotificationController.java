@@ -1,4 +1,4 @@
-package com.example.winterhold.Controller.Model;
+package com.example.winterhold.controller.model;
 
 import com.example.winterhold.Dto.Models.DataDTO;
 import com.example.winterhold.Entity.Notification;

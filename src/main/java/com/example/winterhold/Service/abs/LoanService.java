@@ -11,7 +11,7 @@ import java.util.List;
 public interface LoanService {
 
     void delete(Long id);
-    void goPayOff(Long id);
+    void payment(Long id);
     Long getCountPageDenda();
     Long getCountHistoryPage();
     Loan getLoanById(Long id);

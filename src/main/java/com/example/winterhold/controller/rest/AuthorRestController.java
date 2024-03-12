@@ -1,4 +1,4 @@
-package com.example.winterhold.Controller.Rest;
+package com.example.winterhold.controller.rest;
 
 import com.example.winterhold.Dto.Author.AuthorIndexDto;
 import com.example.winterhold.Dto.Author.AuthorIndexDtoV2;

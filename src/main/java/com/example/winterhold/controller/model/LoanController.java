@@ -1,6 +1,5 @@
-package com.example.winterhold.Controller.Model;
+package com.example.winterhold.controller.model;
 
-import com.example.winterhold.Dao.LoanRepository;
 import com.example.winterhold.Dto.CurrentLoginDetailDTO;
 import com.example.winterhold.Dto.Loan.*;
 import com.example.winterhold.Dto.Models.DataDTO;
@@ -10,9 +9,12 @@ import com.example.winterhold.Service.abs.BookService;
 import com.example.winterhold.Service.abs.CategoryService;
 import com.example.winterhold.Service.abs.CustomerService;
 import com.example.winterhold.Service.abs.LoanService;
-import com.example.winterhold.Service.imp.AccountServiceImp;
+import com.example.winterhold.constants.ActionConstants;
+import com.example.winterhold.constants.MvcRedirectConst;
+import com.example.winterhold.constants.WinterholdConstants;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -27,24 +29,16 @@ import static com.example.winterhold.Utility.Dropdown.dropdownCustomer;
 
 @Controller
 @RequestMapping("/loan")
+@RequiredArgsConstructor
 public class LoanController {
 
-    private LoanService loanService;
-    private CustomerService customerService;
-    private BookService bookService;
-    private CategoryService categoryService;
-    private LoanRepository loanRepository;
-    private AccountServiceImp account;
+    private final LoanService loanService;
+    private final CustomerService customerService;
+    private final BookService bookService;
+    private final CategoryService categoryService;
 
-    @Autowired
-    public LoanController(LoanService loanService, CustomerService customerService, BookService bookService, CategoryService categoryService, LoanRepository loanRepository, AccountServiceImp account) {
-        this.loanService = loanService;
-        this.customerService = customerService;
-        this.bookService = bookService;
-        this.categoryService = categoryService;
-        this.loanRepository = loanRepository;
-        this.account = account;
-    }
+    @Value(ActionConstants.INSERT)
+    private String insert;
 
     @GetMapping("/history")
     public String loanHistory(Model model, @RequestParam(defaultValue = "1") Integer page) {
@@ -58,8 +52,8 @@ public class LoanController {
                 val.setDayLeft(val.getReturnDate().isBefore(val.getDueDate()) ? "On Time" : "Late");
                 val.setLoanStatus("Returned");
             } else {
-                Long dif = ChronoUnit.DAYS.between(LocalDate.now(), val.getDueDate());
-                val.setDayLeft(dif > 0 ? dif.toString() : "Late");
+                long dif = ChronoUnit.DAYS.between(LocalDate.now(), val.getDueDate());
+                val.setDayLeft(dif > 0 ? String.valueOf(dif) : "Late");
                 val.setLoanStatus("On Loan");
             }
         }
@@ -99,7 +93,7 @@ public class LoanController {
     public String insert(Model model) {
 
         LoanInsertDto dto = new LoanInsertDto();
-        String insert = "insert";
+         
 
         var getCustomer = customerService.getAvaliableCustomer();
         var getBook = bookService.getAvailableBook();
@@ -109,7 +103,7 @@ public class LoanController {
         model.addAttribute("dropdownCustomer", dropdownCustomer);
         model.addAttribute("dropdownBook", dropdownBook);
         model.addAttribute("dto", dto);
-        model.addAttribute("insert", insert);
+        model.addAttribute(ActionConstants.INSERT, insert);
 
         return "Loan/insert";
     }
@@ -118,7 +112,7 @@ public class LoanController {
     public String insert(@Valid @ModelAttribute("dto") LoanInsertDto dto, BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
 
-            String insert = "insert";
+             
             var getCustomer = customerService.getAvaliableCustomer();
             var getBook = bookService.getAvailableBook();
             var dropdownCustomer = dropdownCustomer(getCustomer);
@@ -127,20 +121,20 @@ public class LoanController {
             model.addAttribute("dropdownCustomer", dropdownCustomer);
             model.addAttribute("dropdownBook", dropdownBook);
             model.addAttribute("dto", dto);
-            model.addAttribute("insert", insert);
+            model.addAttribute(ActionConstants.INSERT, insert);
 
             return "Loan/insert";
         } else {
 
             loanService.insert(dto);
 
-            return "redirect:/loan/index";
+            return MvcRedirectConst.REDIRECT_LOAN_INDEX;
         }
     }
 
     @GetMapping("/return")
     public String ret(@RequestParam Long id) {
-        return loanService.returnBook(id) ? "redirect:/loan/index" : "Loan/valid";
+        return loanService.returnBook(id) ? MvcRedirectConst.REDIRECT_LOAN_INDEX : "Loan/valid";
     }
 
 
@@ -160,12 +154,12 @@ public class LoanController {
         model.addAttribute("customer", customer);
         model.addAttribute("loanDto", loanDto);
 
-        return "loan/detail";
+        return "Loan/detail";
     }
 
     //NOT USED
     @GetMapping("/update")
-    public String update(Model model, @RequestParam(required = true) Long id) {
+    public String update(Model model, @RequestParam Long id) {
 
         String update = "update";
         Loan dto = loanService.getLoanById(id);
@@ -186,7 +180,7 @@ public class LoanController {
             model.addAttribute("update", update);
             return "Loan/insert";
         } else {
-            return "redirect:/loan/index";
+            return MvcRedirectConst.REDIRECT_LOAN_INDEX;
         }
     }
 
@@ -210,9 +204,8 @@ public class LoanController {
             var books = bookService.getBooksById(dto.getBookCode());
             books.setIsBorrowed(!books.getIsBorrowed());
             bookService.update(books);
-//            var extend = loanRepository.getExtendById(dto.getId());
             loanService.update(dto);
-            return "redirect:/loan/index";
+            return MvcRedirectConst.REDIRECT_LOAN_INDEX;
         }
 
     }
@@ -236,13 +229,13 @@ public class LoanController {
         model.addAttribute("totalPage", totalPage);
         model.addAttribute("currentPage", page);
 
-        return "loan/denda";
+        return "Loan/denda";
     }
 
     @GetMapping("/payment")
-    public String payment(Model model, @RequestParam(required = true) Long id) {
+    public String payment(Model model, @RequestParam Long id) {
 
-        loanService.goPayOff(id);
+        loanService.payment(id);
 
         return "redirect:/loan/denda";
     }
@@ -254,10 +247,10 @@ public class LoanController {
 
 
         if (LocalDate.now().isAfter(data.getDueDate())) {
-            model.addAttribute("validationHeader", "Unable to Extend");
-            model.addAttribute("validationReason", "User was late, please return the book and loan again");
+            model.addAttribute(WinterholdConstants.CONTROLLER_VALIDATION_HEADER, "Unable to Extend");
+            model.addAttribute(WinterholdConstants.CONTROLLER_VALIDATION_REASON, "User was late, please return the book and loan again");
 
-            return "loan/valid";
+            return "Loan/valid";
         } else {
 
             if (data.getExtend() < 4) {
@@ -267,13 +260,13 @@ public class LoanController {
                 data.setDueDate(data.getDueDate().plusDays(2));
                 loanService.extendLoan(data);
 
-                return "redirect:/loan/index";
+                return MvcRedirectConst.REDIRECT_LOAN_INDEX;
             } else {
 
-                model.addAttribute("validationHeader", "Unable to Extend");
-                model.addAttribute("validationReason", "User was reached maximum extendable");
+                model.addAttribute(WinterholdConstants.CONTROLLER_VALIDATION_HEADER, "Unable to Extend");
+                model.addAttribute(WinterholdConstants.CONTROLLER_VALIDATION_REASON, "User was reached maximum extendable");
 
-                return "loan/valid";
+                return "Loan/valid";
             }
         }
 
@@ -292,7 +285,7 @@ public class LoanController {
         model.addAttribute("totalPage", totalPage);
         model.addAttribute("logs", logs);
 
-        return "loan/paymentHistory";
+        return "Loan/paymentHistory";
     }
 
 
@@ -306,10 +299,10 @@ public class LoanController {
         RequestLoanDTO requestNew = new RequestLoanDTO(currentLogin,bookCode);
         DataDTO<Boolean> newLoanReq = loanService.newLoanRequest(requestNew);
 
-        model.addAttribute("validationHeader","Unable To Request");
-        model.addAttribute("validationReason",newLoanReq.getMessage());
+        model.addAttribute(WinterholdConstants.CONTROLLER_VALIDATION_HEADER,"Unable To Request");
+        model.addAttribute(WinterholdConstants.CONTROLLER_VALIDATION_REASON,newLoanReq.getMessage());
         model.addAttribute("flag",newLoanReq.getFlag());
-        return newLoanReq.getData() ? "redirect:/loan/request-loan-list" : "Loan/valid";
+        return Boolean.TRUE.equals(newLoanReq.getData()) ? "redirect:/loan/request-loan-list" : "Loan/valid";
     }
 
 
@@ -335,10 +328,10 @@ public class LoanController {
     public String insertFromRequest(Model model, @RequestParam Long id) {
         DataDTO<Boolean> data = loanService.insertByRequestId(id);
 
-        model.addAttribute("validationHeader","Unable To Request");
-        model.addAttribute("validationReason",data.getMessage());
+        model.addAttribute(WinterholdConstants.CONTROLLER_VALIDATION_HEADER,"Unable To Request");
+        model.addAttribute(WinterholdConstants.CONTROLLER_VALIDATION_REASON,data.getMessage());
         model.addAttribute("flag",data.getFlag());
-        return data.getData() ? "redirect:/loan/index" : "Loan/valid";
+        return Boolean.TRUE.equals(data.getData()) ? MvcRedirectConst.REDIRECT_LOAN_INDEX : "Loan/valid";
     }
 
 
@@ -346,10 +339,10 @@ public class LoanController {
     public String deleteRequest(Model model,@RequestParam Long id){
         DataDTO<Boolean> deleteRequest = loanService.deleteLoanRequest(id);
 
-        model.addAttribute("validationHeader","Unable To Request");
-        model.addAttribute("validationReason",deleteRequest.getMessage());
+        model.addAttribute(WinterholdConstants.CONTROLLER_VALIDATION_HEADER,"Unable To Request");
+        model.addAttribute(WinterholdConstants.CONTROLLER_VALIDATION_REASON,deleteRequest.getMessage());
         model.addAttribute("flag",deleteRequest.getFlag());
-        return deleteRequest.getData() ? "redirect:/loan/request-loan-list" : "Loan/valid";
+        return Boolean.TRUE.equals(deleteRequest.getData()) ? "redirect:/loan/request-loan-list" : "Loan/valid";
     }
 
 }

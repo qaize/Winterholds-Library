@@ -1,4 +1,4 @@
-package com.example.winterhold.Controller.Rest;
+package com.example.winterhold.controller.rest;
 
 import com.example.winterhold.Entity.Mail;
 import com.example.winterhold.Service.abs.EmailService;

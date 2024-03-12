@@ -1,6 +1,6 @@
 package com.example.winterhold.Service.imp;
 
-import com.example.winterhold.Controller.Model.BaseController;
+import com.example.winterhold.controller.model.BaseController;
 import com.example.winterhold.Dao.*;
 import com.example.winterhold.Dto.Book.BookUpdateDto;
 import com.example.winterhold.Dto.CurrentLoginDetailDTO;
@@ -28,7 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import static com.example.winterhold.Const.actionConst.*;
+import static com.example.winterhold.constants.ActionConstants.*;
 
 
 @Service
@@ -200,7 +200,7 @@ public class LoanServiceImp implements LoanService {
 
 
     @Override
-    public void goPayOff(Long id) {
+    public void payment(Long id) {
 
         try {
             recordPaymentHistory(id);

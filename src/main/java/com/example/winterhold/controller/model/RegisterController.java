@@ -1,10 +1,10 @@
-package com.example.winterhold.Controller.Model;
+package com.example.winterhold.controller.model;
 
 import com.example.winterhold.Dto.Account.AccountInsertDto;
 import com.example.winterhold.Service.abs.AccountService;
 import com.example.winterhold.Utility.Dropdown;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -15,16 +15,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @RequestMapping("/register")
+@RequiredArgsConstructor
 public class RegisterController extends BaseController {
 
-    @Autowired
-    private AccountService accountService;
+    private final AccountService accountService;
 
     @GetMapping("/registerForm")
     public String signup(Model model) {
 
-        AccountInsertDto Accountdto = new AccountInsertDto();
-        model.addAttribute("dto", Accountdto);
+        AccountInsertDto accountDto = new AccountInsertDto();
+        model.addAttribute("dto", accountDto);
         model.addAttribute("roleList", Dropdown.dropdownRole());
 
         return "Register/registerForm";

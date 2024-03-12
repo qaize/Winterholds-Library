@@ -1,14 +1,16 @@
-package com.example.winterhold.Controller.Model;
+package com.example.winterhold.controller.model;
 
 import com.example.winterhold.Dto.CurrentLoginDetailDTO;
 import com.example.winterhold.Service.imp.AccountServiceImp;
 import com.example.winterhold.Utility.JwtToken;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 
 @Controller
+@RequiredArgsConstructor
 public class BaseController {
 
     @Autowired

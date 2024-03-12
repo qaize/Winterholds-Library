@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 
-import static com.example.winterhold.Const.actionConst.*;
+import static com.example.winterhold.constants.ActionConstants.*;
 
 @Service
 public class CustomerServiceImp implements CustomerService {

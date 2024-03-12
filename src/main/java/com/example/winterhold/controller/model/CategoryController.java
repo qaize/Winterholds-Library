@@ -1,12 +1,10 @@
-package com.example.winterhold.Controller.Model;
+package com.example.winterhold.controller.model;
 
-import com.example.winterhold.Const.MvcRedirectConst;
+import com.example.winterhold.constants.MvcRedirectConst;
 import com.example.winterhold.Dto.Category.CategoryInsertDto;
 import com.example.winterhold.Dto.Category.CategoryUpdateDto;
 import com.example.winterhold.Service.abs.BookService;
 import com.example.winterhold.Service.abs.CategoryService;
-import com.example.winterhold.Service.imp.AccountServiceImp;
-import com.example.winterhold.Service.imp.LoanServiceImp;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -19,14 +17,8 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class CategoryController {
 
-
     private final CategoryService categoryService;
-
     private final BookService bookService;
-
-    private final AccountServiceImp account;
-
-    private final LoanServiceImp loanServiceImp;
 
     @GetMapping("/index")
     public String index(Model model,
@@ -106,7 +98,7 @@ public class CategoryController {
     }
 
     @GetMapping("/delete")
-    public String delete(@RequestParam(required = true) String categoryName) {
+    public String delete(@RequestParam String categoryName) {
 
         Boolean result = categoryService.delete(categoryName);
 

@@ -18,7 +18,7 @@ import org.springframework.ui.Model;
 
 import java.util.List;
 
-import static com.example.winterhold.Const.actionConst.*;
+import static com.example.winterhold.constants.ActionConstants.*;
 
 
 @Service

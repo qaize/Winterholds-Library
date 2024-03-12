@@ -1,4 +1,4 @@
-package com.example.winterhold.Controller.Model;
+package com.example.winterhold.controller.model;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;

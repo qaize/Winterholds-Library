@@ -1,10 +1,10 @@
-package com.example.winterhold.Controller.Rest;
+package com.example.winterhold.controller.rest;
 
-import com.example.winterhold.Dto.Category.CategoryInsertDto;
+import com.example.winterhold.Dto.Customer.CustomerInsertDto;
 import com.example.winterhold.Dto.Rest.InsertFailedDto;
 import com.example.winterhold.Dto.Rest.ResponseCrudRestDto;
 import com.example.winterhold.Dto.Rest.ValidatorRestDto;
-import com.example.winterhold.Service.abs.CategoryService;
+import com.example.winterhold.Service.abs.CustomerService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,19 +17,17 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 
-
 @RestController
-@RequestMapping("/api/category")
-public class CategoryRestController {
-
+@RequestMapping("/api/customer")
+public class CustomerRestController {
 
     @Autowired
-    private CategoryService categoryService;
+    private CustomerService customerService;
 
-    @GetMapping("/getCategory")
-    public ResponseEntity<Object> getAuthor() {
+    @GetMapping("/getCustomers")
+    public ResponseEntity<Object> getCustomer() {
         try {
-            var list = categoryService.getAll();
+            var list = customerService.getAll();
             return ResponseEntity.status(HttpStatus.OK).body(list);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Runtime Error on the server");
@@ -37,9 +35,10 @@ public class CategoryRestController {
     }
 
     @GetMapping
-    public ResponseEntity<Object> get(@RequestParam(required = true) String categoryName) {
+    public ResponseEntity<Object> get(@RequestParam(required = true) String number) {
         try {
-            var list = categoryService.getCategoryByCategoryName(categoryName);
+            var list = customerService.getCustomerByMember(number);
+//            return new ResponseEntity<>(list,HttpStatus.OK);
             return ResponseEntity.status(HttpStatus.OK).body(list);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Runtime Error on the server");
@@ -48,10 +47,11 @@ public class CategoryRestController {
 
 
     @PostMapping
-    public ResponseEntity<Object> post(@Valid @RequestBody CategoryInsertDto dto, BindingResult bindingResult) {
+    public ResponseEntity<Object> post(@Valid @RequestBody CustomerInsertDto dto, BindingResult bindingResult) {
         try {
             if (!bindingResult.hasErrors()) {
-                categoryService.insert(dto);
+//                customerService.insert(dto);
+
                 return ResponseEntity.status(HttpStatus.OK).body(new ResponseCrudRestDto(HttpStatus.OK, "Berhasil Insert", dto));
             } else {
                 List<ValidatorRestDto> list = new ArrayList<>();
@@ -78,11 +78,11 @@ public class CategoryRestController {
     }
 
     @PutMapping
-    public ResponseCrudRestDto put(@Valid @RequestBody CategoryInsertDto dto, BindingResult bindingResult) {
+    public ResponseCrudRestDto put(@Valid @RequestBody CustomerInsertDto dto, BindingResult bindingResult) {
 
         try {
             if (!bindingResult.hasErrors()) {
-                categoryService.insert(dto);
+                customerService.insert(dto);
                 return new ResponseCrudRestDto(HttpStatus.OK, "Berhasil Update", dto);
             } else {
                 List<ValidatorRestDto> list = new ArrayList<>();
@@ -108,15 +108,15 @@ public class CategoryRestController {
         }
     }
 
-    @DeleteMapping("/deleteCategory={categoryName}")
-    public ResponseCrudRestDto delete(@PathVariable(required = true) String categoryName) {
+    @DeleteMapping("/deleteCustomer={number}")
+    public ResponseCrudRestDto delete(@PathVariable(required = true) String number) {
 
         try {
-            Boolean result = categoryService.delete(categoryName);
+            Boolean result = customerService.delete(number);
             if (!result) {
-                return new ResponseCrudRestDto(HttpStatus.UNPROCESSABLE_ENTITY, "Category Name " + categoryName + " Cannot Be Deleted");
+                return new ResponseCrudRestDto(HttpStatus.UNPROCESSABLE_ENTITY, "Customer " + number + " Cannot Be Deleted");
             }
-            return new ResponseCrudRestDto(HttpStatus.OK, "Category Name " + categoryName + " Deleted");
+            return new ResponseCrudRestDto(HttpStatus.OK, "Customer " + number + " Deleted");
 
         } catch (Exception e) {
             return new ResponseCrudRestDto(HttpStatus.INTERNAL_SERVER_ERROR, "Internal Error Server");

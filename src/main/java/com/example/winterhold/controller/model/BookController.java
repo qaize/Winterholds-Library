@@ -1,13 +1,14 @@
-package com.example.winterhold.Controller.Model;
+package com.example.winterhold.controller.model;
 
 import com.example.winterhold.Dto.Book.BookInsertDto;
 import com.example.winterhold.Dto.Book.BookUpdateDto;
 import com.example.winterhold.Service.abs.AuthorService;
 import com.example.winterhold.Service.abs.BookService;
-import com.example.winterhold.Service.imp.LoanServiceImp;
 import com.example.winterhold.Utility.Dropdown;
+import com.example.winterhold.constants.MvcRedirectConst;
+import com.example.winterhold.constants.WinterholdConstants;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -15,27 +16,23 @@ import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/book")
+@RequiredArgsConstructor
 public class BookController {
 
-    @Autowired
-    private BookService bookService;
-
-    @Autowired
-    private LoanServiceImp loanServiceImp;
-
-    @Autowired
-    private AuthorService authorService;
+    private final BookService bookService;
+    
+    private final AuthorService authorService;
 
     @GetMapping("/insert")
-    public String insert(Model model, @RequestParam(required = true) String categoryName) {
+    public String insert(Model model, @RequestParam String categoryName) {
 
         BookInsertDto dto = new BookInsertDto();
-        var dropdownauthor = Dropdown.dropdownAuthor(authorService.getAllAuthor());
+        var dropdownAuthor = Dropdown.dropdownAuthor(authorService.getAllAuthor());
         dto.setIsBorrowed(false);
         dto.setCategoryName(categoryName);
 
         model.addAttribute("categoryName", categoryName);
-        model.addAttribute("dropdownAuthor", dropdownauthor);
+        model.addAttribute(WinterholdConstants.CONTROLLER_DROPDOWN_AUTHOR, dropdownAuthor);
         model.addAttribute("dto", dto);
 
         return "Book/insert";
@@ -47,18 +44,18 @@ public class BookController {
         if (bindingResult.hasErrors()) {
 
             Boolean borrowed = false;
-            var dropdownauthor = Dropdown.dropdownAuthor(authorService.getAllAuthor());
+            var dropdownAuthor = Dropdown.dropdownAuthor(authorService.getAllAuthor());
             dto.setIsBorrowed(borrowed);
 
             model.addAttribute("dto", dto);
-            model.addAttribute("dropdownAuthor", dropdownauthor);
+            model.addAttribute(WinterholdConstants.CONTROLLER_DROPDOWN_AUTHOR, dropdownAuthor);
 
             return "Book/insert";
         } else {
 
             bookService.insert(dto);
 
-            return "redirect:/category/detail?categoryName=" + dto.getCategoryName();
+            return MvcRedirectConst.REDIRECT_CATEGORY_DETAIL.concat(dto.getCategoryName());
         }
     }
 
@@ -66,9 +63,9 @@ public class BookController {
     public String update(Model model, @RequestParam String bookCode) {
 
         BookUpdateDto dto = bookService.getBooksById(bookCode);
-        var dropdownauthor = Dropdown.dropdownAuthor(authorService.getAllAuthor());
+        var dropdownAuthor = Dropdown.dropdownAuthor(authorService.getAllAuthor());
 
-        model.addAttribute("dropdownAuthor", dropdownauthor);
+        model.addAttribute(WinterholdConstants.CONTROLLER_DROPDOWN_AUTHOR, dropdownAuthor);
         model.addAttribute("dto", dto);
 
         return "Book/update";
@@ -81,40 +78,33 @@ public class BookController {
 
         if (bindingResult.hasErrors()) {
 
-            var dropdownauthor = Dropdown.dropdownAuthor(authorService.getAllAuthor());
+            var dropdownAuthor = Dropdown.dropdownAuthor(authorService.getAllAuthor());
 
             model.addAttribute("dto", dto);
-            model.addAttribute("dropdownAuthor", dropdownauthor);
+            model.addAttribute(WinterholdConstants.CONTROLLER_DROPDOWN_AUTHOR, dropdownAuthor);
 
             return "Book/update";
         } else {
             BookUpdateDto data = bookService.getBooksById(dto.getCode());
             dto.setInBorrow(data.getInBorrow());
-
-            if (data.getInBorrow() < dto.getQuantity()){
-                dto.setIsBorrowed(false);
-            }
-            else{
-                dto.setIsBorrowed(true);
-            }
-
+            dto.setIsBorrowed(data.getInBorrow() < dto.getQuantity());
             bookService.update(dto);
 
-            return "redirect:/category/detail?categoryName=" + dto.getCategoryName();
+            return MvcRedirectConst.REDIRECT_CATEGORY_DETAIL.concat(dto.getCategoryName());
         }
     }
 
     @GetMapping("/delete")
-    public String delete(@RequestParam(required = true) String bookCode) {
+    public String delete(@RequestParam String bookCode) {
 
         var data = bookService.getBooksById(bookCode);
         Boolean result = bookService.delete(bookCode);
 
-        if (!result) {
+        if (Boolean.FALSE.equals(result)) {
             return "Category/delete";
         }
 
-        return "redirect:/category/detail?categoryName=" + data.getCategoryName();
+        return MvcRedirectConst.REDIRECT_CATEGORY_DETAIL.concat(data.getCategoryName());
     }
 
 }

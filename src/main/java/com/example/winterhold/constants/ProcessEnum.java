@@ -1,4 +1,4 @@
-package com.example.winterhold.Const;
+package com.example.winterhold.constants;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

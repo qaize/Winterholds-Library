@@ -1,4 +1,4 @@
-package com.example.winterhold.Controller.Rest;
+package com.example.winterhold.controller.rest;
 
 import com.example.winterhold.Dto.Account.AccountInsertDto;
 import com.example.winterhold.Dto.Account.AccountUpdateDto;
@@ -26,8 +26,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
-import static com.example.winterhold.Const.enumList.INTERNAL_SERVER_ERROR;
-import static com.example.winterhold.Const.enumList.RUNTIME_ERROR_SERVER;
+import static com.example.winterhold.constants.enumList.INTERNAL_SERVER_ERROR;
+import static com.example.winterhold.constants.enumList.RUNTIME_ERROR_SERVER;
 
 @RestController
 @RequestMapping("/api/account")

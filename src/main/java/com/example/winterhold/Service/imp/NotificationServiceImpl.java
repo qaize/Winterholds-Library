@@ -1,6 +1,6 @@
 package com.example.winterhold.Service.imp;
 
-import com.example.winterhold.Controller.Model.BaseController;
+import com.example.winterhold.controller.model.BaseController;
 import com.example.winterhold.Dao.NotificationRepository;
 import com.example.winterhold.Dto.Models.DataDTO;
 import com.example.winterhold.Entity.Notification;
@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.example.winterhold.Const.actionConst.INDEX_EMPTY;
+import static com.example.winterhold.constants.ActionConstants.INDEX_EMPTY;
 
 @Service
 public class NotificationServiceImpl implements NotificationService {

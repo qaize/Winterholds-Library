@@ -1,6 +1,6 @@
 package com.example.winterhold.Service.imp;
 
-import com.example.winterhold.Controller.Model.BaseController;
+import com.example.winterhold.controller.model.BaseController;
 import com.example.winterhold.Dao.LogRepository;
 import com.example.winterhold.Entity.Logs;
 import com.example.winterhold.Service.abs.LogService;
