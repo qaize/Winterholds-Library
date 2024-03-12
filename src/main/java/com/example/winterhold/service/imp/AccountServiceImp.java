@@ -1,4 +1,4 @@
-package com.example.winterhold.Service.imp;
+package com.example.winterhold.service.imp;
 
 import com.example.winterhold.Dao.AccountRepository;
 import com.example.winterhold.Dao.CustomerRepository;
@@ -8,7 +8,7 @@ import com.example.winterhold.Dto.Account.AccountUpdateDto;
 import com.example.winterhold.Dto.Customer.CustomerInsertDto;
 import com.example.winterhold.Entity.Account;
 import com.example.winterhold.Entity.Customer;
-import com.example.winterhold.Service.abs.AccountService;
+import com.example.winterhold.service.abs.AccountService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

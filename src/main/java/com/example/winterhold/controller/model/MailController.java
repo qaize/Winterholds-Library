@@ -1,7 +1,7 @@
 package com.example.winterhold.controller.model;
 
 import com.example.winterhold.Dto.Mail.MailDTO;
-import com.example.winterhold.Service.imp.EmailServiceImp;
+import com.example.winterhold.service.imp.EmailServiceImp;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

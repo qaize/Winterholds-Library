@@ -5,9 +5,10 @@ import com.example.winterhold.Dto.Author.AuthorIndexDto;
 import com.example.winterhold.Dto.Author.AuthorInsertDto;
 import com.example.winterhold.Dto.Author.AuthorUpdateDto;
 import com.example.winterhold.Dto.Models.DataDTO;
-import com.example.winterhold.Service.abs.AuthorService;
-import com.example.winterhold.Service.abs.BookService;
-import com.example.winterhold.Service.imp.LoanServiceImp;
+import com.example.winterhold.service.abs.AuthorService;
+import com.example.winterhold.service.abs.BookService;
+import com.example.winterhold.service.abs.NotificationService;
+import com.example.winterhold.service.imp.LoanServiceImp;
 import com.example.winterhold.Utility.Dropdown;
 import com.example.winterhold.constants.WinterholdConstants;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -29,8 +30,7 @@ public class AuthorController {
 
     private final BookService bookService;
 
-
-    private final LoanServiceImp loanServiceImp;
+    private final NotificationService notificationService;
 
     @GetMapping("/index")
     public String index(Model model,
@@ -45,7 +45,7 @@ public class AuthorController {
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPage", data.getTotalPage());
         model.addAttribute("listAuthor", data.getData());
-        model.addAttribute("newNotification",loanServiceImp.getNotification());
+        model.addAttribute("newNotification",notificationService.getNotification());
 
         return "Author/index";
     }

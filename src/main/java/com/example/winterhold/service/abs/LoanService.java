@@ -1,4 +1,4 @@
-package com.example.winterhold.Service.abs;
+package com.example.winterhold.service.abs;
 
 import com.example.winterhold.Dto.CurrentLoginDetailDTO;
 import com.example.winterhold.Dto.Loan.*;
@@ -37,5 +37,5 @@ public interface LoanService {
 
     DataDTO<Boolean> deleteLoanRequest(Long id);
 
-    Integer getNotification();
+
 }

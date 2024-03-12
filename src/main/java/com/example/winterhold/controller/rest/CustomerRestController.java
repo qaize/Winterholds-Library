@@ -4,7 +4,7 @@ import com.example.winterhold.Dto.Customer.CustomerInsertDto;
 import com.example.winterhold.Dto.Rest.InsertFailedDto;
 import com.example.winterhold.Dto.Rest.ResponseCrudRestDto;
 import com.example.winterhold.Dto.Rest.ValidatorRestDto;
-import com.example.winterhold.Service.abs.CustomerService;
+import com.example.winterhold.service.abs.CustomerService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

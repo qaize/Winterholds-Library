@@ -2,8 +2,8 @@ package com.example.winterhold.controller.model;
 
 import com.example.winterhold.Dto.Book.BookInsertDto;
 import com.example.winterhold.Dto.Book.BookUpdateDto;
-import com.example.winterhold.Service.abs.AuthorService;
-import com.example.winterhold.Service.abs.BookService;
+import com.example.winterhold.service.abs.AuthorService;
+import com.example.winterhold.service.abs.BookService;
 import com.example.winterhold.Utility.Dropdown;
 import com.example.winterhold.constants.MvcRedirectConst;
 import com.example.winterhold.constants.WinterholdConstants;

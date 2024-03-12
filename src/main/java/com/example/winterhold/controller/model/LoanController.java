@@ -5,10 +5,7 @@ import com.example.winterhold.Dto.Loan.*;
 import com.example.winterhold.Dto.Models.DataDTO;
 import com.example.winterhold.Entity.Loan;
 import com.example.winterhold.Entity.LogsIncome;
-import com.example.winterhold.Service.abs.BookService;
-import com.example.winterhold.Service.abs.CategoryService;
-import com.example.winterhold.Service.abs.CustomerService;
-import com.example.winterhold.Service.abs.LoanService;
+import com.example.winterhold.service.abs.*;
 import com.example.winterhold.constants.ActionConstants;
 import com.example.winterhold.constants.MvcRedirectConst;
 import com.example.winterhold.constants.WinterholdConstants;
@@ -36,6 +33,7 @@ public class LoanController {
     private final CustomerService customerService;
     private final BookService bookService;
     private final CategoryService categoryService;
+    private final NotificationService notificationService;
 
     @Value(ActionConstants.INSERT)
     private String insert;
@@ -84,7 +82,7 @@ public class LoanController {
         model.addAttribute("currentPage", page);
         model.addAttribute("listLoan", index.getData());
         model.addAttribute("totalPage", index.getTotalPage());
-        model.addAttribute("newNotification",loanService.getNotification());
+        model.addAttribute("newNotification",notificationService.getNotification());
 
         return "Loan/index";
     }
@@ -320,7 +318,7 @@ public class LoanController {
         model.addAttribute("message",data.getMessage());
         model.addAttribute("list",data.getData());
         model.addAttribute("listLoan",dataLoan.getData());
-        model.addAttribute("newNotification",loanService.getNotification());
+        model.addAttribute("newNotification",notificationService.getNotification());
         return "Loan/RequestList";
     }
 

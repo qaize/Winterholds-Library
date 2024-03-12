@@ -1,4 +1,4 @@
-package com.example.winterhold.Service.imp;
+package com.example.winterhold.service.imp;
 
 import com.example.winterhold.controller.model.BaseController;
 import com.example.winterhold.Dao.*;
@@ -7,7 +7,9 @@ import com.example.winterhold.Dto.CurrentLoginDetailDTO;
 import com.example.winterhold.Dto.Loan.*;
 import com.example.winterhold.Dto.Models.DataDTO;
 import com.example.winterhold.Entity.*;
-import com.example.winterhold.Service.abs.LoanService;
+import com.example.winterhold.service.abs.LoanService;
+import com.example.winterhold.service.abs.NotificationService;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +34,7 @@ import static com.example.winterhold.constants.ActionConstants.*;
 
 
 @Service
+@RequiredArgsConstructor
 public class LoanServiceImp implements LoanService {
     private static final Logger LOGGER = LoggerFactory.getLogger(LoanServiceImp.class);
 
@@ -44,21 +47,8 @@ public class LoanServiceImp implements LoanService {
     private final LoanRequestRepository loanRequestRepository;
     private final BookRepository bookRepository;
     private final NotificationRepository notificationRepository;
+    private final NotificationService notificationService;
 
-    @Autowired
-    public LoanServiceImp(LoanRepository loanRepository, LogsIncomeRepository logsIncomeRepository, LogServiceImpl logService, CustomerServiceImp customerServiceImp,
-                          CustomerRepository customerRepository, BookServiceImp bookService, LoanRequestRepository loanRequestRepository,
-                          BookRepository bookRepository,NotificationRepository notificationRepository) {
-        this.loanRepository = loanRepository;
-        this.logsIncomeRepository = logsIncomeRepository;
-        this.logService = logService;
-        this.customerServiceImp = customerServiceImp;
-        this.customerRepository = customerRepository;
-        this.bookService = bookService;
-        this.loanRequestRepository = loanRequestRepository;
-        this.bookRepository = bookRepository;
-        this.notificationRepository = notificationRepository;
-    }
 
 
     @Override
@@ -108,10 +98,10 @@ public class LoanServiceImp implements LoanService {
                 book.setIsBorrowed(false);
             }
 
-            if (!(data.getDenda() > 0)) {
+            if (data.getDenda() <= 0) {
                 customer.setLoanCount(customerServiceImp.loanCountSetter(data.getCustomerNumber(), "Return"));
             }
-            Notification returnNotification = mapNotification(UUID.randomUUID(), customer.getMembershipNumber(), "Returned by admin",book.getTitle().concat(": ".concat(book.getCategoryName())),LocalDateTime.now(),currentLogin);
+            Notification returnNotification = notificationService.mapNotification(UUID.randomUUID(), customer.getMembershipNumber(), "Returned by admin", book.getTitle().concat(": ".concat(book.getCategoryName())), LocalDateTime.now(), currentLogin);
 
             extendLoan(data);
             notificationRepository.save(returnNotification);
@@ -156,7 +146,7 @@ public class LoanServiceImp implements LoanService {
             Customer updateCustomer = updateCustomerProperty(newData.getCustomerNumber());
             Loan insertNewLoan = mapInsert(newData);
 
-            Notification insertNotification = mapNotification(UUID.randomUUID(), updateCustomer.getMembershipNumber(), "New loan inserted by admin",updateBook.getTitle().concat(": ".concat(updateBook.getCategoryName())),LocalDateTime.now(),currentLogin);
+            Notification insertNotification = notificationService.mapNotification(UUID.randomUUID(), updateCustomer.getMembershipNumber(), "New loan inserted by admin", updateBook.getTitle().concat(": ".concat(updateBook.getCategoryName())), LocalDateTime.now(), currentLogin);
 
             chainUpdateLoan(updateCustomer, updateBook, insertNewLoan);
             LOGGER.info(SUCCESS_INSERT_DATA, insertNewLoan.getId());
@@ -189,7 +179,7 @@ public class LoanServiceImp implements LoanService {
         }
     }
 
-    //    UNSUSED SERVICES
+    //    UNUSED SERVICES
     @Override
     public void update(LoanUpdateDto dto) {
         Loan en = new Loan(dto.getId(), dto.getCustomerNumber(), dto.getBookCode(),
@@ -255,8 +245,8 @@ public class LoanServiceImp implements LoanService {
     public Long getCountPageDenda() {
         Integer row = 5;
         Double totalData = (double) loanRepository.getCountPageDenda();
-        Long totaPage = (long) Math.ceil(totalData / row);
-        return totaPage;
+        Long  totalPage = (long) Math.ceil(totalData / row);
+        return  totalPage;
     }
 
     @Override
@@ -271,8 +261,8 @@ public class LoanServiceImp implements LoanService {
     public Long getCountPaymentHistory() {
         Integer row = 5;
         Double totalData = (double) logsIncomeRepository.getCountTotalPaymentHistory();
-        Long totaPage = (long) Math.ceil(totalData / row);
-        return totaPage;
+        Long  totalPage = (long) Math.ceil(totalData / row);
+        return  totalPage;
     }
 
     @Override
@@ -286,9 +276,9 @@ public class LoanServiceImp implements LoanService {
     public Long getCountHistoryPage() {
         Integer row = 10;
         Double totalData = (double) loanRepository.getCountHistoryPage();
-        Long totaPage = (long) Math.ceil(totalData / row);
+        Long  totalPage = (long) Math.ceil(totalData / row);
 
-        return totaPage;
+        return  totalPage;
     }
 
 
@@ -300,25 +290,25 @@ public class LoanServiceImp implements LoanService {
         int flag = 0;
         try {
             Boolean dataReturn = true;
-//            check books if available
+            //            check books if available
             if (bookRepository.validateAvailableBookByBookCode(requestNew.getBookCode()) == 1) {
                 dataReturn = false;
                 message = "Books is out of stock";
                 flag = 1;
             }
-//            Check Customer if not banned/expire/denda/
+            //            Check Customer if not banned/expire/denda/
             if (customerRepository.validateAvailableCustomerByMembershipNumber(requestNew.getMembershipNumber()) == 0) {
                 dataReturn = false;
                 message = "This Customer cannot request the books, please contact admin!";
                 flag = 1;
             }
-//Customer if already loan the books
+            //Customer if already loan the books
             if (loanRepository.validateReplicateBookLoan(requestNew.getMembershipNumber(), requestNew.getBookCode()) == 1) {
                 dataReturn = false;
                 message = "this user already loan this books!";
                 flag = 1;
             }
-//Customer if already request the books
+            //Customer if already request the books
             if (loanRequestRepository.validateRepicateRequest(requestNew.getMembershipNumber(), requestNew.getBookCode()) == 1) {
                 dataReturn = false;
                 message = "You already request this books!";
@@ -344,7 +334,7 @@ public class LoanServiceImp implements LoanService {
                             LocalDateTime.now(), false, true);
                     customer.setRequestCount(customer.getRequestCount() + 1);
                 }
-                Notification userNotification = mapNotification(UUID.randomUUID(),"admin","Request new loan",requestNewLoan.getBookCode(),LocalDateTime.now(),currentLogin);
+                Notification userNotification = notificationService.mapNotification(UUID.randomUUID(), "admin", "Request new loan", requestNewLoan.getBookCode(), LocalDateTime.now(), currentLogin);
 
                 notificationRepository.save(userNotification);
                 customerRepository.save(customer);
@@ -422,7 +412,7 @@ public class LoanServiceImp implements LoanService {
                 if (updateCustomer.getRequestCount() > 0) {
                     updateCustomer.setRequestCount(updateCustomer.getRequestCount() - 1);
                 }
-                deleteNotification = mapNotification(UUID.randomUUID(),updateCustomer.getMembershipNumber(),"Request cancaled","",LocalDateTime.now(),currentLogin);
+                deleteNotification = notificationService.mapNotification(UUID.randomUUID(), updateCustomer.getMembershipNumber(), "Request canceled", "", LocalDateTime.now(), currentLogin);
                 data.setIsActive(false);
                 notificationRepository.save(deleteNotification);
             }
@@ -502,7 +492,7 @@ public class LoanServiceImp implements LoanService {
                 Loan requestedLoan = new Loan(lastIdLoan + 1, requestLoanData.getMembershipNumber(), requestLoanData.getBookCode(), LocalDate.now(), LocalDate.now().plusDays(5), null, "Order By Request", 0, 0L);
                 requestLoanData.setStatus(true);
                 requestLoanData.setIsActive(false);
-                Notification sendNotification = mapNotification(UUID.randomUUID(),updateCustomer.getMembershipNumber(),"Request Loan Accepted","Thankyou for Loan",LocalDateTime.now(),currentLogin.getCurrentLogin());
+                Notification sendNotification = notificationService.mapNotification(UUID.randomUUID(), updateCustomer.getMembershipNumber(), "Request Loan Accepted", "Thankyou for Loan", LocalDateTime.now(), currentLogin.getCurrentLogin());
                 chainUpdateLoan(updateCustomer, updateBook, requestedLoan);
                 notificationRepository.save(sendNotification);
                 loanRequestRepository.save(requestLoanData);
@@ -520,27 +510,8 @@ public class LoanServiceImp implements LoanService {
     }
 
 
-    public Integer getNotification() {
-        CurrentLoginDetailDTO currentLoginDetailDTO = new BaseController().getCurrentLoginDetail();
-
-        Integer newNotification;
-
-        if (currentLoginDetailDTO.getRole().contains("customer"))
-        {
-            newNotification = notificationRepository.findNewNotification(currentLoginDetailDTO.getUsername());
-        }else {
-            newNotification = notificationRepository.findNewNotification("admin");
-        }
-        return newNotification;
-    }
-
-    private Notification mapNotification(UUID uuid, String membershipNumber, String header, String message, LocalDateTime date, String currentLogin) {
-        return new Notification(uuid.toString(),membershipNumber,false,true,header,message,date,currentLogin);
-    }
-
 
     private List<LoanIndexDto> mapIndexLoan(List<LoanIndexDto> data) {
-//        List<LoanIndexDto> listLoanDetails = ;
         for (LoanIndexDto loanDetails : data) {
 
             if (loanDetails.getReturnDate() != null) {

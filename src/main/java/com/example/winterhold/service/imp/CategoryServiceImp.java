@@ -1,11 +1,12 @@
-package com.example.winterhold.Service.imp;
+package com.example.winterhold.service.imp;
 
 import com.example.winterhold.Dao.CategoryRepository;
 import com.example.winterhold.Dto.Category.CategoryIndexDto;
 import com.example.winterhold.Dto.Category.CategoryInsertDto;
 import com.example.winterhold.Dto.Category.CategoryUpdateDto;
 import com.example.winterhold.Entity.Category;
-import com.example.winterhold.Service.abs.CategoryService;
+import com.example.winterhold.service.abs.CategoryService;
+import com.example.winterhold.service.abs.NotificationService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,7 +32,7 @@ public class CategoryServiceImp implements CategoryService {
 
     private final LogServiceImpl logService;
 
-    private final LoanServiceImp loanServiceImp;
+    private final NotificationService notificationService;
 
     @Override
     public String getListCategoryBySearch(Integer page, String name, Model model) {
@@ -47,7 +48,7 @@ public class CategoryServiceImp implements CategoryService {
             flag = 1;
         }
 
-        model.addAttribute("newNotification", loanServiceImp.getNotification());
+        model.addAttribute("newNotification", notificationService.getNotification());
         model.addAttribute("name", name);
         model.addAttribute("flag", flag);
         model.addAttribute("message", message);

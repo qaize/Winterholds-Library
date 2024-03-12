@@ -1,8 +1,9 @@
 package com.example.winterhold.controller.model;
 
 import com.example.winterhold.Dto.Models.DataDTO;
+import com.example.winterhold.Dto.notification.NotificationDetailDto;
 import com.example.winterhold.Entity.Notification;
-import com.example.winterhold.Service.abs.NotificationService;
+import com.example.winterhold.service.abs.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -23,9 +24,9 @@ public class NotificationController {
         this.notificationService = notificationService;
     }
 
-    @GetMapping(value = "/show-notification-by-id")
+    @GetMapping(value = "/show-notification")
     public String getNotificationById(Model model, @RequestParam(defaultValue = "1") Integer page){
-        DataDTO<List<Notification>> data = notificationService.getNotificationByCurrentLogin(page);
+        DataDTO<List<NotificationDetailDto>> data = notificationService.retriveNotification(page);
 
         model.addAttribute("flag",data.getFlag());
         model.addAttribute("message",data.getMessage());
@@ -36,18 +37,4 @@ public class NotificationController {
         return "Notification/Index";
     }
 
-
-    @GetMapping(value = "/show-all-notification")
-    public String getAllNotification(Model model, @RequestParam(defaultValue = "1") Integer page){
-        DataDTO<List<Notification>> data = notificationService.getNotificationFromUser(page);
-
-        model.addAttribute("flag",data.getFlag());
-        model.addAttribute("message",data.getMessage());
-        model.addAttribute("totalPage",data.getFlag());
-        model.addAttribute("currentPage",page);
-        model.addAttribute("newNotification",0);
-        model.addAttribute("notificationList",data.getData());
-
-        return "Notification/Index";
-    }
 }

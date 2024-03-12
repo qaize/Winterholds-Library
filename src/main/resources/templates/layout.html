@@ -158,24 +158,8 @@
         </div>
         <div class="notification">
           <a
-            sec:authorize="hasRole('customer')"
             class="notification-button"
-            th:href="@{/notification/show-notification-by-id}"
-          >
-            <i class="fas fa-bell"></i>
-            <span
-              th:style="${newNotification} == 0 ? 'display : none' : 'display : flex' "
-              th:text="${newNotification} "
-              class="notification-badge"
-              >1</span
-            >
-          </a>
-        </div>
-        <div class="notification">
-          <a
-            sec:authorize="hasRole('administrator')"
-            class="notification-button"
-            th:href="@{/notification/show-all-notification}"
+            th:href="@{/notification/show-notification}"
           >
             <i class="fas fa-bell"></i>
             <span

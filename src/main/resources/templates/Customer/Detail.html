@@ -4,12 +4,12 @@
 </head>
 <body class="main-body" th:object="${memberDto}">
 <nav th:replace="~{layout::navLayout}"></nav>
-<header th:replace="~{layout::header(*{fullname})}"></header>
+<header th:replace="~{layout::header(*{fullName})}"></header>
 <main>
     <div class="grid-container">
         <div class="filter">
             <label>Name : </label>
-            <h1 th:text="*{fullname}"></h1>
+            <h1 th:text="*{fullName}"></h1>
             <label>Birth Date : </label>
             <h1 th:text="*{birthDate}"></h1>
             <label>Gender : </label>
@@ -21,7 +21,7 @@
         </div>
         <div class="filter">
             <a class="btn warning-button" th:href="@{/customer/index}"> Back to Customer Index </a>
-            <a class="btn update-button" th:href="@{/customer/update-profile}"> Update profile</a>
+            <a class="btn update-button" th:href="@{/customer/user/update-profile}"> Update profile</a>
         </div>
 
     </div>

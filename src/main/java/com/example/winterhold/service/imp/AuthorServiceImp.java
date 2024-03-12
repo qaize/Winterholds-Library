@@ -1,4 +1,4 @@
-package com.example.winterhold.Service.imp;
+package com.example.winterhold.service.imp;
 
 import com.example.winterhold.controller.model.BaseController;
 import com.example.winterhold.CustomException.CustomException;
@@ -11,7 +11,7 @@ import com.example.winterhold.Dto.BaseResponseDTO;
 import com.example.winterhold.Dto.Models.DataDTO;
 import com.example.winterhold.Dto.Rest.Request.Author.AuthorRequestDTO;
 import com.example.winterhold.Entity.Author;
-import com.example.winterhold.Service.abs.AuthorService;
+import com.example.winterhold.service.abs.AuthorService;
 import com.example.winterhold.Utility.ResponseUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;

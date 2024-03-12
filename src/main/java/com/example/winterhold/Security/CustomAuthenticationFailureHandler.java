@@ -1,7 +1,7 @@
 package com.example.winterhold.Security;
 
 import com.example.winterhold.Entity.Account;
-import com.example.winterhold.Service.abs.AccountService;
+import com.example.winterhold.service.abs.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;

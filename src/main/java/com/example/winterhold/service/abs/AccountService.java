@@ -1,4 +1,4 @@
-package com.example.winterhold.Service.abs;
+package com.example.winterhold.service.abs;
 
 import com.example.winterhold.Dto.Account.AccountIndexDto;
 import com.example.winterhold.Dto.Account.AccountInsertDto;

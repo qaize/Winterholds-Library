@@ -4,7 +4,7 @@ package com.example.winterhold.controller.AuthorServiceTest;
 import com.example.winterhold.Dao.AuthorRepository;
 import com.example.winterhold.Dto.Author.AuthorIndexDto;
 import com.example.winterhold.Dto.Rest.Request.Author.AuthorRequestDTO;
-import com.example.winterhold.Service.imp.AuthorServiceImp;
+import com.example.winterhold.service.imp.AuthorServiceImp;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.Test;
 import org.junit.jupiter.api.DisplayName;

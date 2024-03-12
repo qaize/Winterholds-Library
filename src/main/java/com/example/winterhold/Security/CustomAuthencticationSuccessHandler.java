@@ -1,7 +1,7 @@
 package com.example.winterhold.Security;
 
 import com.example.winterhold.Entity.Account;
-import com.example.winterhold.Service.abs.AccountService;
+import com.example.winterhold.service.abs.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

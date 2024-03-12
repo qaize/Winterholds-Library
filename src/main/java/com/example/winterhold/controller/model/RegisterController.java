@@ -1,7 +1,7 @@
 package com.example.winterhold.controller.model;
 
 import com.example.winterhold.Dto.Account.AccountInsertDto;
-import com.example.winterhold.Service.abs.AccountService;
+import com.example.winterhold.service.abs.AccountService;
 import com.example.winterhold.Utility.Dropdown;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

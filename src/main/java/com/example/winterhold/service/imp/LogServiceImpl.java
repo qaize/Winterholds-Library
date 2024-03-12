@@ -1,9 +1,9 @@
-package com.example.winterhold.Service.imp;
+package com.example.winterhold.service.imp;
 
 import com.example.winterhold.controller.model.BaseController;
 import com.example.winterhold.Dao.LogRepository;
 import com.example.winterhold.Entity.Logs;
-import com.example.winterhold.Service.abs.LogService;
+import com.example.winterhold.service.abs.LogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

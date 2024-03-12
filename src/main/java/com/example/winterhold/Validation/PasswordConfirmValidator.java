@@ -1,6 +1,6 @@
 package com.example.winterhold.Validation;
 
-import com.example.winterhold.Service.abs.AccountService;
+import com.example.winterhold.service.abs.AccountService;
 import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 

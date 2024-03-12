@@ -1,8 +1,8 @@
-package com.example.winterhold.Service.imp;
+package com.example.winterhold.service.imp;
 
 import com.example.winterhold.Dto.Mail.MailDTO;
 import com.example.winterhold.Entity.Mail;
-import com.example.winterhold.Service.abs.EmailService;
+import com.example.winterhold.service.abs.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;

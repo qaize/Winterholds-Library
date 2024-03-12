@@ -1,7 +1,7 @@
 package com.example.winterhold.controller.model;
 
 import com.example.winterhold.Dto.CurrentLoginDetailDTO;
-import com.example.winterhold.Service.imp.AccountServiceImp;
+import com.example.winterhold.service.imp.AccountServiceImp;
 import com.example.winterhold.Utility.JwtToken;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;

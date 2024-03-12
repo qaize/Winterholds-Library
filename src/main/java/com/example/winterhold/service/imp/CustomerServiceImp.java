@@ -1,13 +1,16 @@
-package com.example.winterhold.Service.imp;
+package com.example.winterhold.service.imp;
 
 import com.example.winterhold.Dao.CustomerRepository;
 import com.example.winterhold.Dao.LoanRepository;
 import com.example.winterhold.Dto.Customer.CustomerIndexDto;
 import com.example.winterhold.Dto.Customer.CustomerInsertDto;
+import com.example.winterhold.Dto.Customer.CustomerProfileDto;
 import com.example.winterhold.Dto.Customer.CustomerUpdateDto;
 import com.example.winterhold.Dto.Models.DataDTO;
 import com.example.winterhold.Entity.Customer;
-import com.example.winterhold.Service.abs.CustomerService;
+import com.example.winterhold.service.abs.CustomerService;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,15 +20,15 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
+import java.util.*;
 
 import static com.example.winterhold.constants.ActionConstants.*;
 
 @Service
+@Slf4j
 public class CustomerServiceImp implements CustomerService {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(CustomerServiceImp.class);
@@ -176,6 +179,28 @@ public class CustomerServiceImp implements CustomerService {
             logService.saveLogs(CUSTOMER, FAILED, EXTEND);
             return false;
         }
+    }
+
+    @Override
+    public CustomerProfileDto cutomerProfile(String username) throws ParseException {
+
+        Locale indo = new Locale("id","ID");
+
+        var customer = customerRepository.findByMembershipNumber(username).get();
+
+        Date originalDate = new SimpleDateFormat("yyyy-MM-dd").parse(customer.getBirthDate().toString());
+
+        String birthDate = new SimpleDateFormat("dd MMMM yyyy",indo).format(originalDate);
+
+
+        return CustomerProfileDto.builder()
+                .membershipNumber(customer.getMembershipNumber())
+                .fullName(customer.getFirstName().concat(StringUtils.SPACE).concat(customer.getLastName()))
+                .phone(customer.getPhone())
+                .address(customer.getAddress())
+                .birthDate(birthDate)
+                .gender(customer.getGender())
+                .build();
     }
 
     @Override

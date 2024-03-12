@@ -1,4 +1,4 @@
-package com.example.winterhold.Service.abs;
+package com.example.winterhold.service.abs;
 
 import com.example.winterhold.Dto.Author.AuthorIndexDto;
 import com.example.winterhold.Dto.Author.AuthorIndexDtoV2;

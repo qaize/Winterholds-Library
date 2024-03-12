@@ -1,7 +1,7 @@
 package com.example.winterhold.controller.rest;
 
 import com.example.winterhold.Entity.Mail;
-import com.example.winterhold.Service.abs.EmailService;
+import com.example.winterhold.service.abs.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

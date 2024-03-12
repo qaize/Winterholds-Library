@@ -1,4 +1,4 @@
-package com.example.winterhold.Service.abs;
+package com.example.winterhold.service.abs;
 
 import com.example.winterhold.Dto.Mail.MailDTO;
 import com.example.winterhold.Entity.Mail;

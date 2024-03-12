@@ -63,7 +63,7 @@
             <button class="btn blue-button" type="submit"> Submit</button>
             <a class="btn warning-button" th:href="@{/customer/index}">Close</a>
         </form>
-        <form th:unless="${profile}" method="post" class="upsert-form" th:attr="action=@{/customer/update-profile}" enctype="multipart/form-data"
+        <form th:unless="${profile}" method="post" class="upsert-form" th:attr="action=@{/customer/user/update-profile}" enctype="multipart/form-data"
               th:object="${dto}">
             <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
             <!--        <div th:if="${param.error != null}" th:text="${param.error}"></div>-->

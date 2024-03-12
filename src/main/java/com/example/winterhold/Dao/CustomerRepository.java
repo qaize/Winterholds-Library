@@ -12,11 +12,16 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 
 @Transactional
 @Repository
 public interface CustomerRepository extends JpaRepository<Customer, String> {
+
+
+
+    Optional<Customer> findByMembershipNumber(String username);
 
     @Query("""
             SELECT 
@@ -186,7 +191,6 @@ public interface CustomerRepository extends JpaRepository<Customer, String> {
                 c.requestCount <= 3
             """)
     Long validateAvailableCustomerByMembershipNumber(String membershipNumber);
-
 
 
 }

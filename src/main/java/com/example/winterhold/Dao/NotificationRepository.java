@@ -13,6 +13,8 @@ import javax.transaction.Transactional;
 @Transactional
 public interface NotificationRepository extends JpaRepository<Notification,String> {
 
+    Integer countByRecipientIdAndIsNew(String recipientId,Boolean isNew);
+
     @Query("""
             select n
             from Notification n

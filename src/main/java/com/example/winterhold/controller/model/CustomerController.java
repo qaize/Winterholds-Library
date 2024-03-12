@@ -6,8 +6,9 @@ import com.example.winterhold.Dto.Customer.CustomerInsertDto;
 import com.example.winterhold.Dto.Customer.CustomerUpdateDto;
 import com.example.winterhold.Dto.Models.DataDTO;
 import com.example.winterhold.Entity.Customer;
-import com.example.winterhold.Service.abs.CustomerService;
-import com.example.winterhold.Service.imp.LoanServiceImp;
+import com.example.winterhold.service.abs.CustomerService;
+import com.example.winterhold.service.abs.NotificationService;
+import com.example.winterhold.service.imp.LoanServiceImp;
 import com.example.winterhold.Utility.Dropdown;
 import com.example.winterhold.constants.MvcRedirectConst;
 import com.example.winterhold.constants.WinterholdConstants;
@@ -18,6 +19,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.ParseException;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -27,8 +29,8 @@ import java.util.List;
 public class CustomerController {
 
     private final CustomerService customerService;
-    
-    private final LoanServiceImp loanServiceImp;
+
+    private final NotificationService notificationService;
 
     @GetMapping("/index")
     public String index(Model model,
@@ -44,7 +46,7 @@ public class CustomerController {
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPage", data.getTotalPage());
         model.addAttribute("listCustomer", data.getData());
-        model.addAttribute("newNotification",loanServiceImp.getNotification());
+        model.addAttribute("newNotification",notificationService.getNotification());
 
         return "Customer/index";
     }
@@ -178,8 +180,8 @@ public class CustomerController {
     }
 
 
-    @GetMapping("/update-profile")
-    public String updateProfile(Model model) {
+    @GetMapping("/user/update-profile")
+    public String userUpdateProfile(Model model) {
         BaseController baseController = new BaseController();
         CurrentLoginDetailDTO currentLogin = baseController.getCurrentLoginDetail();
 
@@ -192,8 +194,8 @@ public class CustomerController {
         return "Customer/update";
     }
 
-    @PostMapping("/update-profile")
-    public String updateProfile(@Valid @ModelAttribute("dto") CustomerUpdateDto dto, BindingResult bindingResult, Model model) {
+    @PostMapping("/user/update-profile")
+    public String userUpdateProfile(@Valid @ModelAttribute("dto") CustomerUpdateDto dto, BindingResult bindingResult, Model model) {
 
         if (bindingResult.hasErrors()) {
 
@@ -204,22 +206,23 @@ public class CustomerController {
             return "Customer/update";
         } else {
             customerService.update(dto);
-            return "redirect:/customer/detail?number="+dto.getMembershipNumber();
+            return "redirect:/customer/detail-profile";
         }
 
     }
 
 
     @GetMapping("/detail-profile")
-    public String detail(Model model) {
+    public String detail(Model model) throws ParseException {
 
         BaseController baseController = new BaseController();
         CurrentLoginDetailDTO currentLogin = baseController.getCurrentLoginDetail();
 
-        var memberDto = customerService.getCustomerByMember(currentLogin.getUsername());
+        var memberDto = customerService.cutomerProfile(currentLogin.getUsername());
 
         model.addAttribute("membershipNumber", currentLogin.getRole());
         model.addAttribute("memberDto", memberDto);
+        model.addAttribute("newNotification",notificationService.getNotification());
 
         return "Customer/Detail";
     }
