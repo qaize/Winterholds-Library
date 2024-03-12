@@ -196,4 +196,10 @@ public class AuthorRestController {
             return new ResponseCrudRestDto(HttpStatus.INTERNAL_SERVER_ERROR, "Internal Error Server");
         }
     }
+
+    @GetMapping("/get-html")
+    public BaseResponseDTO<String> getHtml() throws JsonProcessingException {
+
+        return authorService.getHtml();
+    }
 }

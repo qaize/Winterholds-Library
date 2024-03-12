@@ -25,6 +25,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.Thymeleaf;
+import org.thymeleaf.context.Context;
 
 
 import javax.persistence.Tuple;
@@ -45,15 +48,18 @@ public class AuthorServiceImp implements AuthorService {
     private final AuthorRepository authorRepository;
     private final BaseController baseController;
 
+    private final TemplateEngine engine;
+
 
     private ObjectMapper objectMapper = new ObjectMapper();
 
     @Autowired
-    public AuthorServiceImp(AuthorRepository authorRepository, BaseController baseController, LogServiceImpl logService, ObjectMapper objectMapper) {
+    public AuthorServiceImp(AuthorRepository authorRepository, BaseController baseController, LogServiceImpl logService, ObjectMapper objectMapper,TemplateEngine engine) {
         this.authorRepository = authorRepository;
         this.baseController = baseController;
         this.logService = logService;
         this.objectMapper = objectMapper;
+        this.engine = engine;
     }
 
 
@@ -227,6 +233,23 @@ public class AuthorServiceImp implements AuthorService {
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(ResponseUtil.insertFailResponse(e.getMessage()));
         }
+    }
+
+    @Override
+    public BaseResponseDTO<String> getHtml() throws JsonProcessingException {
+
+
+        Context context = new Context();
+        context.setVariable("message","test");
+        String html = engine.process("email",context);
+        System.out.println(html);
+        String s = html.replaceAll("\\r\\n|\\r|\\n", " ");
+        String r = s.replace("\\","\"");
+
+
+        return BaseResponseDTO.<String>builder()
+                .data(r)
+                .build();
     }
 
     private AuthorIndexDto mapAuthorIndexDto(Author data) {

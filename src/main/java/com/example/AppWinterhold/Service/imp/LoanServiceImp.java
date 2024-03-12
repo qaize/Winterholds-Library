@@ -135,7 +135,7 @@ public class LoanServiceImp implements LoanService {
     @Override
     public Long getCountDenda(Loan loan) {
 
-        Long denda;
+        long denda;
         if (loan.getReturnDate() != null && loan.getDenda() != null) {
             denda = ChronoUnit.DAYS.between(loan.getDueDate(), loan.getReturnDate()) * 2000;
         } else {
@@ -535,15 +535,13 @@ public class LoanServiceImp implements LoanService {
     }
 
     private Notification mapNotification(UUID uuid, String membershipNumber, String header, String message, LocalDateTime date, String currentLogin) {
-        Notification newNotification = new Notification(uuid.toString(),membershipNumber,false,true,header,message,date,currentLogin);
-
-        return newNotification;
+        return new Notification(uuid.toString(),membershipNumber,false,true,header,message,date,currentLogin);
     }
 
 
     private List<LoanIndexDto> mapIndexLoan(List<LoanIndexDto> data) {
-        List<LoanIndexDto> listLoanDetails = data;
-        for (LoanIndexDto loanDetails : listLoanDetails) {
+//        List<LoanIndexDto> listLoanDetails = ;
+        for (LoanIndexDto loanDetails : data) {
 
             if (loanDetails.getReturnDate() != null) {
 
@@ -553,12 +551,12 @@ public class LoanServiceImp implements LoanService {
                 loanDetails.setDayLeft("Last day");
                 loanDetails.setLoanStatus("On Loan");
             } else {
-                Long dif = ChronoUnit.DAYS.between(LocalDate.now(), loanDetails.getDueDate());
-                loanDetails.setDayLeft(dif > 0 ? dif.toString() : "Late");
+                long dif = ChronoUnit.DAYS.between(LocalDate.now(), loanDetails.getDueDate());
+                loanDetails.setDayLeft(dif > 0 ? Long.toString(dif) : "Late");
                 loanDetails.setLoanStatus("On Loan");
             }
         }
-        return listLoanDetails;
+        return data;
     }
 
 
@@ -596,7 +594,7 @@ public class LoanServiceImp implements LoanService {
             updatedBook.setInBorrow(updatedBook.getInBorrow() + 1);
         }
 
-        if (updatedBook.getQuantity() == updatedBook.getInBorrow()) {
+        if (updatedBook.getQuantity().equals(updatedBook.getInBorrow())) {
             updatedBook.setIsBorrowed(true);
         }
 

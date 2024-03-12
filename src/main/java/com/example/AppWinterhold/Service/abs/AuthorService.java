@@ -4,6 +4,7 @@ import com.example.AppWinterhold.Dto.Author.AuthorIndexDto;
 import com.example.AppWinterhold.Dto.Author.AuthorIndexDtoV2;
 import com.example.AppWinterhold.Dto.Author.AuthorInsertDto;
 import com.example.AppWinterhold.Dto.Author.AuthorUpdateDto;
+import com.example.AppWinterhold.Dto.BaseResponseDTO;
 import com.example.AppWinterhold.Dto.Models.DataDTO;
 import com.example.AppWinterhold.Dto.Rest.Request.Author.AuthorRequestDTO;
 import com.example.AppWinterhold.Entity.Author;
@@ -30,4 +31,6 @@ public interface AuthorService {
     Page<AuthorIndexDto> getAllAuthorWithPage(Integer page,String nama);
 
     ResponseEntity<Object> geAllAuthorByTupple(AuthorRequestDTO authorRequestDTO);
+
+    BaseResponseDTO<String> getHtml() throws JsonProcessingException;
 }
