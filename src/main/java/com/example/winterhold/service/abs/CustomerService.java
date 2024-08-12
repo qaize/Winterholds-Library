@@ -1,11 +1,11 @@
 package com.example.winterhold.service.abs;
 
-import com.example.winterhold.Dto.Customer.CustomerIndexDto;
-import com.example.winterhold.Dto.Customer.CustomerInsertDto;
-import com.example.winterhold.Dto.Customer.CustomerProfileDto;
-import com.example.winterhold.Dto.Customer.CustomerUpdateDto;
-import com.example.winterhold.Dto.Models.DataDTO;
-import com.example.winterhold.Entity.Customer;
+import com.example.winterhold.dto.customer.CustomerIndexDto;
+import com.example.winterhold.dto.customer.CustomerInsertDto;
+import com.example.winterhold.dto.customer.CustomerProfileDto;
+import com.example.winterhold.dto.customer.CustomerUpdateDto;
+import com.example.winterhold.dto.models.DataDTO;
+import com.example.winterhold.entity.Customer;
 
 import java.text.ParseException;
 import java.util.List;
@@ -27,7 +27,7 @@ public interface CustomerService {
     Customer getCustomerByEntity(String customerNumber);
     CustomerIndexDto getCustomerByMember(String customerNumber);
     CustomerUpdateDto getCustomerByMemberInsert(String number);
-    Integer loanCountSetter(String customer, String action);
+
     List<CustomerIndexDto> getAvaliableCustomerEdit(String customerNumber);
     void doUnbanCustomer(String customerNumber);
     Boolean doExtendMember(String number);

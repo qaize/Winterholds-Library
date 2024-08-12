@@ -1,8 +1,8 @@
 package com.example.winterhold.service.abs;
 
-import com.example.winterhold.Dto.Category.CategoryIndexDto;
-import com.example.winterhold.Dto.Category.CategoryInsertDto;
-import com.example.winterhold.Dto.Category.CategoryUpdateDto;
+import com.example.winterhold.dto.category.CategoryIndexDto;
+import com.example.winterhold.dto.category.CategoryInsertDto;
+import com.example.winterhold.dto.category.CategoryUpdateDto;
 import org.springframework.ui.Model;
 
 import java.util.List;

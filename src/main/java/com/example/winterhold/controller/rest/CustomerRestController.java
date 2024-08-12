@@ -1,9 +1,9 @@
 package com.example.winterhold.controller.rest;
 
-import com.example.winterhold.Dto.Customer.CustomerInsertDto;
-import com.example.winterhold.Dto.Rest.InsertFailedDto;
-import com.example.winterhold.Dto.Rest.ResponseCrudRestDto;
-import com.example.winterhold.Dto.Rest.ValidatorRestDto;
+import com.example.winterhold.dto.customer.CustomerInsertDto;
+import com.example.winterhold.dto.rest.InsertFailedDto;
+import com.example.winterhold.dto.rest.ResponseCrudRestDto;
+import com.example.winterhold.dto.rest.ValidatorRestDto;
 import com.example.winterhold.service.abs.CustomerService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;

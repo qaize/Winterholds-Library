@@ -1,12 +1,12 @@
 package com.example.winterhold.service.imp;
 
 import com.example.winterhold.controller.model.BaseController;
-import com.example.winterhold.Dao.*;
-import com.example.winterhold.Dto.Book.BookUpdateDto;
-import com.example.winterhold.Dto.CurrentLoginDetailDTO;
-import com.example.winterhold.Dto.Loan.*;
-import com.example.winterhold.Dto.Models.DataDTO;
-import com.example.winterhold.Entity.*;
+import com.example.winterhold.dao.*;
+import com.example.winterhold.dto.book.BookUpdateDto;
+import com.example.winterhold.dto.CurrentLoginDetailDTO;
+import com.example.winterhold.dto.loan.*;
+import com.example.winterhold.dto.models.DataDTO;
+import com.example.winterhold.entity.*;
 import com.example.winterhold.service.abs.LoanService;
 import com.example.winterhold.service.abs.NotificationService;
 import lombok.RequiredArgsConstructor;
@@ -99,7 +99,7 @@ public class LoanServiceImp implements LoanService {
             }
 
             if (data.getDenda() <= 0) {
-                customer.setLoanCount(customerServiceImp.loanCountSetter(data.getCustomerNumber(), "Return"));
+                customer.setLoanCount(loanCountSetter(data.getCustomerNumber(), "Return"));
             }
             Notification returnNotification = notificationService.sendNotification(UUID.randomUUID(), customer.getMembershipNumber(), "Returned by admin", book.getTitle().concat(": ".concat(book.getCategoryName())), LocalDateTime.now(), currentLogin);
 
@@ -216,11 +216,24 @@ public class LoanServiceImp implements LoanService {
         } else {
             LogsIncome incomingPaymentLogs = new LogsIncome(UUID.randomUUID().toString(), "PELUNASAN DENDA ID :" + loanDataToUpdate.getId() + "/" + loanDataToUpdate.getCustomerNumber(), currentLogin, loanDataToUpdate.getDenda().doubleValue(), addNewPayment(previousLogs.getTotal(), loanDataToUpdate.getDenda()), date);
             loanDataToUpdate.setDenda(0L);
-            updateCustomer.setLoanCount(customerServiceImp.loanCountSetter(updateCustomer.getMembershipNumber(), "Return"));
+            updateCustomer.setLoanCount(loanCountSetter(updateCustomer.getMembershipNumber(), "Return"));
 
             // Update Customer and loan status then save it into log income table
             chainUpdateLogsIncome(incomingPaymentLogs, updateCustomer, loanDataToUpdate);
         }
+    }
+
+
+    private Integer loanCountSetter(String customer, String flags) {
+        Integer data = customerRepository.getLoanCountCurrentCustomer(customer);
+        if (flags.equals("Return")) {
+            if (data != 0) {
+                data = data - 1;
+            }
+        } else {
+            data = data + 1;
+        }
+        return data;
     }
 
 
@@ -553,7 +566,7 @@ public class LoanServiceImp implements LoanService {
     private Customer updateCustomerProperty(String membershipNumber) {
         Customer updatedCustomer = customerServiceImp.getCustomerByEntity(membershipNumber);
 
-        updatedCustomer.setLoanCount(customerServiceImp.loanCountSetter(membershipNumber, "loan"));
+        updatedCustomer.setLoanCount(loanCountSetter(membershipNumber, "loan"));
         return updatedCustomer;
     }
 

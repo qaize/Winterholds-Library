@@ -1,10 +1,10 @@
 package com.example.winterhold.controller.model;
 
-import com.example.winterhold.Dto.Book.BookInsertDto;
-import com.example.winterhold.Dto.Book.BookUpdateDto;
+import com.example.winterhold.dto.book.BookInsertDto;
+import com.example.winterhold.dto.book.BookUpdateDto;
 import com.example.winterhold.service.abs.AuthorService;
 import com.example.winterhold.service.abs.BookService;
-import com.example.winterhold.Utility.Dropdown;
+import com.example.winterhold.utility.Dropdown;
 import com.example.winterhold.constants.MvcRedirectConst;
 import com.example.winterhold.constants.WinterholdConstants;
 import jakarta.validation.Valid;

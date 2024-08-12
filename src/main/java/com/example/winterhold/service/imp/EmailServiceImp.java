@@ -1,7 +1,7 @@
 package com.example.winterhold.service.imp;
 
-import com.example.winterhold.Dto.Mail.MailDTO;
-import com.example.winterhold.Entity.Mail;
+import com.example.winterhold.dto.mail.MailDTO;
+import com.example.winterhold.entity.Mail;
 import com.example.winterhold.service.abs.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

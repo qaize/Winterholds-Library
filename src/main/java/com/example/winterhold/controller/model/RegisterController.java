@@ -1,8 +1,8 @@
 package com.example.winterhold.controller.model;
 
-import com.example.winterhold.Dto.Account.AccountInsertDto;
+import com.example.winterhold.dto.account.AccountInsertDto;
 import com.example.winterhold.service.abs.AccountService;
-import com.example.winterhold.Utility.Dropdown;
+import com.example.winterhold.utility.Dropdown;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;

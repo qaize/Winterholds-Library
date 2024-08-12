@@ -1,15 +1,13 @@
 package com.example.winterhold.service.imp;
 
-import com.example.winterhold.Dto.CurrentLoginDetailDTO;
-import com.example.winterhold.Dto.notification.NotificationDetailDto;
+import com.example.winterhold.dto.CurrentLoginDetailDTO;
+import com.example.winterhold.dto.notification.NotificationDetailDto;
 import com.example.winterhold.controller.model.BaseController;
-import com.example.winterhold.Dao.NotificationRepository;
-import com.example.winterhold.Dto.Models.DataDTO;
-import com.example.winterhold.Entity.Notification;
+import com.example.winterhold.dao.NotificationRepository;
+import com.example.winterhold.dto.models.DataDTO;
+import com.example.winterhold.entity.Notification;
 import com.example.winterhold.service.abs.NotificationService;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;

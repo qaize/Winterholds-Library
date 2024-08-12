@@ -1,15 +1,14 @@
 package com.example.winterhold.controller.model;
 
-import com.example.winterhold.Dto.CurrentLoginDetailDTO;
-import com.example.winterhold.Dto.Customer.CustomerIndexDto;
-import com.example.winterhold.Dto.Customer.CustomerInsertDto;
-import com.example.winterhold.Dto.Customer.CustomerUpdateDto;
-import com.example.winterhold.Dto.Models.DataDTO;
-import com.example.winterhold.Entity.Customer;
+import com.example.winterhold.dto.CurrentLoginDetailDTO;
+import com.example.winterhold.dto.customer.CustomerIndexDto;
+import com.example.winterhold.dto.customer.CustomerInsertDto;
+import com.example.winterhold.dto.customer.CustomerUpdateDto;
+import com.example.winterhold.dto.models.DataDTO;
+import com.example.winterhold.entity.Customer;
 import com.example.winterhold.service.abs.CustomerService;
 import com.example.winterhold.service.abs.NotificationService;
-import com.example.winterhold.service.imp.LoanServiceImp;
-import com.example.winterhold.Utility.Dropdown;
+import com.example.winterhold.utility.Dropdown;
 import com.example.winterhold.constants.MvcRedirectConst;
 import com.example.winterhold.constants.WinterholdConstants;
 import jakarta.validation.Valid;

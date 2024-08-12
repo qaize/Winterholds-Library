@@ -1,7 +1,7 @@
 package com.example.winterhold.config;
 
-import com.example.winterhold.Security.CustomAuthencticationSuccessHandler;
-import com.example.winterhold.Security.CustomAuthenticationFailureHandler;
+import com.example.winterhold.security.CustomAuthencticationSuccessHandler;
+import com.example.winterhold.security.CustomAuthenticationFailureHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;

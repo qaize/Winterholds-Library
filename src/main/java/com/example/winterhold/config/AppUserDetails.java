@@ -1,7 +1,7 @@
 package com.example.winterhold.config;
 
 
-import com.example.winterhold.Entity.Account;
+import com.example.winterhold.entity.Account;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

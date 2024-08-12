@@ -1,14 +1,14 @@
 package com.example.winterhold.controller.rest;
 
-import com.example.winterhold.Dto.Author.AuthorIndexDto;
-import com.example.winterhold.Dto.Author.AuthorIndexDtoV2;
-import com.example.winterhold.Dto.Author.AuthorInsertDto;
-import com.example.winterhold.Dto.Author.AuthorUpdateDto;
-import com.example.winterhold.Dto.BaseResponseDTO;
-import com.example.winterhold.Dto.Rest.InsertFailedDto;
-import com.example.winterhold.Dto.Rest.Request.Author.AuthorRequestDTO;
-import com.example.winterhold.Dto.Rest.ResponseCrudRestDto;
-import com.example.winterhold.Dto.Rest.ValidatorRestDto;
+import com.example.winterhold.dto.author.AuthorIndexDto;
+import com.example.winterhold.dto.author.AuthorIndexDtoV2;
+import com.example.winterhold.dto.author.AuthorInsertDto;
+import com.example.winterhold.dto.author.AuthorUpdateDto;
+import com.example.winterhold.dto.BaseResponseDTO;
+import com.example.winterhold.dto.rest.InsertFailedDto;
+import com.example.winterhold.dto.rest.Request.Author.AuthorRequestDTO;
+import com.example.winterhold.dto.rest.ResponseCrudRestDto;
+import com.example.winterhold.dto.rest.ValidatorRestDto;
 import com.example.winterhold.service.abs.AuthorService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.v3.oas.annotations.Operation;

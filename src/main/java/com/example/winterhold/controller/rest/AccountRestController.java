@@ -1,14 +1,14 @@
 package com.example.winterhold.controller.rest;
 
-import com.example.winterhold.Dto.Account.AccountInsertDto;
-import com.example.winterhold.Dto.Account.AccountUpdateDto;
-import com.example.winterhold.Dto.Ajax.AjaxResponseBodyDto;
-import com.example.winterhold.Dto.Ajax.ErrorValidationDto;
-import com.example.winterhold.Dto.Rest.*;
-import com.example.winterhold.Entity.Mail;
+import com.example.winterhold.dto.account.AccountInsertDto;
+import com.example.winterhold.dto.account.AccountUpdateDto;
+import com.example.winterhold.dto.ajax.AjaxResponseBodyDto;
+import com.example.winterhold.dto.ajax.ErrorValidationDto;
+import com.example.winterhold.dto.rest.*;
+import com.example.winterhold.entity.Mail;
 import com.example.winterhold.service.abs.AccountService;
 import com.example.winterhold.service.abs.EmailService;
-import com.example.winterhold.Utility.JwtToken;
+import com.example.winterhold.utility.JwtToken;
 import io.swagger.annotations.ApiOperation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

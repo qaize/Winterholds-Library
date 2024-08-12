@@ -1,15 +1,14 @@
 package com.example.winterhold.controller.model;
 
 import com.example.winterhold.constants.MvcRedirectConst;
-import com.example.winterhold.Dto.Author.AuthorIndexDto;
-import com.example.winterhold.Dto.Author.AuthorInsertDto;
-import com.example.winterhold.Dto.Author.AuthorUpdateDto;
-import com.example.winterhold.Dto.Models.DataDTO;
+import com.example.winterhold.dto.author.AuthorIndexDto;
+import com.example.winterhold.dto.author.AuthorInsertDto;
+import com.example.winterhold.dto.author.AuthorUpdateDto;
+import com.example.winterhold.dto.models.DataDTO;
 import com.example.winterhold.service.abs.AuthorService;
 import com.example.winterhold.service.abs.BookService;
 import com.example.winterhold.service.abs.NotificationService;
-import com.example.winterhold.service.imp.LoanServiceImp;
-import com.example.winterhold.Utility.Dropdown;
+import com.example.winterhold.utility.Dropdown;
 import com.example.winterhold.constants.WinterholdConstants;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.validation.Valid;

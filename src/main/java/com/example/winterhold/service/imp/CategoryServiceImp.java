@@ -1,10 +1,10 @@
 package com.example.winterhold.service.imp;
 
-import com.example.winterhold.Dao.CategoryRepository;
-import com.example.winterhold.Dto.Category.CategoryIndexDto;
-import com.example.winterhold.Dto.Category.CategoryInsertDto;
-import com.example.winterhold.Dto.Category.CategoryUpdateDto;
-import com.example.winterhold.Entity.Category;
+import com.example.winterhold.dao.CategoryRepository;
+import com.example.winterhold.dto.category.CategoryIndexDto;
+import com.example.winterhold.dto.category.CategoryInsertDto;
+import com.example.winterhold.dto.category.CategoryUpdateDto;
+import com.example.winterhold.entity.Category;
 import com.example.winterhold.service.abs.CategoryService;
 import com.example.winterhold.service.abs.NotificationService;
 import lombok.RequiredArgsConstructor;

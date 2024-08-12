@@ -1,13 +1,13 @@
 package com.example.winterhold.service.imp;
 
-import com.example.winterhold.Dao.BookRepository;
-import com.example.winterhold.Dto.BaseResponseDTO;
-import com.example.winterhold.Dto.Book.BookIndexDto;
-import com.example.winterhold.Dto.Book.BookInsertDto;
-import com.example.winterhold.Dto.Book.BookUpdateDto;
-import com.example.winterhold.Entity.Book;
+import com.example.winterhold.dao.BookRepository;
+import com.example.winterhold.dto.BaseResponseDTO;
+import com.example.winterhold.dto.book.BookIndexDto;
+import com.example.winterhold.dto.book.BookInsertDto;
+import com.example.winterhold.dto.book.BookUpdateDto;
+import com.example.winterhold.entity.Book;
 import com.example.winterhold.service.abs.BookService;
-import com.example.winterhold.Utility.ResponseUtil;
+import com.example.winterhold.utility.ResponseUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -1,12 +1,12 @@
 package com.example.winterhold.service.abs;
 
-import com.example.winterhold.Dto.Author.AuthorIndexDto;
-import com.example.winterhold.Dto.Author.AuthorIndexDtoV2;
-import com.example.winterhold.Dto.Author.AuthorInsertDto;
-import com.example.winterhold.Dto.Author.AuthorUpdateDto;
-import com.example.winterhold.Dto.BaseResponseDTO;
-import com.example.winterhold.Dto.Models.DataDTO;
-import com.example.winterhold.Dto.Rest.Request.Author.AuthorRequestDTO;
+import com.example.winterhold.dto.author.AuthorIndexDto;
+import com.example.winterhold.dto.author.AuthorIndexDtoV2;
+import com.example.winterhold.dto.author.AuthorInsertDto;
+import com.example.winterhold.dto.author.AuthorUpdateDto;
+import com.example.winterhold.dto.BaseResponseDTO;
+import com.example.winterhold.dto.models.DataDTO;
+import com.example.winterhold.dto.rest.Request.Author.AuthorRequestDTO;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;

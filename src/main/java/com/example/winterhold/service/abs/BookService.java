@@ -1,9 +1,9 @@
 package com.example.winterhold.service.abs;
 
-import com.example.winterhold.Dto.BaseResponseDTO;
-import com.example.winterhold.Dto.Book.BookIndexDto;
-import com.example.winterhold.Dto.Book.BookInsertDto;
-import com.example.winterhold.Dto.Book.BookUpdateDto;
+import com.example.winterhold.dto.BaseResponseDTO;
+import com.example.winterhold.dto.book.BookIndexDto;
+import com.example.winterhold.dto.book.BookInsertDto;
+import com.example.winterhold.dto.book.BookUpdateDto;
 
 import java.util.List;
 

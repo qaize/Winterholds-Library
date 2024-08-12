@@ -1,13 +1,13 @@
 package com.example.winterhold.service.imp;
 
-import com.example.winterhold.Dao.AccountRepository;
-import com.example.winterhold.Dao.CustomerRepository;
-import com.example.winterhold.Dto.Account.AccountIndexDto;
-import com.example.winterhold.Dto.Account.AccountInsertDto;
-import com.example.winterhold.Dto.Account.AccountUpdateDto;
-import com.example.winterhold.Dto.Customer.CustomerInsertDto;
-import com.example.winterhold.Entity.Account;
-import com.example.winterhold.Entity.Customer;
+import com.example.winterhold.dao.AccountRepository;
+import com.example.winterhold.dao.CustomerRepository;
+import com.example.winterhold.dto.account.AccountIndexDto;
+import com.example.winterhold.dto.account.AccountInsertDto;
+import com.example.winterhold.dto.account.AccountUpdateDto;
+import com.example.winterhold.dto.customer.CustomerInsertDto;
+import com.example.winterhold.entity.Account;
+import com.example.winterhold.entity.Customer;
 import com.example.winterhold.service.abs.AccountService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

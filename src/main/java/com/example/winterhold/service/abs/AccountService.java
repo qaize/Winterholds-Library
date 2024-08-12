@@ -1,9 +1,9 @@
 package com.example.winterhold.service.abs;
 
-import com.example.winterhold.Dto.Account.AccountIndexDto;
-import com.example.winterhold.Dto.Account.AccountInsertDto;
-import com.example.winterhold.Dto.Account.AccountUpdateDto;
-import com.example.winterhold.Entity.Account;
+import com.example.winterhold.dto.account.AccountIndexDto;
+import com.example.winterhold.dto.account.AccountInsertDto;
+import com.example.winterhold.dto.account.AccountUpdateDto;
+import com.example.winterhold.entity.Account;
 
 import java.util.List;
 import java.util.Optional;

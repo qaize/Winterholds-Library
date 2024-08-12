@@ -1,10 +1,10 @@
 package com.example.winterhold.service.abs;
 
-import com.example.winterhold.Dto.CurrentLoginDetailDTO;
-import com.example.winterhold.Dto.Loan.*;
-import com.example.winterhold.Dto.Models.DataDTO;
-import com.example.winterhold.Entity.Loan;
-import com.example.winterhold.Entity.LogsIncome;
+import com.example.winterhold.dto.CurrentLoginDetailDTO;
+import com.example.winterhold.dto.loan.*;
+import com.example.winterhold.dto.models.DataDTO;
+import com.example.winterhold.entity.Loan;
+import com.example.winterhold.entity.LogsIncome;
 
 import java.util.List;
 
@@ -36,6 +36,5 @@ public interface LoanService {
     DataDTO<List<LoanIndexDto>> getListLoanByMembershipNumber(String username);
 
     DataDTO<Boolean> cancelLoan(Long id);
-
 
 }

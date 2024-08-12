@@ -1,13 +1,13 @@
 package com.example.winterhold.service.imp;
 
-import com.example.winterhold.Dao.CustomerRepository;
-import com.example.winterhold.Dao.LoanRepository;
-import com.example.winterhold.Dto.Customer.CustomerIndexDto;
-import com.example.winterhold.Dto.Customer.CustomerInsertDto;
-import com.example.winterhold.Dto.Customer.CustomerProfileDto;
-import com.example.winterhold.Dto.Customer.CustomerUpdateDto;
-import com.example.winterhold.Dto.Models.DataDTO;
-import com.example.winterhold.Entity.Customer;
+import com.example.winterhold.dao.CustomerRepository;
+import com.example.winterhold.dao.LoanRepository;
+import com.example.winterhold.dto.customer.CustomerIndexDto;
+import com.example.winterhold.dto.customer.CustomerInsertDto;
+import com.example.winterhold.dto.customer.CustomerProfileDto;
+import com.example.winterhold.dto.customer.CustomerUpdateDto;
+import com.example.winterhold.dto.models.DataDTO;
+import com.example.winterhold.entity.Customer;
 import com.example.winterhold.service.abs.CustomerService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -219,19 +219,7 @@ public class CustomerServiceImp implements CustomerService {
         customerRepository.save(customer);
     }
 
-    @Override
-    public Integer loanCountSetter(String customer, String flags) {
 
-        Integer data = customerRepository.getLoanCountCurrentCustomer(customer);
-        if (flags.equals("Return")) {
-            if (data != 0) {
-                data = data - 1;
-            }
-        } else {
-            data = data + 1;
-        }
-        return data;
-    }
 
     @Override
     public String customerNumberGenerator() {

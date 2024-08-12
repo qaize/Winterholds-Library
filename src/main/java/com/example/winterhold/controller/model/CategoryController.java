@@ -1,8 +1,8 @@
 package com.example.winterhold.controller.model;
 
 import com.example.winterhold.constants.MvcRedirectConst;
-import com.example.winterhold.Dto.Category.CategoryInsertDto;
-import com.example.winterhold.Dto.Category.CategoryUpdateDto;
+import com.example.winterhold.dto.category.CategoryInsertDto;
+import com.example.winterhold.dto.category.CategoryUpdateDto;
 import com.example.winterhold.service.abs.BookService;
 import com.example.winterhold.service.abs.CategoryService;
 import jakarta.validation.Valid;

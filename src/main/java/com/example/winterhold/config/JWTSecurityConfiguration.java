@@ -1,7 +1,7 @@
 package com.example.winterhold.config;
 
 
-import com.example.winterhold.Utility.JwtToken;
+import com.example.winterhold.utility.JwtToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;

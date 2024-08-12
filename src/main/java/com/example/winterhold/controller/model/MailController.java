@@ -1,6 +1,6 @@
 package com.example.winterhold.controller.model;
 
-import com.example.winterhold.Dto.Mail.MailDTO;
+import com.example.winterhold.dto.mail.MailDTO;
 import com.example.winterhold.service.imp.EmailServiceImp;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;

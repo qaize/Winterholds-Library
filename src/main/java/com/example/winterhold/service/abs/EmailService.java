@@ -1,7 +1,7 @@
 package com.example.winterhold.service.abs;
 
-import com.example.winterhold.Dto.Mail.MailDTO;
-import com.example.winterhold.Entity.Mail;
+import com.example.winterhold.dto.mail.MailDTO;
+import com.example.winterhold.entity.Mail;
 
 public interface EmailService {
 

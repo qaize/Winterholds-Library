@@ -1,7 +1,7 @@
 package com.example.winterhold.config;
 
-import com.example.winterhold.Dao.AccountRepository;
-import com.example.winterhold.Entity.Account;
+import com.example.winterhold.dao.AccountRepository;
+import com.example.winterhold.entity.Account;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;

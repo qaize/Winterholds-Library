@@ -1,10 +1,10 @@
 package com.example.winterhold.controller.model;
 
-import com.example.winterhold.Dto.CurrentLoginDetailDTO;
-import com.example.winterhold.Dto.Loan.*;
-import com.example.winterhold.Dto.Models.DataDTO;
-import com.example.winterhold.Entity.Loan;
-import com.example.winterhold.Entity.LogsIncome;
+import com.example.winterhold.dto.CurrentLoginDetailDTO;
+import com.example.winterhold.dto.loan.*;
+import com.example.winterhold.dto.models.DataDTO;
+import com.example.winterhold.entity.Loan;
+import com.example.winterhold.entity.LogsIncome;
 import com.example.winterhold.service.abs.*;
 import com.example.winterhold.constants.ActionConstants;
 import com.example.winterhold.constants.MvcRedirectConst;
@@ -21,8 +21,8 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
-import static com.example.winterhold.Utility.Dropdown.dropdownBook;
-import static com.example.winterhold.Utility.Dropdown.dropdownCustomer;
+import static com.example.winterhold.utility.Dropdown.dropdownBook;
+import static com.example.winterhold.utility.Dropdown.dropdownCustomer;
 
 @Controller
 @RequestMapping("/loan")
