@@ -1,11 +1,8 @@
 package com.example.winterhold.dto.account;
 import com.example.winterhold.validation.PasswordConfirm;
 import com.example.winterhold.validation.UsernameCheck;
+import jakarta.validation.constraints.*;
 import lombok.*;
-
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 
 @AllArgsConstructor
 @NoArgsConstructor

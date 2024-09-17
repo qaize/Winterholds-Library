@@ -2,11 +2,7 @@ package com.example.winterhold.dto.category;
 import com.example.winterhold.validation.BookPlacing;
 import com.example.winterhold.validation.CategoryName;
 import lombok.*;
-
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 
 @AllArgsConstructor
 @NoArgsConstructor

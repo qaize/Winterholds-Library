@@ -15,9 +15,10 @@ import com.example.winterhold.service.abs.AuthorService;
 import com.example.winterhold.utility.ResponseUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.persistence.Tuple;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -29,7 +30,6 @@ import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
 
-import javax.persistence.Tuple;
 import java.math.BigInteger;
 import java.time.LocalDate;
 import java.util.List;
@@ -39,6 +39,7 @@ import java.util.stream.Collectors;
 import static com.example.winterhold.constants.ActionConstants.*;
 
 @Service
+@RequiredArgsConstructor
 public class AuthorServiceImp implements AuthorService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AuthorServiceImp.class);
@@ -46,20 +47,8 @@ public class AuthorServiceImp implements AuthorService {
     private final LogServiceImpl logService;
     private final AuthorRepository authorRepository;
     private final BaseController baseController;
-
     private final TemplateEngine engine;
-
-
     private ObjectMapper objectMapper = new ObjectMapper();
-
-    @Autowired
-    public AuthorServiceImp(AuthorRepository authorRepository, BaseController baseController, LogServiceImpl logService, ObjectMapper objectMapper,TemplateEngine engine) {
-        this.authorRepository = authorRepository;
-        this.baseController = baseController;
-        this.logService = logService;
-        this.objectMapper = objectMapper;
-        this.engine = engine;
-    }
 
 
     @Override
@@ -107,10 +96,10 @@ public class AuthorServiceImp implements AuthorService {
     public ResponseEntity<Object> getAllAuthorTuple(AuthorRequestDTO authorRequestDTO) {
         try {
             Pageable paging = PageRequest.of(authorRequestDTO.getPage() - 1, authorRequestDTO.getDataCount());
-            List<Tuple> pages = authorRepository.getAllByTupple(paging);
-            List<AuthorIndexDto> authorIndexDtos = mapTupleToAuthor(pages);
+//            List<Tuple> pages = authorRepository.getAllByTupple(paging);
+//            List<AuthorIndexDto> authorIndexDtos = mapTupleToAuthor(pages);
 
-            return ResponseEntity.status(HttpStatus.OK).body(authorIndexDtos);
+            return ResponseEntity.status(HttpStatus.OK).body(null);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
@@ -220,12 +209,12 @@ public class AuthorServiceImp implements AuthorService {
 
         try {
             Pageable pages = PageRequest.of(authorRequestDTO.getPage(), authorRequestDTO.getDataCount());
-            Page<Tuple> tuples = authorRepository.getPageAuthorByTuple(pages);
+//            Page<Tuple> tuples = authorRepository.getPageAuthorByTuple(pages);
 
-            BaseResponseDTO.MetaData metaData = new BaseResponseDTO.MetaData(tuples.getTotalElements(), tuples.getTotalPages(), tuples.getSize());
+//            BaseResponseDTO.MetaData metaData = new BaseResponseDTO.MetaData(tuples.getTotalElements(), tuples.getTotalPages(), tuples.getSize());
             return ResponseEntity
                     .status(HttpStatus.OK)
-                    .body(ResponseUtil.insertSuccessResponseWithMetaData(mapTupleToAuthor(tuples.getContent()), metaData));
+                    .body(ResponseUtil.insertSuccessResponseWithMetaData(null, null));
 
         } catch (Exception e) {
             return ResponseEntity

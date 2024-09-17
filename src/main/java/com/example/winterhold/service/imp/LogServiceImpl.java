@@ -4,6 +4,7 @@ import com.example.winterhold.controller.model.BaseController;
 import com.example.winterhold.dao.LogRepository;
 import com.example.winterhold.entity.Logs;
 import com.example.winterhold.service.abs.LogService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

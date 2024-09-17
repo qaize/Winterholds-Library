@@ -9,9 +9,11 @@ import com.example.winterhold.dto.customer.CustomerInsertDto;
 import com.example.winterhold.entity.Account;
 import com.example.winterhold.entity.Customer;
 import com.example.winterhold.service.abs.AccountService;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -27,19 +29,18 @@ public class AccountServiceImp implements AccountService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AccountServiceImp.class);
 
-    private final AccountRepository accountRepository;
-
-    private final CustomerRepository customerRepository;
-
-
-    private final PasswordEncoder passwordEncoder;
-
-    @Autowired
-    public AccountServiceImp ( AccountRepository accountRepository,CustomerRepository customerRepository,PasswordEncoder passwordEncoder ){
+    public AccountServiceImp(AccountRepository accountRepository, CustomerRepository customerRepository, PasswordEncoder passwordEncoder) {
         this.accountRepository = accountRepository;
         this.customerRepository = customerRepository;
         this.passwordEncoder = passwordEncoder;
     }
+
+    private final AccountRepository accountRepository;
+
+    private final CustomerRepository customerRepository;
+
+    private final PasswordEncoder passwordEncoder;
+
 
     @Override
     public void insert(AccountInsertDto dto) {

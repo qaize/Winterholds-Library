@@ -1,10 +1,10 @@
 package com.example.winterhold.validation;
 
 import com.example.winterhold.dao.BookRepository;
+import jakarta.validation.ConstraintValidator;
+import jakarta.validation.ConstraintValidatorContext;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
 
 public class BookCodeValidator implements ConstraintValidator<BookCode,String> {
 

@@ -52,16 +52,16 @@ public class AuthorRestController {
         }
     }
 
-    @CrossOrigin(value = "http://localhost:7081")
-    @PostMapping(value = "/all-author-tuple")
-    public ResponseEntity<Object> getTuple(@RequestBody AuthorRequestDTO authorRequestDTO) {
-        return authorService.getAllAuthorTuple(authorRequestDTO);
-    }
+//    @CrossOrigin(value = "http://localhost:7081")
+//    @PostMapping(value = "/all-author-tuple")
+//    public ResponseEntity<Object> getTuple(@RequestBody AuthorRequestDTO authorRequestDTO) {
+//        return authorService.getAllAuthorTuple(authorRequestDTO);
+//    }
 
-    @PostMapping(value = "/authorByTuple")
-    public ResponseEntity<Object> getTupleALl(@RequestBody AuthorRequestDTO authorRequestDTO){
-        return authorService.geAllAuthorByTupple(authorRequestDTO);
-    }
+//    @PostMapping(value = "/authorByTuple")
+//    public ResponseEntity<Object> getTupleALl(@RequestBody AuthorRequestDTO authorRequestDTO){
+//        return authorService.geAllAuthorByTupple(authorRequestDTO);
+//    }
 
     @GetMapping(value = "/getAuthorWithPage")
     @Operation(summary = "Get Author by paging", description = "get author desc")

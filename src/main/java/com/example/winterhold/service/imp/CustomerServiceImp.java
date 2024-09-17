@@ -39,8 +39,6 @@ public class CustomerServiceImp implements CustomerService {
     @Autowired
     private LogServiceImpl logService;
 
-    @Autowired
-    private LoanRepository loanRepository;
 
     @Override
     public DataDTO<List<CustomerIndexDto>> getListCustomerBySearch(Integer page, String number, String name) {
@@ -115,7 +113,7 @@ public class CustomerServiceImp implements CustomerService {
 
     @Override
     public List<CustomerIndexDto> getAvaliableCustomer() {
-        return customerRepository.getAvaliableCustomer();
+        return customerRepository.getAvailableCustomer();
     }
 
     @Override
@@ -187,11 +185,12 @@ public class CustomerServiceImp implements CustomerService {
         Locale indo = new Locale("id","ID");
 
         var customer = customerRepository.findByMembershipNumber(username).get();
+        String birthDate = "";
+        if (Objects.nonNull(customer.getBirthDate())) {
+            Date originalDate = new SimpleDateFormat("yyyy-MM-dd").parse(customer.getBirthDate().toString());
+            birthDate = new SimpleDateFormat("dd MMMM yyyy", indo).format(originalDate);
 
-        Date originalDate = new SimpleDateFormat("yyyy-MM-dd").parse(customer.getBirthDate().toString());
-
-        String birthDate = new SimpleDateFormat("dd MMMM yyyy",indo).format(originalDate);
-
+        }
 
         return CustomerProfileDto.builder()
                 .membershipNumber(customer.getMembershipNumber())

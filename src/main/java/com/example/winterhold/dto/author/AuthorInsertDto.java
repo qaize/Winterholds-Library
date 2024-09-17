@@ -1,11 +1,12 @@
 package com.example.winterhold.dto.author;
 import com.example.winterhold.validation.TodayTime;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+
 import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor

@@ -96,7 +96,7 @@ public interface LoanRepository extends JpaRepository<Loan, Long> {
 
     @Query("""
             SELECT 
-                COUNT(id)
+                COUNT(l.id)
             FROM 
                 Loan AS l
                         LEFT JOIN l.book AS b
@@ -135,7 +135,7 @@ public interface LoanRepository extends JpaRepository<Loan, Long> {
 
     @Query("""
             SELECT 
-                COUNT(id)
+                COUNT(l.id)
             FROM 
                 Loan AS l
             WHERE 
@@ -145,7 +145,7 @@ public interface LoanRepository extends JpaRepository<Loan, Long> {
 
     @Query("""
             SELECT 
-                count(id)
+                count(l.id)
             FROM
                 Loan as l
             where 

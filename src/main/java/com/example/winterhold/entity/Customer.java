@@ -3,7 +3,7 @@ package com.example.winterhold.entity;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;

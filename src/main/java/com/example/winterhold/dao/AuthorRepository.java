@@ -3,6 +3,7 @@ package com.example.winterhold.dao;
 import com.example.winterhold.dto.author.AuthorIndexDto;
 import com.example.winterhold.dto.author.AuthorInsertDto;
 import com.example.winterhold.entity.Author;
+import jakarta.persistence.Tuple;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -11,11 +12,8 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.Tuple;
 import java.util.List;
 
-@Transactional
-@Repository
 public interface AuthorRepository extends JpaRepository<Author, Long> {
 
     @Query("""
@@ -89,20 +87,20 @@ public interface AuthorRepository extends JpaRepository<Author, Long> {
             """)
     AuthorInsertDto getAuthorByIdinsert(Long id);
 
-    @Query(nativeQuery = true,value = "" +
-            "SELECT \n" +
-            " a.Id as id, \n" +
-            " a.Title as title,\n" +
-            " a.FirstName as firstName, \n" +
-            " a.LastName as lastName, \n" +
-            " format(a.BirthDate,'yyyy-MM-dd') as birthDate, \n" +
-            " format(a.DeceasedDate ,'yyyy-MM-dd') as deceasedDate, \n" +
-            " a.Education as education, \n" +
-            " a.Summary as summary, \n" +
-            " a.createdBy  as createdby, \n" +
-            " a.modifiedBy as modifiedBy \n" +
-            "FROM Author AS a")
-    List<Tuple> getAllByTupple(Pageable page);
+//    @Query(nativeQuery = true,value = "" +
+//            "SELECT \n" +
+//            " a.Id as id, \n" +
+//            " a.Title as title,\n" +
+//            " a.FirstName as firstName, \n" +
+//            " a.LastName as lastName, \n" +
+//            " format(a.BirthDate,'yyyy-MM-dd') as birthDate, \n" +
+//            " format(a.DeceasedDate ,'yyyy-MM-dd') as deceasedDate, \n" +
+//            " a.Education as education, \n" +
+//            " a.Summary as summary, \n" +
+//            " a.createdBy  as createdby, \n" +
+//            " a.modifiedBy as modifiedBy \n" +
+//            "FROM Author AS a")
+//    List<Tuple> getAllByTupple(Pageable page);
 
     @Query("""
             SELECT 

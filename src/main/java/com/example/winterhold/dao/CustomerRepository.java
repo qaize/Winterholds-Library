@@ -9,13 +9,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 
-
-@Transactional
 @Repository
 public interface CustomerRepository extends JpaRepository<Customer, String> {
 
@@ -69,8 +66,8 @@ public interface CustomerRepository extends JpaRepository<Customer, String> {
                 Customer AS c
             WHERE 
                 c.banned = 0 
-                AND c.membershipExpireDate >  GETDATE() 
-                AND c.membershipNumber  NOT IN 
+                AND c.membershipExpireDate >  CURRENT_DATE 
+                AND c.membershipNumber  NOT IN  
                                             (SELECT 
                                                 c.membershipNumber
                                              FROM 
@@ -79,10 +76,10 @@ public interface CustomerRepository extends JpaRepository<Customer, String> {
                                              WHERE 
                                                 l.returnDate IS NULL 
                                                 AND l.denda != 0 
-                                                AND l.loanDate != FORMAT(GETDATE(),'yyyy-MM-dd'))
+                                                AND l.loanDate != CURRENT_DATE)
                                                  
             """)
-    List<CustomerIndexDto> getAvaliableCustomer();
+    List<CustomerIndexDto> getAvailableCustomer();
 
     @Query("""
             SELECT DISTINCT

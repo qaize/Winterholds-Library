@@ -1,6 +1,6 @@
 package com.example.winterhold.entity;
 import lombok.*;
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.time.LocalDate;
 
 @AllArgsConstructor

@@ -14,7 +14,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
@@ -36,7 +35,6 @@ public class NotificationServiceImpl implements NotificationService {
         this.notificationRepository = notificationRepository;
     }
 
-    @Transactional
     @Override
     public DataDTO<List<NotificationDetailDto>> retriveNotification(Integer page) {
         BaseController baseController = new BaseController();

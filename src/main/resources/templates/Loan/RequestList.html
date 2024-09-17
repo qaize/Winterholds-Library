@@ -72,6 +72,7 @@
                     <th>Loan Date</th>
                     <th>Due Date</th>
                     <th>Day left</th>
+                    <th></th>
                 </tr>
                 </thead>
                 <tbody>
@@ -79,7 +80,13 @@
                     <td th:text="*{bookTitle}"></td>
                     <td th:text="*{loanDate}"></td>
                     <td th:text="*{dueDate}"></td>
-                    <td th:text="*{dayLeft}"></td>
+                    <td th:text="${data.dayLeft}"></td>
+                    <td >
+                        <div class="button-wrapper">
+                            <a class="btn blue-button"
+                               >check status</a>
+                        </div>
+                    </td>
                 </tr>
                 </tbody>
             </table>
