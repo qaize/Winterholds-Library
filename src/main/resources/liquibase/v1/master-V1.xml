@@ -16,7 +16,7 @@
                author="iwan">
         <sqlFile dbms="mssql" relativeToChangelogFile="false"
                  splitStatements="true" stripComments="true"
-                 path="liquibase/V1/sql/alter_table_loan_20230608.sql"/>
+                 path="liquibase/v1/sql/alter_table_loan_20230608.sql"/>
         <comment>ALTER TABLE LOAN ADD DENDA</comment>
     </changeSet>
 
@@ -24,7 +24,7 @@
                author="iwan">
         <sqlFile dbms="mssql" relativeToChangelogFile="false"
                  splitStatements="true" stripComments="true"
-                 path="liquibase/V1/sql/alter_table_loan_20230615.sql"/>
+                 path="liquibase/v1/sql/alter_table_loan_20230615.sql"/>
         <comment>ALTER TABLE LOAN ADD CREATED</comment>
     </changeSet>
 
@@ -32,7 +32,7 @@
                author="iwan">
         <sqlFile dbms="mssql" relativeToChangelogFile="false"
                  splitStatements="true" stripComments="true"
-                 path="liquibase/V1/sql/alter_account_20230615.sql"/>
+                 path="liquibase/v1/sql/alter_account_20230615.sql"/>
         <comment>ALTER TABLE ACCOUNT ADD CREATED</comment>
     </changeSet>
 
@@ -40,7 +40,7 @@
                author="iwan">
         <sqlFile dbms="mssql" relativeToChangelogFile="false"
                  splitStatements="true" stripComments="true"
-                 path="liquibase/V1/sql/alter_table_category_20230615.sql"/>
+                 path="liquibase/v1/sql/alter_table_category_20230615.sql"/>
         <comment>ALTER TABLE CATEGORY ADD CREATED</comment>
     </changeSet>
 
@@ -48,7 +48,7 @@
                author="iwan">
         <sqlFile dbms="mssql" relativeToChangelogFile="false"
                  splitStatements="true" stripComments="true"
-                 path="liquibase/V1/sql/alter_table_author_20230615.sql"/>
+                 path="liquibase/v1/sql/alter_table_author_20230615.sql"/>
         <comment>ALTER TABLE AUTHOR ADD CREATED</comment>
     </changeSet>
 
@@ -56,7 +56,7 @@
                author="iwan">
         <sqlFile dbms="mssql" relativeToChangelogFile="false"
                  splitStatements="true" stripComments="true"
-                 path="liquibase/V1/sql/alter_table_book_20230615.sql"/>
+                 path="liquibase/v1/sql/alter_table_book_20230615.sql"/>
         <comment>ALTER TABLE BOOK ADD CREATED</comment>
     </changeSet>
 
@@ -64,7 +64,7 @@
                author="iwan">
         <sqlFile dbms="mssql" relativeToChangelogFile="false"
                  splitStatements="true" stripComments="true"
-                 path="liquibase/V1/sql/create_table_logs_20230615.sql"/>
+                 path="liquibase/v1/sql/create_table_logs_20230615.sql"/>
         <comment>CREATE TABLE LOGS</comment>
     </changeSet>
 
@@ -72,7 +72,7 @@
                author="iwan">
         <sqlFile dbms="mssql" relativeToChangelogFile="false"
                  splitStatements="true" stripComments="true"
-                 path="liquibase/V1/sql/alter_table_logs_20230616.sql"/>
+                 path="liquibase/v1/sql/alter_table_logs_20230616.sql"/>
         <comment>ALTER TABLE LOGS ADD ACTION</comment>
     </changeSet>
 
@@ -80,7 +80,7 @@
                author="iwan">
         <sqlFile dbms="mssql" relativeToChangelogFile="false"
                  splitStatements="true" stripComments="true"
-                 path="liquibase/V1/sql/alter_account_20230724.sql"/>
+                 path="liquibase/v1/sql/alter_account_20230724.sql"/>
         <comment>ALTER TABLE ACCOUNT NAME</comment>
     </changeSet>
 
@@ -89,7 +89,7 @@
                author="iwan">
         <sqlFile dbms="mssql" relativeToChangelogFile="false"
                  splitStatements="true" stripComments="true"
-                 path="liquibase/V1/sql/create_table_logsIncome_20230726.sql"/>
+                 path="liquibase/v1/sql/create_table_logsIncome_20230726.sql"/>
         <comment>CREATE TABLE INCOME LOGS</comment>
     </changeSet>
 
@@ -97,14 +97,14 @@
                author="iwan">
         <sqlFile dbms="mssql" relativeToChangelogFile="false"
                  splitStatements="true" stripComments="true"
-                 path="liquibase/V1/sql/alter_table_logsIncome_20230726.sql"/>
+                 path="liquibase/v1/sql/alter_table_logsIncome_20230726.sql"/>
         <comment>ALTER TABLE INCOME LOGS</comment>
     </changeSet>
     <changeSet id="DDL01-222-20230726-0002"
                author="iwan">
         <sqlFile dbms="mssql" relativeToChangelogFile="false"
                  splitStatements="true" stripComments="true"
-                 path="liquibase/V1/sql/alter_table_logsIncome_20230726_2.sql"/>
+                 path="liquibase/v1/sql/alter_table_logsIncome_20230726_2.sql"/>
         <comment>ALTER TABLE INCOME LOGS 2</comment>
     </changeSet>
 
@@ -112,7 +112,7 @@
                author="iwan">
         <sqlFile dbms="mssql" relativeToChangelogFile="false"
                  splitStatements="true" stripComments="true"
-                 path="liquibase/V1/sql/alter_table_logsIncome_20230727.sql"/>
+                 path="liquibase/v1/sql/alter_table_logsIncome_20230727.sql"/>
         <comment>ALTER TABLE INCOME LOGS</comment>
     </changeSet>
 
@@ -120,7 +120,7 @@
                author="iwan">
         <sqlFile dbms="mssql" relativeToChangelogFile="false"
                  splitStatements="true" stripComments="true"
-                 path="liquibase/V1/sql/alter_table_logs_20230802.sql"/>
+                 path="liquibase/v1/sql/alter_table_logs_20230802.sql"/>
         <comment>ALTER TABLE LOGS PROCESS DATE</comment>
     </changeSet>
 
@@ -128,7 +128,7 @@
                author="iwan">
         <sqlFile dbms="mssql" relativeToChangelogFile="false"
                  splitStatements="true" stripComments="true"
-                 path="liquibase/V1/sql/alter_table_customer_20230802.sql"/>
+                 path="liquibase/v1/sql/alter_table_customer_20230802.sql"/>
         <comment>ALTER TABLE CUSTOMER LOAN COUNT</comment>
     </changeSet>
 
@@ -136,7 +136,7 @@
                author="iwan">
         <sqlFile dbms="mssql" relativeToChangelogFile="false"
                  splitStatements="true" stripComments="true"
-                 path="liquibase/V1/sql/alter_table_logs_20230803.sql"/>
+                 path="liquibase/v1/sql/alter_table_logs_20230803.sql"/>
         <comment>ALTER TABLE LOGS LENGTH ACTION</comment>
     </changeSet>
 
@@ -144,7 +144,7 @@
                author="iwan">
         <sqlFile dbms="mssql" relativeToChangelogFile="false"
                  splitStatements="true" stripComments="true"
-                 path="liquibase/V1/sql/alter_table_customer_20230803.sql"/>
+                 path="liquibase/v1/sql/alter_table_customer_20230803.sql"/>
         <comment>ALTER TABLE CUSTOMER ADD BAN COLUMN</comment>
     </changeSet>
 
@@ -152,7 +152,7 @@
                author="iwan">
         <sqlFile dbms="mssql" relativeToChangelogFile="false"
                  splitStatements="true" stripComments="true"
-                 path="liquibase/V1/sql/alter_table_logs_20230806.sql"/>
+                 path="liquibase/v1/sql/alter_table_logs_20230806.sql"/>
         <comment>ALTER TABLE LOGS CONTRAINT STATUS TOO LONG</comment>
     </changeSet>
 
@@ -160,7 +160,7 @@
                author="iwan">
         <sqlFile dbms="mssql" relativeToChangelogFile="false"
                  splitStatements="true" stripComments="true"
-                 path="liquibase/V1/sql/alter_table_book_20230823.sql"/>
+                 path="liquibase/v1/sql/alter_table_book_20230823.sql"/>
         <comment>ALTER TABLE BOOKS ADD QUANTITY</comment>
     </changeSet>
 
@@ -168,7 +168,7 @@
                author="iwan">
         <sqlFile dbms="mssql" relativeToChangelogFile="false"
                  splitStatements="true" stripComments="true"
-                 path="liquibase/V1/sql/alter_table_book_20230830.sql"/>
+                 path="liquibase/v1/sql/alter_table_book_20230830.sql"/>
         <comment>ALTER TABLE BOOKS ADD IN BORROW</comment>
     </changeSet>
 
@@ -176,7 +176,7 @@
                author="iwan">
         <sqlFile dbms="mssql" relativeToChangelogFile="false"
                  splitStatements="true" stripComments="true"
-                 path="liquibase/V1/sql/alter_table_account_20230929.sql"/>
+                 path="liquibase/v1/sql/alter_table_account_20230929.sql"/>
         <comment>ALTER TABLE ACCOUNT ADD ROL</comment>
     </changeSet>
 
@@ -184,7 +184,7 @@
                author="iwan">
         <sqlFile dbms="mssql" relativeToChangelogFile="false"
                  splitStatements="true" stripComments="true"
-                 path="liquibase/V1/sql/alter_table_customer_20230930.sql"/>
+                 path="liquibase/v1/sql/alter_table_customer_20230930.sql"/>
         <comment>ALTER TABLE CUSTOMER NULLABLE</comment>
     </changeSet>
 
@@ -192,7 +192,7 @@
                author="iwan">
         <sqlFile dbms="mssql" relativeToChangelogFile="false"
                  splitStatements="true" stripComments="true"
-                 path="liquibase/V1/sql/create_table_request_20231002.sql"/>
+                 path="liquibase/v1/sql/create_table_request_20231002.sql"/>
         <comment>CREATE TABLE REQUEST</comment>
     </changeSet>
 
@@ -200,7 +200,7 @@
                author="iwan">
         <sqlFile dbms="mssql" relativeToChangelogFile="false"
                  splitStatements="true" stripComments="true"
-                 path="liquibase/V1/sql/alter_table_request_20231002.sql"/>
+                 path="liquibase/v1/sql/alter_table_request_20231002.sql"/>
         <comment>ALTER TABLE CUSTOMER ADD COLUMN STATUS</comment>
     </changeSet>
 
@@ -208,7 +208,7 @@
                author="iwan">
         <sqlFile dbms="mssql" relativeToChangelogFile="false"
                  splitStatements="true" stripComments="true"
-                 path="liquibase/V1/sql/drop_create_table_request_20231002_2.sql"/>
+                 path="liquibase/v1/sql/drop_create_table_request_20231002_2.sql"/>
         <comment>DROP TABLE REQUEST</comment>
     </changeSet>
 
@@ -216,7 +216,7 @@
                author="iwan">
         <sqlFile dbms="mssql" relativeToChangelogFile="false"
                  splitStatements="true" stripComments="true"
-                 path="liquibase/V1/sql/alter_table_customer_20231003.sql"/>
+                 path="liquibase/v1/sql/alter_table_customer_20231003.sql"/>
         <comment>ALTER TABLE CUSTOMER ADD COLUMN REQUEST COUNT</comment>
     </changeSet>
 
@@ -224,7 +224,7 @@
                author="iwan">
         <sqlFile dbms="mssql" relativeToChangelogFile="false"
                  splitStatements="true" stripComments="true"
-                 path="liquibase/V1/sql/alter_table_request_20231004.sql"/>
+                 path="liquibase/v1/sql/alter_table_request_20231004.sql"/>
         <comment>ALTER TABLE REQUEST ADD isActive</comment>
     </changeSet>
 
@@ -232,7 +232,7 @@
                author="iwan">
         <sqlFile dbms="mssql" relativeToChangelogFile="false"
                  splitStatements="true" stripComments="true"
-                 path="liquibase/V1/sql/alter_table_customer_20231004.sql"/>
+                 path="liquibase/v1/sql/alter_table_customer_20231004.sql"/>
         <comment>ALTER TABLE CUSTOMER ADD COLUMN EMAIL</comment>
     </changeSet>
 
@@ -240,7 +240,7 @@
                author="iwan">
         <sqlFile dbms="mssql" relativeToChangelogFile="false"
                  splitStatements="true" stripComments="true"
-                 path="liquibase/V1/sql/create_table_notification_20231005.sql"/>
+                 path="liquibase/v1/sql/create_table_notification_20231005.sql"/>
         <comment>CREATE TABLE NOTIFICATION</comment>
     </changeSet>
 

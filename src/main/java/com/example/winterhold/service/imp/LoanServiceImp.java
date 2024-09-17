@@ -9,6 +9,7 @@ import com.example.winterhold.dto.models.DataDTO;
 import com.example.winterhold.entity.*;
 import com.example.winterhold.service.abs.LoanService;
 import com.example.winterhold.service.abs.NotificationService;
+import com.example.winterhold.utility.CommonUtil;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -207,19 +208,20 @@ public class LoanServiceImp implements LoanService {
         Loan loanDataToUpdate = loanRepository.findById(id).get();
         LogsIncome previousLogs = logsIncomeRepository.findAll(Sort.by("transactionDate").descending()).get(0);
         Customer updateCustomer = customerServiceImp.getCustomerByEntity(loanDataToUpdate.getCustomerNumber());
+        String transactionID = CommonUtil.generateTransactionId(String.valueOf(loanDataToUpdate.getId()),updateCustomer.getMembershipNumber());
 
         if (previousLogs == null) {
             // First time logs
-            LogsIncome log = new LogsIncome(UUID.randomUUID().toString(), "PELUNASAN DENDA ID :" + loanDataToUpdate.getId() + "/" + loanDataToUpdate.getCustomerNumber(), currentLogin, loanDataToUpdate.getDenda().doubleValue(), loanDataToUpdate.getDenda().doubleValue(), date);
+            LogsIncome log = new LogsIncome(UUID.randomUUID().toString(),transactionID, currentLogin, loanDataToUpdate.getDenda().doubleValue(), loanDataToUpdate.getDenda().doubleValue(), date);
             logsIncomeRepository.save(log);
             logService.saveLogs(LOAN, SUCCESS, PAY);
         } else {
-            LogsIncome incomingPaymentLogs = new LogsIncome(UUID.randomUUID().toString(), "PELUNASAN DENDA ID :" + loanDataToUpdate.getId() + "/" + loanDataToUpdate.getCustomerNumber(), currentLogin, loanDataToUpdate.getDenda().doubleValue(), addNewPayment(previousLogs.getTotal(), loanDataToUpdate.getDenda()), date);
+            LogsIncome incomingPaymentLogs = new LogsIncome(UUID.randomUUID().toString(), transactionID, currentLogin, loanDataToUpdate.getDenda().doubleValue(), addNewPayment(previousLogs.getTotal(), loanDataToUpdate.getDenda()), date);
             loanDataToUpdate.setDenda(0L);
             updateCustomer.setLoanCount(loanCountSetter(updateCustomer.getMembershipNumber(), "Return"));
 
             // Update Customer and loan status then save it into log income table
-            chainUpdateLogsIncome(incomingPaymentLogs, updateCustomer, loanDataToUpdate);
+            updateLogsIncome(incomingPaymentLogs, updateCustomer, loanDataToUpdate);
         }
     }
 
@@ -590,7 +592,7 @@ public class LoanServiceImp implements LoanService {
         return total + denda;
     }
 
-    private void chainUpdateLogsIncome(LogsIncome newLog, Customer updateCustomer, Loan updateLoan) {
+    private void updateLogsIncome(LogsIncome newLog, Customer updateCustomer, Loan updateLoan) {
         logsIncomeRepository.save(newLog);
         logService.saveLogs(LOAN, SUCCESS, PAY);
         customerRepository.save(updateCustomer);

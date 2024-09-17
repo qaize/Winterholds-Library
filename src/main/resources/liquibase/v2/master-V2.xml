@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <!-- Format id for changeset: [prefix]-[ddlstate]-[yyyyMMdd]-[seqPerDay],
+        ex= DDL01-222-19991231-0001 prefix: - table = DDL01 - index = DDL02 - view
+        = DDL03 - procedure = DDL04 - sequence = DDL05 - others = DDL06 - insert
+        = DML01 - update = DML02 - delete = DML03 ddlstate: - Create = 111 - Alter
+        = 222 - Drop = 333 - DML = 000 -->
+
+    <!-- Use runOnChange="true", to maintain separate changelog for Stored Procedures -->
+
+    <changeSet id="DDL01-111-20240917-0001"
+               author="ikhwanis">
+        <sqlFile dbms="mssql" relativeToChangelogFile="false"
+                 splitStatements="true" stripComments="true"
+                 path="liquibase/v2/sql/create_table_master_account_20240917.sql"/>
+        <comment>CREATE TABLE MASTER ACCOUNT</comment>
+    </changeSet>
+
+    <changeSet id="DDL01-222-20240917-0001"
+               author="ikhwanis">
+        <sqlFile dbms="mssql" relativeToChangelogFile="false"
+                 splitStatements="true" stripComments="true"
+                 path="liquibase/v2/sql/alter_table_customer_20240917.sql"/>
+        <comment>ALTER TABLE CUSTOMER ADD IS REGISTER</comment>
+    </changeSet>
+
+</databaseChangeLog>
