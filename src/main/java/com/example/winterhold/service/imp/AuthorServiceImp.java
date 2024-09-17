@@ -2,7 +2,7 @@ package com.example.winterhold.service.imp;
 
 import com.example.winterhold.controller.model.BaseController;
 import com.example.winterhold.customexception.CustomException;
-import com.example.winterhold.dao.AuthorRepository;
+import com.example.winterhold.repository.AuthorRepository;
 import com.example.winterhold.dto.author.AuthorIndexDto;
 import com.example.winterhold.dto.author.AuthorIndexDtoV2;
 import com.example.winterhold.dto.author.AuthorInsertDto;

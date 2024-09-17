@@ -1,4 +1,4 @@
-package com.example.winterhold.dao;
+package com.example.winterhold.repository;
 
 import com.example.winterhold.entity.Notification;
 import org.springframework.data.domain.Page;

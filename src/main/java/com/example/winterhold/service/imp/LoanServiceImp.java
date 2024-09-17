@@ -1,7 +1,7 @@
 package com.example.winterhold.service.imp;
 
 import com.example.winterhold.controller.model.BaseController;
-import com.example.winterhold.dao.*;
+import com.example.winterhold.repository.*;
 import com.example.winterhold.dto.book.BookUpdateDto;
 import com.example.winterhold.dto.CurrentLoginDetailDTO;
 import com.example.winterhold.dto.loan.*;

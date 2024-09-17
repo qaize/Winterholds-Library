@@ -1,4 +1,4 @@
-package com.example.winterhold.dao;
+package com.example.winterhold.repository;
 
 import com.example.winterhold.dto.category.CategoryIndexDto;
 import com.example.winterhold.dto.category.CategoryInsertDto;

@@ -1,6 +1,6 @@
 package com.example.winterhold.controller.rest;
 
-import com.example.winterhold.dao.BookRepository;
+import com.example.winterhold.repository.BookRepository;
 import com.example.winterhold.dto.book.BookInsertDto;
 import com.example.winterhold.dto.rest.InsertFailedDto;
 import com.example.winterhold.dto.rest.ResponseCrudRestDto;

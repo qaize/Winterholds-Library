@@ -1,4 +1,4 @@
-package com.example.winterhold.dao;
+package com.example.winterhold.repository;
 
 import com.example.winterhold.dto.author.AuthorIndexDto;
 import com.example.winterhold.dto.author.AuthorInsertDto;

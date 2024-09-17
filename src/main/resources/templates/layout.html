@@ -117,6 +117,15 @@
         <span>Enable Payment (new)</span>
       </a>
 
+      <a
+              sec:authorize="hasRole('administrator')"
+              class="menu account"
+              th:href="@{/payment/topup}"
+      >
+        <i class="fas fa-pen"></i>
+        <span>topup</span>
+      </a>
+
       <a class="menu account" th:href="@{/author/index}">
         <i class="fas fa-pen"></i>
         <span>Author</span>

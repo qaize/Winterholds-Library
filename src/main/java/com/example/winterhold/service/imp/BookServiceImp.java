@@ -1,6 +1,6 @@
 package com.example.winterhold.service.imp;
 
-import com.example.winterhold.dao.BookRepository;
+import com.example.winterhold.repository.BookRepository;
 import com.example.winterhold.dto.BaseResponseDTO;
 import com.example.winterhold.dto.book.BookIndexDto;
 import com.example.winterhold.dto.book.BookInsertDto;

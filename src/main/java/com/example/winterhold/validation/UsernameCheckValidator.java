@@ -1,6 +1,6 @@
 package com.example.winterhold.validation;
 
-import com.example.winterhold.dao.AccountRepository;
+import com.example.winterhold.repository.AccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.validation.ConstraintValidator;

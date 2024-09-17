@@ -1,6 +1,6 @@
 package com.example.winterhold.service.imp;
 
-import com.example.winterhold.dao.CategoryRepository;
+import com.example.winterhold.repository.CategoryRepository;
 import com.example.winterhold.dto.category.CategoryIndexDto;
 import com.example.winterhold.dto.category.CategoryInsertDto;
 import com.example.winterhold.dto.category.CategoryUpdateDto;

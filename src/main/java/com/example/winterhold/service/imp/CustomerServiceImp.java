@@ -1,8 +1,8 @@
 package com.example.winterhold.service.imp;
 
-import com.example.winterhold.dao.CustomerRepository;
-import com.example.winterhold.dao.LoanRepository;
-import com.example.winterhold.dao.MasterAccountRepository;
+import com.example.winterhold.repository.CustomerRepository;
+import com.example.winterhold.repository.LoanRepository;
+import com.example.winterhold.repository.MasterAccountRepository;
 import com.example.winterhold.dto.customer.CustomerIndexDto;
 import com.example.winterhold.dto.customer.CustomerInsertDto;
 import com.example.winterhold.dto.customer.CustomerProfileDto;
@@ -24,7 +24,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.*;
 

@@ -1,9 +1,9 @@
 package com.example.winterhold.service.imp;
 
 import com.example.winterhold.constants.ActionConstants;
-import com.example.winterhold.constants.WinterholdConstants;
-import com.example.winterhold.dao.CustomerRepository;
-import com.example.winterhold.dao.MasterAccountRepository;
+import com.example.winterhold.dto.payment.TopUpDTO;
+import com.example.winterhold.repository.CustomerRepository;
+import com.example.winterhold.repository.MasterAccountRepository;
 import com.example.winterhold.dto.BaseResponseDTO;
 import com.example.winterhold.dto.customer.CustomerProfileDto;
 import com.example.winterhold.entity.Customer;
@@ -11,7 +11,6 @@ import com.example.winterhold.entity.MasterAccount;
 import com.example.winterhold.service.abs.PaymentService;
 import com.example.winterhold.utility.CommonUtil;
 import com.example.winterhold.utility.ResponseUtil;
-import liquibase.repackaged.net.sf.jsqlparser.expression.StringValue;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -59,6 +58,26 @@ public class PaymentServiceImpl implements PaymentService {
         }
 
         return ResponseUtil.insertSuccessResponse(customerProfile);
+    }
+
+    @Override
+    public BaseResponseDTO<Object> topup(TopUpDTO topupDTO) {
+
+        try {
+            log.info("[START] Top up for {}",topupDTO.getMembershipNumber());
+            MasterAccount masterAccount = masterAccountRepository.findMasterAccountByMembershipNumber(topupDTO.getMembershipNumber());
+            if (Objects.nonNull(masterAccount)) {
+                masterAccount.setBalance(masterAccount.getBalance() + topupDTO.getAmount());
+            } else {
+                log.info("[ERROR] Master account not found");
+                throw new RuntimeException("Master account not found");
+            }
+
+        } catch (Exception e) {
+            return ResponseUtil.insertFailResponse(e.getMessage());
+        }
+
+        return ResponseUtil.insertSuccessResponse(ActionConstants.SUCCESS);
     }
 
     private CustomerProfileDto populateCustomerInfo(Customer customer,MasterAccount masterAccount){

@@ -145,6 +145,7 @@ public class LoanController {
         var category = categoryService.getCategoryByCategoryName(books.getCategoryName());
         var denda = loanService.getCountDenda(loanDto);
 
+        model.addAttribute("newNotification",notificationService.getNotification());
         model.addAttribute("books", books);
         model.addAttribute("historyDenda", denda);
         model.addAttribute("authorId", id);
@@ -226,6 +227,7 @@ public class LoanController {
         model.addAttribute("dataDenda", loanDto);
         model.addAttribute("totalPage", totalPage);
         model.addAttribute("currentPage", page);
+        model.addAttribute("newNotification",notificationService.getNotification());
 
         return "Loan/denda";
     }
@@ -278,7 +280,7 @@ public class LoanController {
         if (totalPage == 0) {
             page = 0;
         }
-
+        model.addAttribute("newNotification",notificationService.getNotification());
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPage", totalPage);
         model.addAttribute("logs", logs);
@@ -297,6 +299,7 @@ public class LoanController {
         RequestLoanDTO requestNew = new RequestLoanDTO(currentLogin,bookCode);
         DataDTO<Boolean> newLoanReq = loanService.newLoanRequest(requestNew);
 
+        model.addAttribute("newNotification",notificationService.getNotification());
         model.addAttribute(WinterholdConstants.CONTROLLER_VALIDATION_HEADER,"Unable To Request");
         model.addAttribute(WinterholdConstants.CONTROLLER_VALIDATION_REASON,newLoanReq.getMessage());
         model.addAttribute("flag",newLoanReq.getFlag());
@@ -326,6 +329,7 @@ public class LoanController {
     public String insertFromRequest(Model model, @RequestParam Long id) {
         DataDTO<Boolean> data = loanService.insertByRequestId(id);
 
+        model.addAttribute("newNotification",notificationService.getNotification());
         model.addAttribute(WinterholdConstants.CONTROLLER_VALIDATION_HEADER,"Unable To Request");
         model.addAttribute(WinterholdConstants.CONTROLLER_VALIDATION_REASON,data.getMessage());
         model.addAttribute("flag",data.getFlag());
@@ -337,6 +341,7 @@ public class LoanController {
     public String deleteRequest(Model model,@RequestParam Long id){
         DataDTO<Boolean> deleteRequest = loanService.cancelLoan(id);
 
+        model.addAttribute("newNotification",notificationService.getNotification());
         model.addAttribute(WinterholdConstants.CONTROLLER_VALIDATION_HEADER,"Unable To Request");
         model.addAttribute(WinterholdConstants.CONTROLLER_VALIDATION_REASON,deleteRequest.getMessage());
         model.addAttribute("flag",deleteRequest.getFlag());

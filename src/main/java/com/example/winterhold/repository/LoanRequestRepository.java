@@ -1,4 +1,4 @@
-package com.example.winterhold.dao;
+package com.example.winterhold.repository;
 
 import com.example.winterhold.dto.loan.RequestLoanIndexDTO;
 import com.example.winterhold.entity.RequestLoan;

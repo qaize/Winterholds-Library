@@ -1,6 +1,6 @@
 package com.example.winterhold.validation;
 
-import com.example.winterhold.dao.BookRepository;
+import com.example.winterhold.repository.BookRepository;
 import com.example.winterhold.entity.Book;
 import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.beans.factory.annotation.Autowired;

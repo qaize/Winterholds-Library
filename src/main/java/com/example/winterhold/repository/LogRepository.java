@@ -1,4 +1,4 @@
-package com.example.winterhold.dao;
+package com.example.winterhold.repository;
 
 import com.example.winterhold.entity.Logs;
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -1,7 +1,7 @@
 package com.example.winterhold.controller.AuthorServiceTest;
 
 
-import com.example.winterhold.dao.AuthorRepository;
+import com.example.winterhold.repository.AuthorRepository;
 import com.example.winterhold.dto.author.AuthorIndexDto;
 import com.example.winterhold.dto.rest.Request.Author.AuthorRequestDTO;
 import com.example.winterhold.service.imp.AuthorServiceImp;

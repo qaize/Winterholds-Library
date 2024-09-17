@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head th:replace="~{layout::headLayout}">
+<body class="main-body">
+<nav th:replace="~{layout::navLayout}"></nav>
+<header th:replace="~{layout::header('CUSTOMER')}"></header>
+<main>
+    <div class="grid-container">
+        <div>
+            <h1 th:text="${validationHeader}">Error</h1>
+            <h3 th:text="${validationReason}">Error</h3>
+        </div>
+        <div>
+            <a class="btn back-warning" th:href="@{/}">Back to Index</a>
+        </div>
+    </div>
+</main>
+
+</body>
+</html>

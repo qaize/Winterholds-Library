@@ -1,7 +1,7 @@
 package com.example.winterhold.service.imp;
 
-import com.example.winterhold.dao.AccountRepository;
-import com.example.winterhold.dao.CustomerRepository;
+import com.example.winterhold.repository.AccountRepository;
+import com.example.winterhold.repository.CustomerRepository;
 import com.example.winterhold.dto.account.AccountIndexDto;
 import com.example.winterhold.dto.account.AccountInsertDto;
 import com.example.winterhold.dto.account.AccountUpdateDto;

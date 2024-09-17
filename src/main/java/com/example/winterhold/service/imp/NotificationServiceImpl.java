@@ -3,7 +3,7 @@ package com.example.winterhold.service.imp;
 import com.example.winterhold.dto.CurrentLoginDetailDTO;
 import com.example.winterhold.dto.notification.NotificationDetailDto;
 import com.example.winterhold.controller.model.BaseController;
-import com.example.winterhold.dao.NotificationRepository;
+import com.example.winterhold.repository.NotificationRepository;
 import com.example.winterhold.dto.models.DataDTO;
 import com.example.winterhold.entity.Notification;
 import com.example.winterhold.service.abs.NotificationService;
