@@ -11,9 +11,7 @@
             <h3 th:text="${validationReason}">Error</h3>
         </div>
         <div>
-            <a class="btn back-warning" th:href="@{/customer/index}">Back to Index</a>
-            <a class="btn back-warning" th:style="${flag == 0 ? 'display : inline-block' : 'display : none'}"
-               th:href="@{/customer/ban(customerNumber=${membershipNumber})}">Ban</a>
+            <a class="btn back-warning" th:href="@{/}">Back to Index</a>
         </div>
     </div>
 </main>

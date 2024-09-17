@@ -43,7 +43,7 @@
                     </td>
                     <td><a th:text="*{membershipNumber}"
                            th:href="@{/customer/detail(number=*{membershipNumber})}"></a></td>
-                    <td th:text="*{fullname}"></td>
+                    <td th:text="*{getFullName}"></td>
                     <td th:text="*{membershipExpireDate}"></td>
                 </tr>
                 </tbody>

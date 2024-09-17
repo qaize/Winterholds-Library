@@ -13,7 +13,7 @@ public class CustomerIndexDto {
 
     private String lastName;/*50 n*/
 
-    private String fullname;
+    private String fullName;
 
     private LocalDate birthDate;/*nn*/
 
@@ -34,6 +34,6 @@ public class CustomerIndexDto {
         this.phone = phone;
         this.address = address;
         this.membershipExpireDate = membershipExpireDate;
-        this.fullname = firstName+" "+lastName;
+        this.fullName = firstName + " " + lastName;
     }
 }

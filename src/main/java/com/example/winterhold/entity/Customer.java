@@ -49,6 +49,9 @@ public class Customer {
     @Column(name = "requestCount")
     private Integer requestCount;
 
+    @Column(name = "isRegistered")
+    private Integer isRegistered;
+
     @OneToMany
     @JoinColumn(name = "CustomerNumber")
     private List<Loan> loan;

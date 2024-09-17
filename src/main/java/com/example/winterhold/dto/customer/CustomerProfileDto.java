@@ -22,5 +22,6 @@ public class CustomerProfileDto {
 
     private String address;/*500 n*/
     private String gender;/*500 n*/
+    private String balance;/*500 n*/
 
 }

@@ -108,6 +108,15 @@
         <span>My Profile</span>
       </a>
 
+      <a
+              sec:authorize="hasRole('customer')"
+              class="menu account"
+              th:href="@{/register/enableBilling}"
+      >
+        <i class="fas fa-pen"></i>
+        <span>Enable Payment (new)</span>
+      </a>
+
       <a class="menu account" th:href="@{/author/index}">
         <i class="fas fa-pen"></i>
         <span>Author</span>

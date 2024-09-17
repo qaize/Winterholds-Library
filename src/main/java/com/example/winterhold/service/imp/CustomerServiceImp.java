@@ -2,13 +2,16 @@ package com.example.winterhold.service.imp;
 
 import com.example.winterhold.dao.CustomerRepository;
 import com.example.winterhold.dao.LoanRepository;
+import com.example.winterhold.dao.MasterAccountRepository;
 import com.example.winterhold.dto.customer.CustomerIndexDto;
 import com.example.winterhold.dto.customer.CustomerInsertDto;
 import com.example.winterhold.dto.customer.CustomerProfileDto;
 import com.example.winterhold.dto.customer.CustomerUpdateDto;
 import com.example.winterhold.dto.models.DataDTO;
 import com.example.winterhold.entity.Customer;
+import com.example.winterhold.entity.MasterAccount;
 import com.example.winterhold.service.abs.CustomerService;
+import com.example.winterhold.utility.CommonUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -41,6 +44,9 @@ public class CustomerServiceImp implements CustomerService {
 
     @Autowired
     private LoanRepository loanRepository;
+
+    @Autowired
+    private MasterAccountRepository masterAccountRepository;
 
     @Override
     public DataDTO<List<CustomerIndexDto>> getListCustomerBySearch(Integer page, String number, String name) {
@@ -184,14 +190,14 @@ public class CustomerServiceImp implements CustomerService {
     @Override
     public CustomerProfileDto cutomerProfile(String username) throws ParseException {
 
-        Locale indo = new Locale("id","ID");
-
+        String balance = StringUtils.EMPTY;
         var customer = customerRepository.findByMembershipNumber(username).get();
+        String birthDate = CommonUtil.convertBirthdateIdn(customer.getBirthDate());
 
-        Date originalDate = new SimpleDateFormat("yyyy-MM-dd").parse(customer.getBirthDate().toString());
-
-        String birthDate = new SimpleDateFormat("dd MMMM yyyy",indo).format(originalDate);
-
+        if(Objects.nonNull(customer.getIsRegistered())){
+            MasterAccount masterAccount = masterAccountRepository.findMasterAccountByMembershipNumber(customer.getMembershipNumber());
+            balance = String.valueOf(masterAccount.getBalance());
+        }
 
         return CustomerProfileDto.builder()
                 .membershipNumber(customer.getMembershipNumber())
@@ -200,6 +206,7 @@ public class CustomerServiceImp implements CustomerService {
                 .address(customer.getAddress())
                 .birthDate(birthDate)
                 .gender(customer.getGender())
+                .balance(balance)
                 .build();
     }
 

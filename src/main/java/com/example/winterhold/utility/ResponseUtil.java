@@ -34,9 +34,9 @@ public class ResponseUtil {
 
         return BaseResponseDTO.<Object>builder()
                 .status("1")
-                .message("OK")
+                .message(message)
                 .httpStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-                .data(message)
+                .data(null)
                 .build();
     }
 

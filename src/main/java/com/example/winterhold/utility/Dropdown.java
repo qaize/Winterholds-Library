@@ -25,7 +25,7 @@ public class Dropdown {
 
         for (CustomerIndexDto value : drop
         ) {
-            data.add(new DropdownDto(value.getMembershipNumber().toString(), value.getFullname()));
+            data.add(new DropdownDto(value.getMembershipNumber().toString(), value.getFullName()));
         }
         return data;
     }
