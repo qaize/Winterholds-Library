@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml" lang="en">
 <head th:replace="~{layout::headLayout}">
 </head>
 <body class="main-body">
@@ -16,7 +16,7 @@
         </form>
 
         <div>
-            <a class="btn create-button" th:href="@{/book/insert(categoryName=${categoryName})}"> Add books of <span
+            <a sec:authorize="hasRole('administrator')" class="btn create-button" th:href="@{/book/insert(categoryName=${categoryName})}"> Add books of <span
                     th:text="${categoryName}"></span> </a>
         </div>
         <div class="divTable">
@@ -35,9 +35,10 @@
                 <tbody>
                 <tr th:each="data : ${listBooks}" th:object="${data}">
                     <td>
-                        <div class="button-wrapper">
-                            <a class="btn update-button" th:href="@{/book/update(bookCode=*{code})}">Edit</a>
-                            <a class="btn warning-button" th:href="@{/book/delete(bookCode=*{code})}">Delete</a>
+                        <div  class="button-wrapper">
+                            <a sec:authorize="hasRole('customer')" class="btn blue-button" th:href="@{/loan/request-loan(bookCode=*{code})}">Request</a>
+                            <a sec:authorize="hasRole('administrator')" class="btn blue-button" th:href="@{/book/update(bookCode=*{code})}">Edit</a>
+                            <a sec:authorize="hasRole('administrator')"  class="btn warning-button" th:href="@{/book/delete(bookCode=*{code})}">Delete</a>
                         </div>
                     </td>
                     <td th:text="*{title}"></td>

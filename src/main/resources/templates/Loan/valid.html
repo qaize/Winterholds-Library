@@ -6,11 +6,14 @@
 <header th:replace="~{layout::header('FAILED')}"></header>
 <main>
     <div class="grid-container">
-        <div>
+        <div class="home">
             <h1 th:text="${validationHeader}">Unable To Return</h1>
             <h3 th:text="${validationReason}">Data Already Returned!</h3>
         </div>
-        <div>
+        <div th:style="${flag == 1 ? 'display : inline-block' : 'display : none'}">
+            <a class="btn warning-button" th:href="@{/loan/request-loan-list}">Back Request List</a>
+        </div>
+        <div th:style="${flag == 0 ? 'display : inline-block' : 'display : none'}">
             <a class="btn warning-button" th:href="@{/loan/index}">Back to Loan Index</a>
         </div>
 

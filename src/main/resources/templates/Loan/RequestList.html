@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml" lang="en">
+<head th:replace="~{layout::headLayout}">
+<body class="main-body">
+<nav th:replace="~{layout::navLayout}"></nav>
+<header th:replace="~{layout::header('Request List Loan')}"></header>
+<main>
+    <div class="grid-container">
+        <h1>My Request Loan</h1>
+        <div class="divTable">
+            <h1 th:style="${flag == 1 ? 'display : inline-block' : 'display : none'}" th:text="${message}"></h1>
+            <table th:style="${flag == 0 ? 'display : table' : 'display : none'}">
+                <thead>
+                <tr>
+                    <th sec:authorize="hasRole('administrator')">Customer Name</th>
+                    <th>Book Title</th>
+                    <th>Request Date</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="data : ${list}" th:object="${data}">
+                    <td sec:authorize="hasRole('administrator')" th:text="*{fullName}"></td>
+                    <td th:text="*{bookTitle}"></td>
+                    <td th:text="*{requestDate}"></td>
+                    <td th:text="*{status}"></td>
+                    <td sec:authorize="hasRole('administrator')" class="action">
+                        <div class="button-wrapper">
+                            <a class="btn update-button"
+                               th:href="@{/loan/insert-by-request(id=*{requestId})}">Accept</a>
+                            <a class="btn warning-button"
+                               th:href="@{/loan/delete-request-loan(id=*{requestId})}">Reject</a>
+                        </div>
+                    </td>
+                    <td sec:authorize="hasRole('customer')" class="action">
+                        <div class="button-wrapper">
+                            <a class="btn warning-button"
+                               th:href="@{/loan/delete-request-loan(id=*{requestId})}">cancel</a>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+                <tfoot>
+                <tr>
+                    <td colspan="6">
+                        <div class="pagination">
+                            <div th:attr="data-currentPage=${currentPage}"
+                                 th:text="|page ${currentPage} of ${totalPage}|">
+                            </div>
+                            <div>
+                                <a th:if="${totalPage !=0}"
+                                   th:each="loop:${#numbers.sequence(1, totalPage)}"
+                                   th:href="@{/loan/request-loan-list(page=${loop})}"
+                                   th:text="${loop}"></a>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                </tfoot>
+            </table>
+
+        </div>
+    </div>
+    <div sec:authorize="hasRole('customer')" class="grid-container">
+        <h1>Current Loan</h1>
+        <div class="divTable">
+            <table>
+                <thead>
+                <tr>
+                    <th>Book Title</th>
+                    <th>Loan Date</th>
+                    <th>Due Date</th>
+                    <th>Day left</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="data : ${listLoan}" th:object="${data}">
+                    <td th:text="*{bookTitle}"></td>
+                    <td th:text="*{loanDate}"></td>
+                    <td th:text="*{dueDate}"></td>
+                    <td th:text="*{dayLeft}"></td>
+                </tr>
+                </tbody>
+            </table>
+
+        </div>
+
+    </div>
+</main>
+
+</body>
+</html>

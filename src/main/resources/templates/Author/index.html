@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml" lang="en">
 <head th:replace="~{layout::headLayout}"><!-- layout itu dari layout.html,
                             headLayout dari nama fragment yang ada di layout.html  -->
 <body class="main-body">
@@ -7,16 +7,17 @@
 <header th:replace="~{layout::header('Author')}"></header>
 <main>
     <div class="grid-container">
-        <form method="get" class="filter" th:attr="action=@{/author/index}">
-            <span>Author Name :</span>
-            <input type="text" name="name" placeholder="name" th:attr="value=${name}">
-            <button class=" btn blue-button" type="submit">Search</button>
-        </form>
+        <div class="filter">
+            <span>Author Name: </span>
+            <input id="search-author" type="text">
+            <button id="search-button" class="btn update-button">Search</button>
+        </div>
 
-        <a class="btn create-button" th:href="@{/author/insert}"> Add Author </a>
+        <a sec:authorize="hasRole('administrator')" class="btn create-button" th:href="@{/author/insert}"> Add Author </a>
 
         <div class="divTable">
-            <table>
+            <h1 th:style="${flag == 1 ? 'display : inline-block' : 'display : none'}" th:text="${message}"></h1>
+            <table id="author-table" th:style="${flag == 0 ? 'display : table' : 'display : none'}">
                 <thead>
                 <tr>
                     <th scope="col">Action</th>
@@ -28,13 +29,13 @@
                     <th scope="col">Last Modified By</th>
                 </tr>
                 </thead>
-                <tbody>
-                <tr th:each="data : ${listAuthor}" th:object="${data}">
+                <tbody id="table-author">
+                <!-- <tr th:each="data : ${listAuthor}" th:object="${data}">
                     <td class="action">
                         <div class="button-wrapper">
                             <a class="btn blue-button" th:href="@{/author/detail(id=*{id})}">Books</a>
-                            <a class="btn update-button" th:href="@{/author/update(id=*{id})}">Edit</a>
-                            <a class="btn warning-button" th:href="@{/author/delete(id=*{id})}">Delete</a>
+                            <a sec:authorize="hasRole('administrator')" class="btn update-button" th:href="@{/author/update(id=*{id})}">Edit</a>
+                            <a sec:authorize="hasRole('administrator')" class="btn warning-button" th:href="@{/author/delete(id=*{id})}">Delete</a>
                         </div>
                     </td>
                     <td th:text="*{fullname}"></td>
@@ -43,19 +44,28 @@
                     <td th:text="*{education}"></td>
                     <td th:text="*{createdBy}"></td>
                     <td th:text="*{modifiedBy}"></td>
-                </tr>
+                </tr> -->
                 </tbody>
                 <tfoot>
                 <tr>
                     <td colspan="9">
-                        <div class="pagination">
-                            <div th:attr="data-currentPage=${currentPage}"
-                                 th:text="|page ${currentPage} of ${totalPage}|"></div>
+                        <div id="paging" class="pagination">
                             <div>
-                                <a th:if="${totalPage !=0}"
+                                <span id="pagination-current">test</span>
+                            </div>
+                            <div class="pagination-nav">
+                                <!-- <a th:if="${totalPage !=0}"
                                    th:each="loop:${#numbers.sequence(1, totalPage)}"
                                    th:href="@{/author/index(page=${loop},name=${name})}"
-                                   th:text="${loop}"></a>
+                                   th:text="${loop}"></a> -->
+                                   <div class="next-pagination">
+                                       <button id="prev-button"> Prev </button>        
+                                   </div>
+                                   <div id="pagination-list" class="pagination-list">
+                                   </div>
+                                   <div class="prev-pagination">
+                                       <button id="next-button"> Next </button>
+                                   </div>
                             </div>
                         </div>
                     </td>
@@ -66,7 +76,11 @@
         </div>
 
     </div>
+
 </main>
+
+
+
 
 </body>
 </html>

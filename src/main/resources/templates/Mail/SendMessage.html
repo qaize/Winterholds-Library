@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head th:replace="~{layout::headLayout}"><!-- layout itu dari layout.html,
+                            headLayout dari nama fragment yang ada di layout.html  -->
+<body class="main-body">
+<nav th:replace="~{layout::navLayout}"></nav>
+<header th:replace="~{layout::header('Send Message')}"></header>
+<main>
+    <div>
+        <form class="upsert-form" method="post" th:attr="action=@{/mail/send-message}"
+              enctype="multipart/form-data"
+              th:object="${dto}">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+            <!--        <div th:if="${param.error != null}" th:text="${param.error}"></div>-->
+            <table>
+                <tbody>
+                <tr>
+                    <td><label>Recipants :</label></td>
+                    <td><textarea th:field="*{receiver}"> </textarea>
+                        <div class="field-validation-error" th:errors="*{receiver}"></div>
+                    </td>
+                </tr>
+                <tr>
+                    <td><label>subjects :</label></td>
+                    <td><input th:field="*{subject}">
+                        <div class="field-validation-error" th:errors="*{subject}"></div>
+                    </td>
+                </tr>
+                <tr>
+                    <td><label>Message :</label></td>
+                    <td><textarea th:field="*{message}"></textarea>
+                        <div class="field-validation-error" th:errors="*{message}"></div>
+                    </td>
+                </tr>
+                <tr>
+                    <td><label>Attachment :</label></td>
+                    <td><input type="file" th:field="*{attachment}" multiple>
+                        <div class="field-validation-error" th:errors="*{attachment}"></div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <button class="btn blue-button" type="submit"> Submit</button>
+        </form>
+    </div>
+</main>
+
+</body>
+</html>

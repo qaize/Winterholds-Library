@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
-<head th:replace="~{layout::head}"> </head>><!-- layout itu dari layout.html,
-       <>                  headLayout dari nama fragment yang ada di layout.html  -->
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head th:replace="~{layout::headLayout}"><!-- layout itu dari layout.html,
+                            headLayout dari nama fragment yang ada di layout.html  -->
 <body class="main-body">
-<nav th:replace="~{layout::navigation}"></nav>
-<!--<header th:replace="~{layout::head}"></header>-->
+<nav th:replace="~{layout::navLayout}"></nav>
+<header th:replace="~{layout::header('mail')}"></header>
 <main>
     <!--    <h1>PROFILE</h1>-->
     <a href="#" id="btnChangePassword" class="btn  create-modal-dialog"
