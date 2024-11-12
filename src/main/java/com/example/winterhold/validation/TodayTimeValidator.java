@@ -1,7 +1,8 @@
 package com.example.winterhold.validation;
 
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
+import jakarta.validation.ConstraintValidator;
+import jakarta.validation.ConstraintValidatorContext;
+
 import java.time.LocalDate;
 
 public class TodayTimeValidator implements ConstraintValidator<TodayTime, LocalDate> {

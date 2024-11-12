@@ -24,9 +24,9 @@ public class BookServiceImp implements BookService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BookServiceImp.class);
 
-    private BookRepository bookRepository;
+    private final BookRepository bookRepository;
 
-    private ObjectMapper objectMapper;
+    private final ObjectMapper objectMapper;
 
     @Autowired
     public BookServiceImp(BookRepository bookRepository, ObjectMapper objectMapper) {

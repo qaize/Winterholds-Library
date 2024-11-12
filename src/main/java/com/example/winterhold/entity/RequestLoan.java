@@ -29,7 +29,7 @@ public class RequestLoan {
     private LocalDateTime requestDate;
 
     @Column(name = "status")
-    private Boolean status;
+    private boolean status;
 
     @Column(name = "isActive")
     private Boolean isActive;

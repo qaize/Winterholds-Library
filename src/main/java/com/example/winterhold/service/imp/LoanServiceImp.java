@@ -1,5 +1,6 @@
 package com.example.winterhold.service.imp;
 
+import com.example.winterhold.constants.ActionConstants;
 import com.example.winterhold.controller.model.BaseController;
 import com.example.winterhold.repository.*;
 import com.example.winterhold.dto.book.BookUpdateDto;
@@ -11,8 +12,7 @@ import com.example.winterhold.service.abs.LoanService;
 import com.example.winterhold.service.abs.NotificationService;
 import com.example.winterhold.utility.CommonUtil;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -31,13 +31,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import static com.example.winterhold.constants.ActionConstants.*;
-
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class LoanServiceImp implements LoanService {
-    private static final Logger LOGGER = LoggerFactory.getLogger(LoanServiceImp.class);
 
     private final LoanRepository loanRepository;
     private final LogsIncomeRepository logsIncomeRepository;
@@ -49,7 +47,6 @@ public class LoanServiceImp implements LoanService {
     private final BookRepository bookRepository;
     private final NotificationRepository notificationRepository;
     private final NotificationService notificationService;
-
 
 
     @Override
@@ -64,7 +61,7 @@ public class LoanServiceImp implements LoanService {
 
             if (rawDataLoan.getContent().isEmpty()) {
                 flag = 1;
-                message = INDEX_EMPTY;
+                message = ActionConstants.INDEX_EMPTY;
             }
 
             return DataDTO.<List<LoanIndexDto>>builder()
@@ -100,7 +97,7 @@ public class LoanServiceImp implements LoanService {
             }
 
             if (data.getDenda() <= 0) {
-                customer.setLoanCount(loanCountSetter(data.getCustomerNumber(), "Return"));
+                customer.setLoanCount(loanCountSetter(data.getCustomerNumber(), ActionConstants.RETURN));
             }
             Notification returnNotification = notificationService.sendNotification(UUID.randomUUID(), customer.getMembershipNumber(), "Returned by admin", book.getTitle().concat(": ".concat(book.getCategoryName())), LocalDateTime.now(), currentLogin);
 
@@ -126,16 +123,16 @@ public class LoanServiceImp implements LoanService {
     @Override
     public Long getCountDenda(Loan loan) {
 
-        long denda;
+        long fee;
         if (loan.getReturnDate() != null && loan.getDenda() != null) {
-            denda = ChronoUnit.DAYS.between(loan.getDueDate(), loan.getReturnDate()) * 2000;
+            fee = ChronoUnit.DAYS.between(loan.getDueDate(), loan.getReturnDate()) * 2000;
         } else {
-            denda = ChronoUnit.DAYS.between(loan.getDueDate(), LocalDate.now()) * 2000;
-            if (denda < 0) {
-                denda = 0L;
+            fee = ChronoUnit.DAYS.between(loan.getDueDate(), LocalDate.now()) * 2000;
+            if (fee < 0) {
+                fee = 0L;
             }
         }
-        return denda;
+        return fee;
     }
 
     @Override
@@ -150,19 +147,19 @@ public class LoanServiceImp implements LoanService {
             Notification insertNotification = notificationService.sendNotification(UUID.randomUUID(), updateCustomer.getMembershipNumber(), "New loan inserted by admin", updateBook.getTitle().concat(": ".concat(updateBook.getCategoryName())), LocalDateTime.now(), currentLogin);
 
             chainUpdateLoan(updateCustomer, updateBook, insertNewLoan);
-            LOGGER.info(SUCCESS_INSERT_DATA, insertNewLoan.getId());
-            logService.saveLogs(LOAN, SUCCESS, INSERT);
+            log.info(ActionConstants.SUCCESS_INSERT_DATA, insertNewLoan.getId());
+            logService.saveLogs(ActionConstants.LOAN, ActionConstants.SUCCESS, ActionConstants.INSERT);
             notificationRepository.save(insertNotification);
         } catch (Exception e) {
-            LOGGER.error(e.getMessage());
-            logService.saveLogs(LOAN, FAILED, INSERT);
+            log.error(e.getMessage());
+            logService.saveLogs(ActionConstants.LOAN, ActionConstants.FAILED, ActionConstants.INSERT);
         }
     }
 
 
     @Override
     public Loan getLoanById(Long id) {
-        return loanRepository.findById(id).get();
+        return loanRepository.findById(id).orElseThrow(() -> new RuntimeException("NOT_FOUND"));
     }
 
     @Override
@@ -174,9 +171,9 @@ public class LoanServiceImp implements LoanService {
     public void delete(Long id) {
         try {
             loanRepository.deleteById(id);
-            logService.saveLogs(LOAN, SUCCESS, DELETE);
+            logService.saveLogs(ActionConstants.LOAN, ActionConstants.SUCCESS, ActionConstants.DELETE);
         } catch (Exception e) {
-            logService.saveLogs(LOAN, e.getMessage(), DELETE);
+            logService.saveLogs(ActionConstants.LOAN, e.getMessage(), ActionConstants.DELETE);
         }
     }
 
@@ -196,7 +193,8 @@ public class LoanServiceImp implements LoanService {
         try {
             recordPaymentHistory(id);
         } catch (Exception e) {
-            logService.saveLogs(LOAN, e.getMessage(), PAY);
+            log.error("ERROR IN PAYMENT", e);
+            logService.saveLogs(ActionConstants.LOAN, e.getMessage(), ActionConstants.PAY);
         }
     }
 
@@ -205,7 +203,7 @@ public class LoanServiceImp implements LoanService {
         String currentLogin = authentication.getName();
 
         Timestamp date = Timestamp.from(Instant.now());
-        Loan loanDataToUpdate = loanRepository.findById(id).get();
+        Loan loanDataToUpdate = loanRepository.findById(id).orElseThrow();
         LogsIncome previousLogs = logsIncomeRepository.findAll(Sort.by("transactionDate").descending()).get(0);
         Customer updateCustomer = customerServiceImp.getCustomerByEntity(loanDataToUpdate.getCustomerNumber());
         String transactionID = CommonUtil.generateTransactionId(String.valueOf(loanDataToUpdate.getId()),updateCustomer.getMembershipNumber());
@@ -214,7 +212,7 @@ public class LoanServiceImp implements LoanService {
             // First time logs
             LogsIncome log = new LogsIncome(UUID.randomUUID().toString(),transactionID, currentLogin, loanDataToUpdate.getDenda().doubleValue(), loanDataToUpdate.getDenda().doubleValue(), date);
             logsIncomeRepository.save(log);
-            logService.saveLogs(LOAN, SUCCESS, PAY);
+            logService.saveLogs(ActionConstants.LOAN, ActionConstants.SUCCESS, ActionConstants.PAY);
         } else {
             LogsIncome incomingPaymentLogs = new LogsIncome(UUID.randomUUID().toString(), transactionID, currentLogin, loanDataToUpdate.getDenda().doubleValue(), addNewPayment(previousLogs.getTotal(), loanDataToUpdate.getDenda()), date);
             loanDataToUpdate.setDenda(0L);
@@ -243,15 +241,15 @@ public class LoanServiceImp implements LoanService {
     public void extendLoan(Loan data) {
         try {
             loanRepository.save(data);
-            logService.saveLogs(LOAN, SUCCESS, EXTEND);
+            logService.saveLogs(ActionConstants.LOAN, ActionConstants.SUCCESS, ActionConstants.EXTEND);
         } catch (Exception e) {
-            logService.saveLogs(LOAN, e.getMessage(), EXTEND);
+            logService.saveLogs(ActionConstants.LOAN, e.getMessage(), ActionConstants.EXTEND);
         }
     }
 
     @Override
     public List<LoanIndexDto> getOnDenda(Integer page) {
-        Integer row = 5;
+        int row = 5;
         Pageable paging = PageRequest.of(page - 1, row, Sort.by("id").descending());
         return loanRepository.getOnDenda(paging);
     }
@@ -260,14 +258,13 @@ public class LoanServiceImp implements LoanService {
     public Long getCountPageDenda() {
         Integer row = 5;
         Double totalData = (double) loanRepository.getCountPageDenda();
-        Long  totalPage = (long) Math.ceil(totalData / row);
-        return  totalPage;
+        return (long) Math.ceil(totalData / row);
     }
 
     @Override
     public List<LogsIncome> getLoanPaymentHistory(Integer page) {
 
-        Integer row = 5;
+        int row = 5;
         Pageable paging = PageRequest.of(page - 1, row, Sort.by("transactionDate").descending());
         return logsIncomeRepository.getPageOnPaymentHistory(paging);
     }
@@ -276,13 +273,12 @@ public class LoanServiceImp implements LoanService {
     public Long getCountPaymentHistory() {
         Integer row = 5;
         Double totalData = (double) logsIncomeRepository.getCountTotalPaymentHistory();
-        Long  totalPage = (long) Math.ceil(totalData / row);
-        return  totalPage;
+        return (long) Math.ceil(totalData / row);
     }
 
     @Override
     public List<LoanIndexDto> getListLoanHistoryBySearch(Integer page) {
-        Integer row = 10;
+        int row = 10;
         Pageable paging = PageRequest.of(page - 1, row, Sort.by("returnDate").descending());
         return loanRepository.getListLoanHistoryBySearch(paging);
     }
@@ -291,9 +287,7 @@ public class LoanServiceImp implements LoanService {
     public Long getCountHistoryPage() {
         Integer row = 10;
         Double totalData = (double) loanRepository.getCountHistoryPage();
-        Long  totalPage = (long) Math.ceil(totalData / row);
-
-        return  totalPage;
+        return  (long) Math.ceil(totalData / row);
     }
 
     @Transactional
@@ -304,7 +298,7 @@ public class LoanServiceImp implements LoanService {
         String message = "";
         int flag = 0;
         try {
-            Boolean dataReturn = true;
+            boolean dataReturn = true;
             //            check books if available
             if (bookRepository.validateAvailableBookByBookCode(requestNew.getBookCode()) == 1) {
                 dataReturn = false;
@@ -332,10 +326,10 @@ public class LoanServiceImp implements LoanService {
 
 
             if (dataReturn) {
-                Customer customer = customerRepository.findById(requestNew.getMembershipNumber()).get();
-                List<RequestLoan> initalData = loanRequestRepository.findAll(Sort.by("id").descending());
+                Customer customer = customerRepository.findById(requestNew.getMembershipNumber()).orElseThrow();
+                List<RequestLoan> loanList = loanRequestRepository.findAll(Sort.by("id").descending());
                 RequestLoan requestNewLoan;
-                if (initalData.isEmpty()) {
+                if (loanList.isEmpty()) {
 
                     requestNewLoan = new RequestLoan(1L,
                             requestNew.getMembershipNumber(),
@@ -343,7 +337,7 @@ public class LoanServiceImp implements LoanService {
                             LocalDateTime.now(), false, true);
                     customer.setRequestCount(customer.getRequestCount() + 1);
                 } else {
-                    requestNewLoan = new RequestLoan(initalData.get(0).getId() + 1L,
+                    requestNewLoan = new RequestLoan(loanList.get(0).getId() + 1L,
                             requestNew.getMembershipNumber(),
                             requestNew.getBookCode(),
                             LocalDateTime.now(), false, true);
@@ -361,7 +355,7 @@ public class LoanServiceImp implements LoanService {
                     .flag(flag)
                     .build();
         } catch (Exception e) {
-            LOGGER.error(e.getMessage());
+            log.error(e.getMessage());
             return DataDTO.<Boolean>builder()
                     .data(false)
                     .message(e.getMessage())
@@ -386,7 +380,7 @@ public class LoanServiceImp implements LoanService {
 
             if (fetchedData.getContent().isEmpty()) {
                 flag = 1;
-                message = INDEX_EMPTY;
+                message = ActionConstants.INDEX_EMPTY;
             }
 
             return DataDTO.<List<RequestLoanIndexDTO>>builder()
@@ -396,7 +390,7 @@ public class LoanServiceImp implements LoanService {
                     .data(fetchedData.getContent())
                     .build();
         } catch (Exception e) {
-            LOGGER.error(e.getMessage());
+            log.error(e.getMessage());
             return DataDTO.<List<RequestLoanIndexDTO>>builder()
                     .message(e.getMessage())
                     .data(new ArrayList<>())
@@ -411,15 +405,15 @@ public class LoanServiceImp implements LoanService {
 
         String currentLogin = new BaseController().getCurrentLogin();
 
-        Boolean returnData = true;
+        boolean returnData = true;
         int flag = 0;
         String message = "";
         try {
 
-            RequestLoan data = loanRequestRepository.findById(id).get();
-            Customer updateCustomer = customerRepository.findById(data.getMembershipNumber()).get();
+            RequestLoan data = loanRequestRepository.findById(id).orElseThrow();
+            Customer updateCustomer = customerRepository.findById(data.getMembershipNumber()).orElseThrow();
             Notification deleteNotification;
-            if (data.getStatus()) {
+            if (data.isStatus()) {
                 flag = 1;
                 message = "This request already accepted";
                 returnData = false;
@@ -440,7 +434,7 @@ public class LoanServiceImp implements LoanService {
                     .data(returnData)
                     .build();
         } catch (Exception e) {
-            LOGGER.error(e.getMessage());
+            log.error(e.getMessage());
             return null;
         }
     }
@@ -456,7 +450,7 @@ public class LoanServiceImp implements LoanService {
             List<LoanIndexDto> mappedData;
 
             if (data.getContent().isEmpty()) {
-                message = INDEX_EMPTY;
+                message = ActionConstants.INDEX_EMPTY;
                 flag = 0;
                 mappedData = new ArrayList<>();
             } else {
@@ -469,7 +463,7 @@ public class LoanServiceImp implements LoanService {
                     .message(message)
                     .build();
         } catch (Exception e) {
-            LOGGER.error(e.getMessage());
+            log.error(e.getMessage());
             return null;
         }
     }
@@ -479,11 +473,11 @@ public class LoanServiceImp implements LoanService {
 
         BaseController currentLogin = new BaseController();
 
-        Boolean returnData = true;
+        boolean returnData = true;
         String message = "";
         int flag = 0;
         try {
-            RequestLoan requestLoanData = loanRequestRepository.findById(id).get();
+            RequestLoan requestLoanData = loanRequestRepository.findById(id).orElseThrow();
 
             if (customerRepository.validateAvailableCustomerByMembershipNumber(requestLoanData.getMembershipNumber()) == 0) {
                 returnData = false;
@@ -507,7 +501,7 @@ public class LoanServiceImp implements LoanService {
                 Loan requestedLoan = new Loan(lastIdLoan + 1, requestLoanData.getMembershipNumber(), requestLoanData.getBookCode(), LocalDate.now(), LocalDate.now().plusDays(5), null, "Order By Request", 0, 0L);
                 requestLoanData.setStatus(true);
                 requestLoanData.setIsActive(false);
-                Notification sendNotification = notificationService.sendNotification(UUID.randomUUID(), updateCustomer.getMembershipNumber(), "Request Loan Accepted", "Thankyou for Loan", LocalDateTime.now(), currentLogin.getCurrentLogin());
+                Notification sendNotification = notificationService.sendNotification(UUID.randomUUID(), updateCustomer.getMembershipNumber(), "Request Loan Accepted", "Thank you for Loan", LocalDateTime.now(), currentLogin.getCurrentLogin());
                 chainUpdateLoan(updateCustomer, updateBook, requestedLoan);
                 notificationRepository.save(sendNotification);
                 loanRequestRepository.save(requestLoanData);
@@ -519,7 +513,7 @@ public class LoanServiceImp implements LoanService {
                     .flag(flag)
                     .build();
         } catch (Exception e) {
-            LOGGER.error(e.getMessage());
+            log.error(e.getMessage());
             return DataDTO.<Boolean>builder().build();
         }
     }
@@ -556,10 +550,10 @@ public class LoanServiceImp implements LoanService {
         Loan newDataLoan;
         if (newData.getDenda() == null) {
             newDataLoan = new Loan(newData.getId(), newData.getCustomerNumber(), newData.getBookCode(), LocalDate.now(), LocalDate.now().plusDays(5), null, newData.getNote(), 0, null);
-            logService.saveLogs(LOAN, SUCCESS, INSERT);
+            logService.saveLogs(ActionConstants.LOAN, ActionConstants.SUCCESS, ActionConstants.INSERT);
         } else {
             newDataLoan = new Loan(newData.getId(), newData.getCustomerNumber(), newData.getBookCode(), LocalDate.now(), LocalDate.now().plusDays(5), null, newData.getNote(), 0, newData.getDenda());
-            logService.saveLogs(LOAN, SUCCESS, INSERT);
+            logService.saveLogs(ActionConstants.LOAN, ActionConstants.SUCCESS, ActionConstants.INSERT);
         }
         return newDataLoan;
     }
@@ -594,7 +588,7 @@ public class LoanServiceImp implements LoanService {
 
     private void updateLogsIncome(LogsIncome newLog, Customer updateCustomer, Loan updateLoan) {
         logsIncomeRepository.save(newLog);
-        logService.saveLogs(LOAN, SUCCESS, PAY);
+        logService.saveLogs(ActionConstants.LOAN, ActionConstants.SUCCESS, ActionConstants.PAY);
         customerRepository.save(updateCustomer);
         loanRepository.save(updateLoan);
     }

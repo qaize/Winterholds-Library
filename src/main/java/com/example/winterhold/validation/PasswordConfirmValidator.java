@@ -1,11 +1,11 @@
 package com.example.winterhold.validation;
 
 import com.example.winterhold.service.abs.AccountService;
+import jakarta.validation.ConstraintValidator;
+import jakarta.validation.ConstraintValidatorContext;
 import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
 
 public class PasswordConfirmValidator implements ConstraintValidator<PasswordConfirm,Object> {
     private String mainPassword;

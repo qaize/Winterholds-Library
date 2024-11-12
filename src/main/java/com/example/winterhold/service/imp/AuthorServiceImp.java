@@ -15,8 +15,7 @@ import com.example.winterhold.service.abs.AuthorService;
 import com.example.winterhold.utility.ResponseUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -34,14 +33,12 @@ import java.math.BigInteger;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static com.example.winterhold.constants.ActionConstants.*;
 
 @Service
+@Slf4j
 public class AuthorServiceImp implements AuthorService {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(AuthorServiceImp.class);
 
     private final LogServiceImpl logService;
     private final AuthorRepository authorRepository;
@@ -63,7 +60,7 @@ public class AuthorServiceImp implements AuthorService {
 
 
     @Override
-    public DataDTO<List<AuthorIndexDto>> getListAuthorBySearch(Integer page, String name) throws JsonProcessingException {
+    public DataDTO<List<AuthorIndexDto>> getListAuthorBySearch(Integer page, String name) {
 
         int row = 10;
         int flag = 0;
@@ -78,7 +75,7 @@ public class AuthorServiceImp implements AuthorService {
                 message = INDEX_EMPTY;
             }
 
-            LOGGER.info(SUCCESS_GET_DATA, AUTHOR);
+            log.info(SUCCESS_GET_DATA, AUTHOR);
             return DataDTO.<List<AuthorIndexDto>>builder()
                     .flag(flag)
                     .totalPage((long) authorData.getTotalPages())
@@ -87,7 +84,7 @@ public class AuthorServiceImp implements AuthorService {
                     .build();
 
         } catch (Exception e) {
-            LOGGER.error(e.getMessage());
+            log.error(e.getMessage());
             return DataDTO.<List<AuthorIndexDto>>builder()
                     .flag(flag)
                     .message(message)
@@ -127,7 +124,7 @@ public class AuthorServiceImp implements AuthorService {
         Integer row = 10;
         Double totalData = (double) authorRepository.getCountPage(name);
 
-        return (Long) (long) Math.ceil(totalData / row);
+        return (long) Math.ceil(totalData / row);
     }
 
     @Override
@@ -149,35 +146,36 @@ public class AuthorServiceImp implements AuthorService {
         try {
             AuthorIndexDto authIndex = authorRepository.getAuthorById(dto.getId());
 
-            UpdateAccountMapper(en, authIndex, dto);
+            updateAccountMapper(en, authIndex, dto);
             updateValidator(en);
 
             authorRepository.save(en);
             logService.saveLogs(AUTHOR, SUCCESS, UPDATE);
 
         } catch (CustomException e) {
-            LOGGER.info(e.getMessage());
+            log.info(e.getMessage());
             logService.saveLogs(AUTHOR, ALREADY, UPDATE);
         } catch (Exception ex) {
-
-            LOGGER.info(ex.getMessage());
+            log.info(ex.getMessage());
             logService.saveLogs(AUTHOR, FAILED, UPDATE);
         }
     }
 
 
     @Override
-    public AuthorIndexDto getAuthorById(Long id) throws JsonProcessingException {
+    public AuthorIndexDto getAuthorById(Long id){
         Optional<Author> author = authorRepository.findById(id);
         AuthorIndexDto dataAuthor = author.map(this::mapAuthorIndexDto).orElse(null);
 
-        LOGGER.info(SUCCESS_GET_DATA, objectMapper.writeValueAsString(dataAuthor));
+        log.info(SUCCESS_GET_DATA, dataAuthor.getId());
         return dataAuthor;
     }
 
 
     @Override
     public Boolean delete(Long id) {
+
+        log.info("Delete Author : {}", id);
 
         try {
             var data = authorRepository.findById(id);
@@ -192,18 +190,18 @@ public class AuthorServiceImp implements AuthorService {
 
                 authorRepository.deleteById(id);
                 logService.saveLogs(AUTHOR, SUCCESS, DELETE);
-                LOGGER.info(SUCCESS + " ".concat(DELETE));
+                log.info("Success Delete author {}",id);
                 return true;
             }
         } catch (Exception e) {
-            LOGGER.error(e.getMessage());
+            log.error(e.getMessage());
         }
 
         return false;
     }
 
     @Override
-    public AuthorInsertDto getAuthorByIdinsert(Long id) {
+    public AuthorInsertDto getAuthorByIdInsertion(Long id) {
         return authorRepository.getAuthorByIdinsert(id);
     }
 
@@ -241,7 +239,6 @@ public class AuthorServiceImp implements AuthorService {
         Context context = new Context();
         context.setVariable("message","test");
         String html = engine.process("email",context);
-        System.out.println(html);
         String s = html.replaceAll("\\r\\n|\\r|\\n", " ");
         String r = s.replace("\\","\"");
 
@@ -295,7 +292,7 @@ public class AuthorServiceImp implements AuthorService {
                 auth.get("summary", String.class),
                 auth.get("createdBy", String.class),
                 auth.get("modifiedBy", String.class)
-        )).collect(Collectors.toList());
+        )).toList();
     }
 
     private void updateValidator(Author author) throws JsonProcessingException {
@@ -315,7 +312,7 @@ public class AuthorServiceImp implements AuthorService {
         }
     }
 
-    private void UpdateAccountMapper(Author author, AuthorIndexDto authIndex, AuthorUpdateDto authorInsertDto) {
+    private void updateAccountMapper(Author author, AuthorIndexDto authIndex, AuthorUpdateDto authorInsertDto) {
 
         author.setId(authorInsertDto.getId());
         author.setTitle(authorInsertDto.getTitle());

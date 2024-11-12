@@ -21,6 +21,7 @@ public class ActionConstants {
     public static final String EXTEND = " Extend";
     public static final String BAN = " BAN";
     public static final String EMPTY_STRING = "";
+    public static final String RETURN = "Return";
 
     //    STATUS
 

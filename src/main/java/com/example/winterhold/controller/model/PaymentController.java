@@ -5,6 +5,7 @@ import com.example.winterhold.dto.BaseResponseDTO;
 import com.example.winterhold.dto.payment.TopUpDTO;
 import com.example.winterhold.service.abs.NotificationService;
 import com.example.winterhold.service.abs.PaymentService;
+import com.example.winterhold.service.abs.TopUpService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -22,7 +23,7 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class PaymentController {
 
-    private final PaymentService paymentService;
+    private final TopUpService topUpService;
     private final NotificationService notificationService;
 
     @GetMapping("/topup")
@@ -40,7 +41,7 @@ public class PaymentController {
 
         String pages = "Payment/valid";
 
-        BaseResponseDTO<Object> response = paymentService.topup(topupDTO);
+        BaseResponseDTO<Object> response = topUpService.topup(topupDTO);
         if(Objects.nonNull(response.getData())){
             model.addAttribute("newNotification",notificationService.getNotification());
             pages =  "Home/index";

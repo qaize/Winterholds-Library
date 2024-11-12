@@ -1,7 +1,6 @@
 package com.example.winterhold.service.imp;
 
-import com.example.winterhold.constants.ActionConstants;
-import com.example.winterhold.dto.payment.TopUpDTO;
+import com.example.winterhold.exception.DuplicateEntityException;
 import com.example.winterhold.repository.CustomerRepository;
 import com.example.winterhold.repository.MasterAccountRepository;
 import com.example.winterhold.dto.BaseResponseDTO;
@@ -38,7 +37,7 @@ public class PaymentServiceImpl implements PaymentService {
             if(Objects.isNull(customer.getIsRegistered()) || customer.getIsRegistered().equals(0)){
                 customer.setIsRegistered(1);
             }else {
-                throw new RuntimeException("current membership already registered");
+                throw new DuplicateEntityException("current membership already registered");
             }
 
             MasterAccount masterAccount = MasterAccount.builder()
@@ -60,25 +59,6 @@ public class PaymentServiceImpl implements PaymentService {
         return ResponseUtil.insertSuccessResponse(customerProfile);
     }
 
-    @Override
-    public BaseResponseDTO<Object> topup(TopUpDTO topupDTO) {
-
-        try {
-            log.info("[START] Top up for {}",topupDTO.getMembershipNumber());
-            MasterAccount masterAccount = masterAccountRepository.findMasterAccountByMembershipNumber(topupDTO.getMembershipNumber());
-            if (Objects.nonNull(masterAccount)) {
-                masterAccount.setBalance(masterAccount.getBalance() + topupDTO.getAmount());
-            } else {
-                log.info("[ERROR] Master account not found");
-                throw new RuntimeException("Master account not found");
-            }
-
-        } catch (Exception e) {
-            return ResponseUtil.insertFailResponse(e.getMessage());
-        }
-
-        return ResponseUtil.insertSuccessResponse(ActionConstants.SUCCESS);
-    }
 
     private CustomerProfileDto populateCustomerInfo(Customer customer,MasterAccount masterAccount){
         String birthDate = CommonUtil.convertBirthdateIdn(customer.getBirthDate());

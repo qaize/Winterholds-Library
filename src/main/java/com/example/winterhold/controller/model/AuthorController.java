@@ -93,7 +93,7 @@ public class AuthorController {
     @GetMapping("/update")
     public String update(Model model, @RequestParam(required = false) Long id) {
 
-        AuthorInsertDto dto = authorService.getAuthorByIdinsert(id);
+        AuthorInsertDto dto = authorService.getAuthorByIdInsertion(id);
 
         model.addAttribute(WinterholdConstants.CONTROLLER_DROPDOWN_TITLE, Dropdown.dropdownTitle());
         model.addAttribute("dto", dto);

@@ -9,8 +9,7 @@ import com.example.winterhold.dto.customer.CustomerInsertDto;
 import com.example.winterhold.entity.Account;
 import com.example.winterhold.entity.Customer;
 import com.example.winterhold.service.abs.AccountService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -23,14 +22,12 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@Slf4j
 public class AccountServiceImp implements AccountService {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(AccountServiceImp.class);
 
     private final AccountRepository accountRepository;
 
     private final CustomerRepository customerRepository;
-
 
     private final PasswordEncoder passwordEncoder;
 
@@ -112,15 +109,14 @@ public class AccountServiceImp implements AccountService {
     @Override
     public String getCurrentUserLogin() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String userlogin = "Default";
+        String userlogin;
 
         Optional<Account> ac = accountRepository.findById(authentication.getName());
 
         userlogin = ac.isPresent() ? ac.get().getUserLogin() : authentication.getName();
 
-        LOGGER.info(userlogin);
+        log.info("User login : {}",userlogin);
         return userlogin;
     }
-
 
 }

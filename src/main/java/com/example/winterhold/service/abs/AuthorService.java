@@ -20,7 +20,7 @@ public interface AuthorService {
     void insert(AuthorInsertDto dto);
     AuthorIndexDto getAuthorById(Long id) throws JsonProcessingException;
     public List<AuthorIndexDto> getAllAuthor();
-    AuthorInsertDto getAuthorByIdinsert(Long id);
+    AuthorInsertDto getAuthorByIdInsertion(Long id);
     DataDTO<List<AuthorIndexDto>> getListAuthorBySearch(Integer page, String name) throws JsonProcessingException;
     List<AuthorIndexDto> getListAuthorBySearchV2(AuthorIndexDtoV2 authorIndexDtoV2) throws JsonProcessingException;
 

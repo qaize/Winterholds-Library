@@ -26,7 +26,6 @@ import static com.example.winterhold.constants.ActionConstants.*;
 @RequiredArgsConstructor
 public class CategoryServiceImp implements CategoryService {
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(CategoryServiceImp.class);
 
     private final CategoryRepository categoryRepository;
 

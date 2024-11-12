@@ -2,11 +2,11 @@ package com.example.winterhold.validation;
 
 import com.example.winterhold.repository.BookRepository;
 import com.example.winterhold.entity.Book;
+import jakarta.validation.ConstraintValidator;
+import jakarta.validation.ConstraintValidatorContext;
 import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
 import java.util.Optional;
 
 public class BookQuantityCheckerValidator implements ConstraintValidator<BookQuantityChecker, Object> {
