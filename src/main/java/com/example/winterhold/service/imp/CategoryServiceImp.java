@@ -8,8 +8,7 @@ import com.example.winterhold.entity.Category;
 import com.example.winterhold.service.abs.CategoryService;
 import com.example.winterhold.service.abs.NotificationService;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -24,6 +23,7 @@ import static com.example.winterhold.constants.ActionConstants.*;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class CategoryServiceImp implements CategoryService {
 
 
@@ -62,9 +62,8 @@ public class CategoryServiceImp implements CategoryService {
     public Long getCountPage(String name) {
         Integer row = 10;
         Double totalData = (double) categoryRepository.getCountPage(name);
-        Long totaPage = (long) Math.ceil(totalData / row);
 
-        return totaPage;
+        return (long) Math.ceil(totalData / row);
     }
 
     @Override
@@ -91,14 +90,26 @@ public class CategoryServiceImp implements CategoryService {
 
     @Override
     public Boolean delete(String categoryName) {
-        Long data = categoryRepository.getCountbooks(categoryName);
-        return data > 0 ? doDelete(categoryName) : false;
+        try {
+
+            log.info("Delete category: {}", categoryName);
+            Long data = categoryRepository.getCountbooks(categoryName);
+
+            if (data == 0) {
+                categoryRepository.deleteById(categoryName);
+                log.info("Success Delete category: {}", categoryName);
+            } else {
+                log.info("Failed Delete category: {}", categoryName);
+                return Boolean.FALSE;
+            }
+            return Boolean.TRUE;
+        } catch (Exception e) {
+            log.error("Failed to Delete category: {}", categoryName, e);
+            return Boolean.FALSE;
+        }
     }
 
-    private Boolean doDelete(String categoryName) {
-        categoryRepository.deleteById(categoryName);
-        return true;
-    }
+
 
     @Override
     public List<CategoryIndexDto> getAll() {

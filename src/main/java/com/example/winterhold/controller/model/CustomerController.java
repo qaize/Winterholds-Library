@@ -73,7 +73,7 @@ public class CustomerController {
             return "Customer/insert";
         } else {
 
-            customerService.insert(dto);
+            customerService.insertNewCustomer(dto);
             return MvcRedirectConst.REDIRECT_CUSTOMER_INDEX;
         }
     }
@@ -120,9 +120,9 @@ public class CustomerController {
     }
 
     @GetMapping("/detail")
-    public String detail(Model model, @RequestParam String number) {
+    public String detail(Model model, @RequestParam String number) throws ParseException {
 
-        var memberDto = customerService.getCustomerByMember(number);
+        var memberDto = customerService.customerProfile(number);
 
         model.addAttribute("membershipNumber", number);
         model.addAttribute("memberDto", memberDto);
@@ -217,7 +217,7 @@ public class CustomerController {
         BaseController baseController = new BaseController();
         CurrentLoginDetailDTO currentLogin = baseController.getCurrentLoginDetail();
 
-        var memberDto = customerService.cutomerProfile(currentLogin.getUsername());
+        var memberDto = customerService.customerProfile(currentLogin.getUsername());
 
         model.addAttribute("membershipNumber", currentLogin.getRole());
         model.addAttribute("memberDto", memberDto);

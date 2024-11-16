@@ -82,7 +82,7 @@ public class CustomerRestController {
 
         try {
             if (!bindingResult.hasErrors()) {
-                customerService.insert(dto);
+                customerService.insertNewCustomer(dto);
                 return new ResponseCrudRestDto(HttpStatus.OK, "Berhasil Update", dto);
             } else {
                 List<ValidatorRestDto> list = new ArrayList<>();

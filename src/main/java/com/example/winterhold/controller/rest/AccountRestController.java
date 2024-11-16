@@ -93,7 +93,7 @@ public class AccountRestController {
     public ResponseEntity<Object> post(@Valid @RequestBody AccountInsertDto dto, BindingResult bindingResult) {
         try {
             if (!bindingResult.hasErrors()) {
-                accountService.insert(dto);
+                accountService.createNewAccount(dto);
                 return ResponseEntity.status(HttpStatus.OK).body(new ResponseCrudRestDto(HttpStatus.OK, "Success Insert", dto));
             } else {
                 List<ValidatorRestDto> list = new ArrayList<>();
@@ -124,7 +124,7 @@ public class AccountRestController {
 
         try {
             if (!bindingResult.hasErrors()) {
-                accountService.insert(dto);
+                accountService.createNewAccount(dto);
                 return new ResponseCrudRestDto(HttpStatus.OK, "Success Update", dto);
             } else {
                 List<ValidatorRestDto> list = new ArrayList<>();
@@ -206,7 +206,7 @@ public class AccountRestController {
                 em.setSubject("Password Anda");
                 em.setMsgBody(dto.getPassword());
                 emailService.sendSimpleMail(em);
-                accountService.insert(dto);
+                accountService.createNewAccount(dto);
                 result = new AjaxResponseBodyDto(true, HttpStatus.OK, "Insert Account Success");
                 return ResponseEntity.ok(result);
             } else {

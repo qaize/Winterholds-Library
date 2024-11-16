@@ -1,7 +1,7 @@
 package com.example.winterhold.service.imp;
 
+import com.example.winterhold.dto.account.AccountInsertDto;
 import com.example.winterhold.repository.CustomerRepository;
-import com.example.winterhold.repository.LoanRepository;
 import com.example.winterhold.repository.MasterAccountRepository;
 import com.example.winterhold.dto.customer.CustomerIndexDto;
 import com.example.winterhold.dto.customer.CustomerInsertDto;
@@ -12,18 +12,16 @@ import com.example.winterhold.entity.Customer;
 import com.example.winterhold.entity.MasterAccount;
 import com.example.winterhold.service.abs.CustomerService;
 import com.example.winterhold.utility.CommonUtil;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.webjars.NotFoundException;
 
-import java.text.ParseException;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -31,25 +29,18 @@ import static com.example.winterhold.constants.ActionConstants.*;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class CustomerServiceImp implements CustomerService {
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(CustomerServiceImp.class);
-
-    @Autowired
-    private CustomerRepository customerRepository;
-
-    @Autowired
-    private LogServiceImpl logService;
-
-    @Autowired
-    private LoanRepository loanRepository;
-
-    @Autowired
-    private MasterAccountRepository masterAccountRepository;
+    private final CustomerRepository customerRepository;
+    private final LogServiceImpl logService;
+    private final AccountServiceImp accountServiceImp;
+    private final MasterAccountRepository masterAccountRepository;
+    private final Random random = new Random();
 
     @Override
     public DataDTO<List<CustomerIndexDto>> getListCustomerBySearch(Integer page, String number, String name) {
-        Integer row = 10;
+        int row = 10;
         int flag = 0;
         String message = "";
 
@@ -81,22 +72,33 @@ public class CustomerServiceImp implements CustomerService {
     public Long getCountPage(String number, String name) {
         Integer row = 10;
         Double totalData = (double) customerRepository.getCountPage(number, name);
-        Long totaPage = (long) Math.ceil(totalData / row);
-        return totaPage;
+        return (long) Math.ceil(totalData / row);
     }
 
     @Override
-    public void insert(CustomerInsertDto dto) {
-
+    public void insertNewCustomer(CustomerInsertDto customerInsert) {
+        log.info("insert new customer {}", customerInsert.getFirstName());
         try {
-            Customer newCustomer = mapInsertAdmin(dto);
+            Customer newCustomer = populateCustomerData(customerInsert);
+            AccountInsertDto accountInsertDto = populateAccountInsertDto(newCustomer);
+
             customerRepository.save(newCustomer);
-            LOGGER.info(SUCCESS_INSERT_DATA, newCustomer.getMembershipNumber());
+            accountServiceImp.createNewAccount(accountInsertDto);
+            log.info(SUCCESS_INSERT_DATA, newCustomer.getMembershipNumber());
             logService.saveLogs(CUSTOMER, SUCCESS, INSERT);
         } catch (Exception e) {
-            LOGGER.error(FAILED_INSERT_DATA, e.getMessage());
+            log.error(FAILED_INSERT_DATA, e.getMessage());
             logService.saveLogs(CUSTOMER, FAILED, INSERT);
         }
+    }
+
+    private AccountInsertDto populateAccountInsertDto(Customer newCustomer) {
+        return AccountInsertDto.builder()
+                .username(newCustomer.getMembershipNumber())
+                .name(newCustomer.getFirstName() + " " + (Objects.nonNull(newCustomer.getLastName()) ? newCustomer.getLastName() : ""))
+                .role("customer")
+                .password("newCustomer")
+                .build();
     }
 
 
@@ -104,10 +106,10 @@ public class CustomerServiceImp implements CustomerService {
     public void update(CustomerUpdateDto dto) {
         try {
             customerRepository.save(mapUpdate(dto));
-            LOGGER.info(SUCCESS_UPDATE_DATA, dto.getMembershipNumber());
+            log.info(SUCCESS_UPDATE_DATA, dto.getMembershipNumber());
             logService.saveLogs(CUSTOMER, SUCCESS, UPDATE);
         } catch (Exception e) {
-            LOGGER.error(FAILED_UPDATE_DATA, e.getMessage());
+            log.error(FAILED_UPDATE_DATA, e.getMessage());
             logService.saveLogs(CUSTOMER, FAILED, UPDATE);
         }
     }
@@ -125,7 +127,15 @@ public class CustomerServiceImp implements CustomerService {
 
     @Override
     public CustomerIndexDto getCustomerByMember(String customerNumber) {
-        return customerRepository.getCustomerByMember(customerNumber);
+        CustomerIndexDto customerDetail = new CustomerIndexDto();
+        try {
+            customerDetail =  customerRepository.getCustomerByMember(customerNumber);
+
+        } catch (Exception e){
+            log.error(e.getMessage(), e);
+        }
+
+        return customerDetail;
     }
 
     @Override
@@ -137,10 +147,14 @@ public class CustomerServiceImp implements CustomerService {
     public Boolean delete(String number) {
         try {
             Long data = customerRepository.getCountCustomer(number);
-            return data > 0 ? doDelete(number) : false;
+            if (data > 0) {
+                customerRepository.softDeleteCustomer(number);
+                return true;
+            }
         } catch (Exception e) {
             return false;
         }
+        return false;
     }
 
 
@@ -150,22 +164,25 @@ public class CustomerServiceImp implements CustomerService {
     }
 
     @Override
-    public void doUnbanCustomer(String customerNumber) {
+    public Boolean doUnbanCustomer(String customerNumber) {
 
         try {
+            log.info("Start Unban Customer [{}]", customerNumber);
             Optional<Customer> data = customerRepository.findById(customerNumber);
-            Customer customer = new Customer();
+            Customer customer;
             if (data.isPresent()) {
                 customer = data.get();
                 customer.setBanned(0);
-                customerRepository.save(data.get());
+                customerRepository.save(customer);
                 logService.saveLogs(CUSTOMER, SUCCESS, BAN);
+                return true;
             }
+            log.info("Customer [{}] Not Found", customerNumber);
         } catch (Exception e) {
+            log.error("Error Unban Customer [{}]", customerNumber, e);
             logService.saveLogs(CUSTOMER, e.getMessage(), BAN);
-
         }
-
+        return false;
     }
 
     @Override
@@ -176,37 +193,48 @@ public class CustomerServiceImp implements CustomerService {
 
             data.setMembershipExpireDate(data.getMembershipExpireDate().plusYears(2));
             update(data);
-            LOGGER.info(SUCCESS_UPDATE_DATA, number);
+            log.info(SUCCESS_UPDATE_DATA, number);
             logService.saveLogs(CUSTOMER, SUCCESS, EXTEND);
             return true;
         } catch (Exception e) {
-            LOGGER.error(e.getMessage());
+            log.error(e.getMessage());
             logService.saveLogs(CUSTOMER, FAILED, EXTEND);
             return false;
         }
     }
 
     @Override
-    public CustomerProfileDto cutomerProfile(String username) throws ParseException {
+    public CustomerProfileDto customerProfile(String username) {
 
-        String balance = StringUtils.EMPTY;
-        var customer = customerRepository.findByMembershipNumber(username).get();
-        String birthDate = CommonUtil.convertBirthdateIdn(customer.getBirthDate());
+        CustomerProfileDto customerProfileDto = new CustomerProfileDto();
+        try {
 
-        if(Objects.nonNull(customer.getIsRegistered())){
-            MasterAccount masterAccount = masterAccountRepository.findMasterAccountByMembershipNumber(customer.getMembershipNumber());
-            balance = String.valueOf(masterAccount.getBalance());
+            String balance = StringUtils.EMPTY;
+            var customer = customerRepository.findByMembershipNumber(username).orElseThrow();
+            String birthDate = CommonUtil.convertBirthdateIdn(customer.getBirthDate());
+
+            if (Objects.nonNull(customer.getIsRegistered())) {
+                MasterAccount masterAccount = masterAccountRepository.findMasterAccountByMembershipNumber(customer.getMembershipNumber());
+                balance = String.valueOf(masterAccount.getBalance());
+            }
+
+            customerProfileDto = CustomerProfileDto.builder()
+                    .membershipNumber(customer.getMembershipNumber())
+                    .fullName(customer.getFirstName().concat(StringUtils.SPACE).concat(customer.getLastName()))
+                    .phone(customer.getPhone())
+                    .address(customer.getAddress())
+                    .birthDate(birthDate)
+                    .gender(customer.getGender())
+                    .balance(balance)
+                    .build();
+
+            return customerProfileDto;
+        } catch (Exception e) {
+            log.error(e.getMessage());
         }
 
-        return CustomerProfileDto.builder()
-                .membershipNumber(customer.getMembershipNumber())
-                .fullName(customer.getFirstName().concat(StringUtils.SPACE).concat(customer.getLastName()))
-                .phone(customer.getPhone())
-                .address(customer.getAddress())
-                .birthDate(birthDate)
-                .gender(customer.getGender())
-                .balance(balance)
-                .build();
+        return customerProfileDto;
+
     }
 
     @Override
@@ -226,29 +254,28 @@ public class CustomerServiceImp implements CustomerService {
     }
 
 
-
     @Override
     public String customerNumberGenerator() {
-        int bound = 1000;
-        Random randomer = new Random();
-        int genratedValue = randomer.nextInt(bound);
-        String genrator = "";
+        int boundNumber = 1000;
+        int genratedValue = random.nextInt(boundNumber);
+        String newCustomerId = "";
         boolean membershipChecker = true;
-//        CHECK CUSTOMER IS ALREADY ON TABLE
+
+        //Check Customer Availability
         while (membershipChecker) {
-            genrator = "CUS" + genratedValue;
-            if (CustomerMemberChecker(genrator)) {
+            newCustomerId = CUSTOMER_ID_PREFIX + genratedValue;
+            if (Boolean.TRUE.equals(customerAvailabilityCheck(newCustomerId))) {
                 genratedValue++;
             } else {
-                genrator = "CUS" + genratedValue;
+                newCustomerId = CUSTOMER_ID_PREFIX + genratedValue;
                 membershipChecker = false;
             }
         }
-        return genrator;
+        return newCustomerId;
     }
 
     @Override
-    public Boolean CustomerMemberChecker(String s) {
+    public Boolean customerAvailabilityCheck(String s) {
         Long result = customerRepository.checkCustomerById(s);
         return result > 0;
     }
@@ -269,10 +296,10 @@ public class CustomerServiceImp implements CustomerService {
                     return true;
                 }
             } else {
-                throw new Exception("User not found");
+                throw new NotFoundException("User not found");
             }
         } catch (Exception e) {
-            LOGGER.error(e.getMessage());
+            log.error(e.getMessage());
             logService.saveLogs(CUSTOMER, e.getMessage(), BAN);
             return false;
         }
@@ -291,7 +318,7 @@ public class CustomerServiceImp implements CustomerService {
                     .build();
 
         } catch (Exception e) {
-            LOGGER.error(e.getMessage());
+            log.error(e.getMessage());
 
             return DataDTO.<List<Customer>>builder()
                     .data(new ArrayList<>())
@@ -301,11 +328,12 @@ public class CustomerServiceImp implements CustomerService {
     }
 
 
-    private Customer mapInsertAdmin(CustomerInsertDto dto) {
+    private Customer populateCustomerData(CustomerInsertDto dto) {
 
         String generatedMember = customerNumberGenerator();
         LocalDateTime createDate = LocalDateTime.now();
-        Customer customer = new Customer(
+
+        return new Customer(
                 generatedMember,
                 dto.getFirstName(),
                 dto.getLastName(),
@@ -314,9 +342,7 @@ public class CustomerServiceImp implements CustomerService {
                 dto.getPhone(),
                 dto.getAddress(),
                 dto.getMembershipExpireDate(),
-                createDate, 0, 0, 0,0);
-
-        return customer;
+                createDate, 0, 0, 0, 0);
     }
 
 
@@ -335,11 +361,6 @@ public class CustomerServiceImp implements CustomerService {
             customer = dataCus.get();
         }
         return customer;
-    }
-
-    private Boolean doDelete(String member) {
-        customerRepository.softDeleteCustomer(member);
-        return true;
     }
 
 }

@@ -402,6 +402,7 @@ public class LoanServiceImp implements LoanService {
 
     @Override
     public DataDTO<Boolean> cancelLoan(Long id) {
+        log.info("Starting cancelLoan");
 
         String currentLogin = new BaseController().getCurrentLogin();
 
@@ -412,7 +413,7 @@ public class LoanServiceImp implements LoanService {
 
             RequestLoan data = loanRequestRepository.findById(id).orElseThrow();
             Customer updateCustomer = customerRepository.findById(data.getMembershipNumber()).orElseThrow();
-            Notification deleteNotification;
+            Notification cancelledNotification;
             if (data.isStatus()) {
                 flag = 1;
                 message = "This request already accepted";
@@ -421,9 +422,10 @@ public class LoanServiceImp implements LoanService {
                 if (updateCustomer.getRequestCount() > 0) {
                     updateCustomer.setRequestCount(updateCustomer.getRequestCount() - 1);
                 }
-                deleteNotification = notificationService.sendNotification(UUID.randomUUID(), updateCustomer.getMembershipNumber(), "Request canceled", "", LocalDateTime.now(), currentLogin);
+                cancelledNotification = notificationService.sendNotification(UUID.randomUUID(), updateCustomer.getMembershipNumber(), "Request canceled", "", LocalDateTime.now(), currentLogin);
                 data.setIsActive(false);
-                notificationRepository.save(deleteNotification);
+                notificationRepository.save(cancelledNotification);
+                log.info("Successfully cancelled");
             }
 
             loanRequestRepository.save(data);

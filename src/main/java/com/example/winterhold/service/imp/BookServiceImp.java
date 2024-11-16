@@ -83,7 +83,7 @@ public class BookServiceImp implements BookService {
 
         try {
             List<BookIndexDto> data = bookRepository.getAll();
-            LOGGER.info(SUCCESS_GET_DATA, objectMapper.writeValueAsString(data));
+            LOGGER.info(SUCCESS_GET_DATA,data.size());
             return ResponseUtil.insertSuccessResponse(data);
         } catch (Exception e) {
             LOGGER.error(FAILED_GET_DATA, e.getMessage());
@@ -107,19 +107,21 @@ public class BookServiceImp implements BookService {
     public Boolean delete(String code) {
         try {
             Long data = bookRepository.getCountBooksByCode(code);
-            LOGGER.info(SUCCESS_DELETE_DATA,code);
-            return data > 0 ? doDelete(code) : false;
+
+            if (data == 0){
+                bookRepository.deleteById(code);
+                LOGGER.info(SUCCESS_DELETE_DATA, code);
+            } else {
+                return false;
+            }
+            return true;
+
         } catch (Exception e) {
             LOGGER.error(e.getMessage());
             return false;
         }
     }
 
-    public Boolean doDelete(String code) {
-        bookRepository.deleteById(code);
-        LOGGER.info(SUCCESS_DELETE_DATA, code);
-        return true;
-    }
 
     @Override
     public void update(BookUpdateDto dto) {

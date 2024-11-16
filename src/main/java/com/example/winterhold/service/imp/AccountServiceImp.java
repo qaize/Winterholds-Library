@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -39,15 +40,15 @@ public class AccountServiceImp implements AccountService {
     }
 
     @Override
-    public void insert(AccountInsertDto dto) {
+    public void createNewAccount(AccountInsertDto accountInsertRequest) {
 
-        if (dto.getRole().equals("customer")){
-            CustomerInsertDto newDataCustomer = new CustomerInsertDto(dto.getUsername(), dto.getName(), LocalDate.now().plusYears(2));
+        if (accountInsertRequest.getRole().equals("customer")){
+            CustomerInsertDto newDataCustomer = new CustomerInsertDto(accountInsertRequest.getUsername(), accountInsertRequest.getName(), LocalDate.now().plusYears(2));
             customerRepository.save(mapInsertCustomer(newDataCustomer));
         }
 
-        String hash = passwordEncoder.encode(dto.getPassword());
-        Account en = new Account(dto.getUsername(), hash, false, 0, dto.getName(),dto.getRole());
+        String encryptedPassword = passwordEncoder.encode(accountInsertRequest.getPassword());
+        Account en = new Account(accountInsertRequest.getUsername(), encryptedPassword, false, 0, accountInsertRequest.getName(),accountInsertRequest.getRole());
 
         accountRepository.save(en);
     }
@@ -59,7 +60,7 @@ public class AccountServiceImp implements AccountService {
         return new Customer(
                 dto.getMembershipNumber(),
                 dto.getFirstName(),
-                "",
+                Objects.nonNull(dto.getLastName()) ? dto.getLastName() : "",
                 null,
                 null,
                 null,

@@ -15,7 +15,7 @@ public interface AccountService {
     List<AccountIndexDto> getlist();
     void setCountWrong(Account acc);
     void update(AccountUpdateDto dto);
-    void insert(AccountInsertDto dto);
+    void createNewAccount(AccountInsertDto dto);
     Optional<Account> getAccount(String username);
     AccountIndexDto getAccountByUsername(String username);
     boolean passwordChecker(String password, String conPassword);

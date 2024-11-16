@@ -9,7 +9,8 @@ import jakarta.validation.constraints.Size;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter @Setter
+@Data
+@Builder
 @PasswordConfirm(mainPassword = "password",confirmPassword = "conpassword",message = "Password not Match!")
 public class AccountInsertDto {
 

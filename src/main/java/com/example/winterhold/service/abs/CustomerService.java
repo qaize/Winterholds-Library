@@ -17,8 +17,8 @@ public interface CustomerService {
     List<CustomerIndexDto> getAll();
     String customerNumberGenerator();
     void update(CustomerUpdateDto dto);
-    void insert(CustomerInsertDto dto);
-    Boolean CustomerMemberChecker(String s);
+    void insertNewCustomer(CustomerInsertDto dto);
+    Boolean customerAvailabilityCheck(String s);
     void updateWithEntity(Customer customer);
     boolean doBanCustomer(String customerNumber);
     List<CustomerIndexDto> getAvaliableCustomer();
@@ -29,8 +29,8 @@ public interface CustomerService {
     CustomerUpdateDto getCustomerByMemberInsert(String number);
 
     List<CustomerIndexDto> getAvaliableCustomerEdit(String customerNumber);
-    void doUnbanCustomer(String customerNumber);
+    Boolean doUnbanCustomer(String customerNumber);
     Boolean doExtendMember(String number);
 
-    CustomerProfileDto cutomerProfile(String username) throws ParseException;
+    CustomerProfileDto customerProfile(String username) throws ParseException;
 }

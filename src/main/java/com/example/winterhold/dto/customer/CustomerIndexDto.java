@@ -1,11 +1,13 @@
 package com.example.winterhold.dto.customer;
 import lombok.*;
+import lombok.experimental.Accessors;
 
 import java.time.LocalDate;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter @Setter
+@Data
+@Accessors(chain = true)
 public class CustomerIndexDto {
     private String membershipNumber; /*20 nn*/
 

@@ -1,6 +1,5 @@
 package com.example.winterhold.controller.model;
 
-import com.example.winterhold.constants.ActionConstants;
 import com.example.winterhold.dto.BaseResponseDTO;
 import com.example.winterhold.dto.CurrentLoginDetailDTO;
 import com.example.winterhold.dto.account.AccountInsertDto;
@@ -50,7 +49,7 @@ public class RegisterController extends BaseController {
             return "Register/registerForm";
         } else {
 
-            accountService.insert(dto);
+            accountService.createNewAccount(dto);
 
             return "redirect:/login/loginForm";
         }

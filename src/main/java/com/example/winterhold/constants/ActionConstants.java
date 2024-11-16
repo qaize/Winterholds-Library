@@ -37,6 +37,8 @@ public class ActionConstants {
     public static final String INDEX_EMPTY = "Data not found";
     public static final String VALIDATE_UPDATE = "Data was validated and there is no update on it.";
 
+    //Customer prefix
+    public static final String CUSTOMER_ID_PREFIX = "CUS";
 
 
 }

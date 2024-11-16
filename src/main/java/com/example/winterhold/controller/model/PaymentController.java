@@ -47,7 +47,7 @@ public class PaymentController {
             pages =  "Home/index";
         }else {
 
-            model.addAttribute("validationHeader", "error dah gtw knp");
+            model.addAttribute("validationHeader", response.getMessage());
             model.addAttribute("validationReason", "Please, contact admin!");
             model.addAttribute("flag", 1);
         }
